@@ -1,31 +1,32 @@
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-)
+
+
+(if (string= system-type "windows-nt")
+    (setq jkl/default-font-spec '(:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :family "Lucida Sans Typewriter" :foundry "outline" :foreground "green" :background "black"))
+  (setq jkl/default-font-spec '(:height 100 :family "Lucida Sans Typewriter")))
 
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "SystemWindow" :foreground "SystemWindowText" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :family "Lucida Sans Typewriter")))))
+ `(default ((t ,jkl/default-font-spec))))
 
-(defun my-add-path (path)
+(defun jkl/add-path (path)
   (setenv "PATH" (concat (getenv "PATH") 
-			 (if (string= system-type "windows-nt") ";" ":")
-			 (replace-regexp-in-string "/" "\\\\" path)))
+                         (if (string= system-type "windows-nt") ";" ":")
+                         (replace-regexp-in-string "/" "\\\\" path)))
   (setq exec-path (nconc exec-path (list path)))
   )
 
 ;; additional tool paths for windows
 (if (string= system-type "windows-nt")
     (progn
-      (setq my-site-lisp-path "c:/prp/emacs-23.2/site-lisp/")
-      (mapc 'my-add-path '("C:/prp/Python27"
-			   "C:/MingW/msys/1.0/bin"
-			   "C:/prp/Mercurial"))
+      (setq jkl/site-lisp-path "c:/prp/emacs-23.2/site-lisp/")
+      (mapc 'jkl/add-path '("C:/prp/Python27"
+                           "C:/MingW/msys/1.0/bin"
+                           "C:/prp/Mercurial"
+                           "C:/prp/Aspell/bin"))
+      (setq ispell-program-name "aspell")
       )
   (setq locale-coding-system 'utf-8)
   (set-terminal-coding-system 'utf-8)
@@ -34,10 +35,10 @@
   (prefer-coding-system 'utf-8)
 )
 
-(setq nxhtml-path (concat my-site-lisp-path "nxhtml/"))
+(setq nxhtml-path (concat jkl/site-lisp-path "nxhtml/"))
 
 ;; Image is everything
-(defun my-set-faces  (fl)
+(defun jkl/set-faces  (fl)
   (dolist (faceelt fl)
     (let ((attr-funcs '(set-face-foreground set-face-background))
           (face (car faceelt)))
@@ -57,7 +58,7 @@
                 (cursor-color . "white")
                 )))
 
-(my-set-faces 
+(jkl/set-faces 
  '((font-lock-type-face "yellow")
    (font-lock-string-face "orange")
    (font-lock-constant-face "plum1")
@@ -88,7 +89,7 @@
 
 (setq auto-mode-alist
       (cons '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . 
-	      visual-basic-mode) auto-mode-alist))
+              visual-basic-mode) auto-mode-alist))
 
 (setq auto-mode-alist (cons '("\\.gp$" . gnuplot-mode) auto-mode-alist))
 
@@ -97,20 +98,105 @@
 ;; - reset css indentation functions
 
 ;; ORG-MODE
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-ca" 'org-agenda)
-(setq org-log-done t)
+(setq load-path (cons (concat jkl/site-lisp-path "org-mode/lisp")
+                      (cons (concat jkl/site-lisp-path "org-mode/contrib/lisp") load-path)))
+(require 'org-install)
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
-;; return activates link
-(setq org-return-follows-link t)
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\C-ca" 'org-agenda)
 
-;; here are for the custom statuses
-(setq org-agenda-custom-commands
-    '(("w" todo "WAITING" nil)
-    ("n" todo "NEXT" nil)
-    ("d" "Agenda + Next Actions" ((agenda) (todo "NEXT"))))
-)
+(global-set-key (kbd "<f12>") 'org-agenda)
 
+(define-key global-map [f9] (make-sparse-keymap))
+
+(global-set-key (kbd "<f9> c") 'calendar)
+(global-set-key (kbd "<f9> b") 'bbdb)
+(global-set-key (kbd "<f9> r") 'boxquote-region)
+(global-set-key (kbd "<f9> g") 'gnus)
+
+(global-set-key (kbd "C-M-r") 'org-capture)
+
+
+;; ORG-MODE enable yas/flyspell
+(add-hook 'org-mode-hook
+          (lambda ()
+            (flyspell-mode 1)
+            (auto-fill-mode 1)))
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("c:/prp/project/simple.org")))
+ '(org-fast-tag-selection-single-key t)
+ '(org-treat-S-cursor-todo-selection-as-state-change t)
+ '(org-todo-keywords (quote ((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w@/!)" "APPT(a)" "MAYBE(m!)" "|" "DONE(d!/!) CANCELLED(c@/!) DEFFERED(f@/!)")))))
+
+(defun jkl/clock-in-to-next (kw)
+  "Switch task from TODO to NEXT when clocking in, skipping capture tasks
+and tasks with subtasks"
+  (if (and (string-equal kw "TODO")
+           (not (and (boundp 'org-capture-mode) org-capture-mode)))
+      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+            (has-subtask nil))
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-subtask)
+                      (< (point) subtree-end)
+                      (re-search-forward "^\*+ " subtree-end t))
+            (when (member (org-get-todo-state) org-not-done-keywords)
+              (setq has-subtask t))))
+        (when (not has-subtask)
+          "NEXT"))))
+
+(defvar gjg/capture-phone-record nil
+  "Either BBDB record vector, or person's name as a string, or nil")
+
+(defun gjg/bbdb-company ()
+  "Return company of saved bbdb record, or empty string - for use in Capture templates"
+  (if (and gjg/capture-phone-record (vectorp gjg/capture-phone-record))
+      (or (bbdb-record-company gjg/capture-phone-record) "")
+    "COMPANY"))
+
+(defun gjg/bbdb-name ()
+  "Return full name of saved bbdb record, or empty string - for use in Capture templates"
+  (if (and gjg/capture-phone-record (vectorp gjg/capture-phone-record))
+      (concat "[[bbdb:"
+              (bbdb-record-name gjg/capture-phone-record) "]["
+              (bbdb-record-name gjg/capture-phone-record) "]]")
+    "NAME"))
+
+(defun jkl/phone-call ()
+  (interactive)
+  (let* ((myname (completing-read "Who is calling? " (bbdb-hashtable) 'bbdb-completion-predicate 'confirm))
+         (my-bbdb-name (if (> (length myname) 0) myname nil)))
+    (setq gjg/capture-phone-record
+          (if my-bbdb-name
+              (first (or (bbdb-search (bbdb-records) my-bbdb-name nil nil)
+                         (bbdb-search (bbdb-records) nil my-bbdb-name nil)))
+            myname)))
+  (gjg/bbdb-name))
+
+(setq org-capture-templates '(("t" "todo" entry (file org-default-notes-file) "* TODO %?\n%U\n%a" :clock-in t :clock-resume t)
+                              ("n" "note" entry (file org-default-notes-file) "* %? :NOTE:\n%U\n%a\n:CLOCK:\n:END:" :clock-in t :clock-resume t)
+                              ("a" "appointment" entry (file+datetree jkl/org-diary-file) "* %?
+%U" :clock-in t :clock-resume t)
+                              ("p" "Phone call" entry (file org-default-notes-file) "* Phone %(jkl/phone-call) - %(gjg/bbdb-company) :PHONE:\n%U\n\n%?"
+                               :clock-in t :clock-resume t)
+                              ("w" "org-protocol" entry (file org-default-notes-file) "* TODO Review %c\n%U" :immediate-finish t :clock-in t :clock-resume t)))
+
+
+(org-clock-persistence-insinuate)
+;(setq org-drawers '("PROPERTIES" "LOGBOOK" "CLOCK"))
+;(setq org-clock-into-drawer "CLOCK")
+;(setq org-clock-out-remove-zero-time-clocks t)
+;(setq org-clock-out-when-done t)
+
+ 
 (defun gtd ()
    (interactive)
    (find-file "~/org/gtd.org")
@@ -130,12 +216,12 @@
 (when (string= system-type "windows-nt")
   (require 'yasnippet)
   (yas/initialize)
-  (yas/load-directory (concat my-site-lisp-path "yasnippet-0.6.1c/snippets"))
+  (yas/load-directory (concat jkl/site-lisp-path "yasnippet-0.6.1c/snippets"))
   )
 
 ;; NXHTML
 (load (concat nxhtml-path "autostart.el"))
-(tabkey2-mode)
+(tabkey2-mode t)
 
 ;; ECB - Code Browser
 (require 'ecb)
@@ -173,7 +259,7 @@
       ;;(message "No ^M in this file !")
       )))
 
-(unless (string= system-name "windows-nt") 
+(unless (string= system-type "windows-nt") 
   (add-hook 'find-file-hooks 'remove-or-convert-trailing-ctl-M)
   )
 
@@ -184,41 +270,41 @@
     (c-basic-offset             . 3)
     (c-comment-only-line-offset . 0)
     (c-hanging-braces-alist     . (
-				   (defun-open before after)
-				   (defun-close before after)
-				   (class-open before after)
-				   (class-close before after)
-				   (inline-open)
-				   (inline-close)
-				   (block-open before after)
-				   (block-close . c-snug-do-while)
-				   (brace-list-open before after)
-				   (brace-list-close before)
-				   (statement-case-open before after)
-				   (substatement-open before after)
-				   (extern-lang-open before after)
-				   (namespace-open before after)
-				   (module-open before after)
-				   (composition-open before after)))
+                                   (defun-open before after)
+                                   (defun-close before after)
+                                   (class-open before after)
+                                   (class-close before after)
+                                   (inline-open)
+                                   (inline-close)
+                                   (block-open before after)
+                                   (block-close . c-snug-do-while)
+                                   (brace-list-open before after)
+                                   (brace-list-close before)
+                                   (statement-case-open before after)
+                                   (substatement-open before after)
+                                   (extern-lang-open before after)
+                                   (namespace-open before after)
+                                   (module-open before after)
+                                   (composition-open before after)))
 
     (c-hanging-colons-alist . ((member-init-intro after)
-			       (inher-intro)
-			       (case-label after)
-			       (label after)
-			       (access-label after)))
+                               (inher-intro)
+                               (case-label after)
+                               (label after)
+                               (access-label after)))
 
     (c-cleanup-list . (scope-operator
-		       empty-defun-braces
-		       defun-close-semi))
+                       empty-defun-braces
+                       defun-close-semi))
 
     (c-offsets-alist . ((arglist-close . c-lineup-arglist)
-			(arglist-cont . c-lineup-argcont)
-			(arglist-cont-nonempty . (c-lineup-arglist-operators c-lineup-argcont))
-			(substatement-open . 0)
-			(case-label . 0)
-			(block-open . 0)
-			(knr-argdecl-intro . -)))
-		     
+                        (arglist-cont . c-lineup-argcont)
+                        (arglist-cont-nonempty . (c-lineup-arglist-operators c-lineup-argcont))
+                        (substatement-open . 0)
+                        (case-label . 0)
+                        (block-open . 0)
+                        (knr-argdecl-intro . -)))
+                     
     (c-echo-syntactic-information-p . t)
     )
   "Harris C(++)/IDL style")
