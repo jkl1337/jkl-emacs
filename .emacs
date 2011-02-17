@@ -1,6 +1,39 @@
+(setq x-super-keysym 'meta)
+(setq x-hyper-keysym 'super)
+
 (setq load-path (cons "~/emacs" load-path))
 
+(setq load-path (cons "~/site-lisp/bbdb-vcard" load-path))
+(require 'bbdb-vcard)
+
+(tool-bar-mode -1)
+
 ;; JKL .emacs initialization file
+
+;; org-mode stuff
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+
+;; nxhtml
+(set 'nxhtml-path "/home/luebsj/site-lisp/nxhtml/")
+(load (concat nxhtml-path "autostart.el"))
+
+;; return activates link
+(setq org-return-follows-link t)
+
+;; here are for the custom statuses
+(setq org-agenda-custom-commands
+    '(("w" todo "WAITING" nil)
+    ("n" todo "NEXT" nil)
+    ("d" "Agenda + Next Actions" ((agenda) (todo "NEXT"))))
+)
+
+(defun gtd ()
+   (interactive)
+   (find-file "~/org/gtd.org")
+)
+
 ; (require 'un-define)
 (font-lock-mode)
 (global-font-lock-mode 1)
@@ -100,6 +133,11 @@
 (setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\)$" . 
 				 visual-basic-mode)) auto-mode-alist))
 
+;; Initialize Rope / Python
+
+(pymacs-load "ropemacs" "rope-")
+(setq ropemacs-enable-autoimport t)
+
 ;;(autoload 'linux-c-mode "linux-c-mode" "Sane coding mode." t)
 ;;(setq auto-mode-alist (append '(("\\.[ch]$" .
 ;;				 linux-c-mode)) auto-mode-alist))
@@ -130,15 +168,6 @@
 (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase mode" t)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
 (add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
-
-;; ----------------------------------------------------------------------
-;; Info for Ispell
-(add-to-list 'Info-default-directory-list "c:/usr/local/info/")      
-
-;; #(require 'php-mode)
-(global-set-key [delete] 'delete-char)
-(global-set-key [kp-delete] 'delete-char)
-
 
 (set-face-foreground 'default  "green")
 (set-face-background 'default  "black")
@@ -207,3 +236,18 @@
 
 ;; end of line for gnuplot-mode
 ;;--------------------------------------------------------------------
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(mumamo-chunk-coloring 2)
+ '(nxhtml-default-encoding (quote utf-8))
+ '(org-agenda-files (quote ("~/org/curgtd.org")))
+)
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
