@@ -20,7 +20,7 @@
 (autoload 'doc-mode "doc-mode")
 (add-to-list 'auto-mode-alist '("\\.doc$" . doc-mode))
 
-(require 'php-mode)
+;; (require 'php-mode)
 (autoload 'css-mode "css-mode")
 
 (add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
@@ -115,8 +115,11 @@
 ;; AUC TeX
 
 ;(add-to-list 'load-path "c:/program files/emacs/site-lisp/auctex/")
-(add-to-list 'Info-default-directory-list "c:/program files/emacs/site-lisp/auctex/doc/")
+;;(add-to-list 'Info-default-directory-list "c:/program files/emacs/site-lisp/auctex/doc/")
 ;;(load "tex-site") 
+(load "auctex.el" nil t t)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
 
 ;; -----------------------------------------------------------------
 ;; Reftex activation (Reftex is included with Emacs 21.1)
@@ -151,7 +154,7 @@
 
 ;;(set-face-background 'default  "white")
 
-;;(set-face-font 'default "-*-bitstream vera sans mono-medium-r-*-*-*-100-*-*-*-*-iso8859-1")
+;; (set-face-font 'default "-*-bitstream vera sans mono-medium-r-*-*-*-100-*-*-*-*-iso10646-1")
 ;;(set-face-font 'gui-element "-*-tahoma-medium-r-*-*-*-90-*-*-*-*-iso8859-1")
 ;;(set-face-font 'widget "-*-tahoma-medium-r-*-*-*-90-*-*-*-*-iso8859-1")
 
