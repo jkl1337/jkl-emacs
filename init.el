@@ -11,18 +11,12 @@
   ;; If there is more than one, they won't work right.
  `(default ((t ,jkl/default-font-spec))))
 
-(defun jkl/add-path (path)
-  (setenv "PATH" (concat (getenv "PATH") 
-                         (if (string= system-type "windows-nt") ";" ":")
-                         (replace-regexp-in-string "/" "\\\\" path)))
-  (setq exec-path (nconc exec-path (list path)))
-  )
 
 ;; additional tool paths for windows
 (if (string= system-type "windows-nt")
     (progn
       (setq jkl/site-lisp-path "c:/prp/emacs-23.2/site-lisp/")
-      (mapc 'jkl/add-path '("C:/prp/Python27"
+      (mapc 'jkl/add-exec-paths '("C:/prp/Python27"
                            "C:/MingW/msys/1.0/bin"
                            "C:/prp/Mercurial"
                            "C:/prp/Aspell/bin"))
@@ -119,67 +113,17 @@
 
 (global-set-key (kbd "C-M-r") 'org-capture)
 
-
 ;; ORG-MODE enable yas/flyspell
 (add-hook 'org-mode-hook
           (lambda ()
             (flyspell-mode 1)
             (auto-fill-mode 1)))
 
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+(jkl/set-saved-vars
  '(org-agenda-files (quote ("c:/prp/project/simple.org")))
  '(org-fast-tag-selection-single-key t)
  '(org-treat-S-cursor-todo-selection-as-state-change t)
  '(org-todo-keywords (quote ((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w@/!)" "APPT(a)" "MAYBE(m!)" "|" "DONE(d!/!) CANCELLED(c@/!) DEFFERED(f@/!)")))))
-
-(defun jkl/clock-in-to-next (kw)
-  "Switch task from TODO to NEXT when clocking in, skipping capture tasks
-and tasks with subtasks"
-  (if (and (string-equal kw "TODO")
-           (not (and (boundp 'org-capture-mode) org-capture-mode)))
-      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-            (has-subtask nil))
-        (save-excursion
-          (forward-line 1)
-          (while (and (not has-subtask)
-                      (< (point) subtree-end)
-                      (re-search-forward "^\*+ " subtree-end t))
-            (when (member (org-get-todo-state) org-not-done-keywords)
-              (setq has-subtask t))))
-        (when (not has-subtask)
-          "NEXT"))))
-
-(defvar gjg/capture-phone-record nil
-  "Either BBDB record vector, or person's name as a string, or nil")
-
-(defun gjg/bbdb-company ()
-  "Return company of saved bbdb record, or empty string - for use in Capture templates"
-  (if (and gjg/capture-phone-record (vectorp gjg/capture-phone-record))
-      (or (bbdb-record-company gjg/capture-phone-record) "")
-    "COMPANY"))
-
-(defun gjg/bbdb-name ()
-  "Return full name of saved bbdb record, or empty string - for use in Capture templates"
-  (if (and gjg/capture-phone-record (vectorp gjg/capture-phone-record))
-      (concat "[[bbdb:"
-              (bbdb-record-name gjg/capture-phone-record) "]["
-              (bbdb-record-name gjg/capture-phone-record) "]]")
-    "NAME"))
-
-(defun jkl/phone-call ()
-  (interactive)
-  (let* ((myname (completing-read "Who is calling? " (bbdb-hashtable) 'bbdb-completion-predicate 'confirm))
-         (my-bbdb-name (if (> (length myname) 0) myname nil)))
-    (setq gjg/capture-phone-record
-          (if my-bbdb-name
-              (first (or (bbdb-search (bbdb-records) my-bbdb-name nil nil)
-                         (bbdb-search (bbdb-records) nil my-bbdb-name nil)))
-            myname)))
-  (gjg/bbdb-name))
 
 (setq org-capture-templates '(("t" "todo" entry (file org-default-notes-file) "* TODO %?\n%U\n%a" :clock-in t :clock-resume t)
                               ("n" "note" entry (file org-default-notes-file) "* %? :NOTE:\n%U\n%a\n:CLOCK:\n:END:" :clock-in t :clock-resume t)
