@@ -42,13 +42,13 @@
 (jkl/load-path-add-immediate-subdirs jkl/pkg-path)
 (add-to-list 'load-path jkl/pkg-path)
 
+;; BBDB
+(require 'bbdb)
+
 ;; ORG-MODE
-(mapc (lambda (dir)
-	(let ((dir (concat jkl/pkg-path dir)))
-	  (when (file-accessible-directory-p dir)
-	    (add-to-list 'load-path dir))))
-      '("org-mode/lisp" "org-mode/contrib/lisp"))
+(jkl/try-add-pkg "org-mode/lisp" "org-mode/contrib/lisp")
 (require 'org-install nil)
+
 (jkl/setv default-major-mode 'org-mode)
 (jkl/add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 

@@ -22,6 +22,23 @@
       (setq exec-path (nconc exec-path (list path))))
     (setq paths (cdr paths))))
 
+(defun jkl/try-add-load-path (&rest paths)
+  "Try to add a directory to the head of the load-path using
+add-to-list if it is accessible. A list of the directories that exist
+is returned (whether added or not), with nil returned for each
+directory that does not exist."
+  (mapcar (lambda (dir)
+	    (when (file-accessible-directory-p dir)
+	      (add-to-list 'load-path dir)
+	      dir))
+	  paths))
+
+(defun jkl/try-add-pkg (&rest pkg-dirs)
+  (apply #'jkl/try-add-load-path
+	 (mapcar (lambda (dir)
+		   (concat jkl/pkg-path dir))
+		 pkg-dirs)))
+
 (defun jkl/setv (&rest args)
   "Set symbols similar to \\[set] but with multiple assignments and notify customize."
   (let ((val))
