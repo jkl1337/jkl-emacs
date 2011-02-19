@@ -3,6 +3,6 @@
 		    "C:/prp/Mercurial"
 		    "C:/prp/Aspell/bin")
 
-(require 'yasnippet)
-(yas/initialize)
-(yas/load-directory (concat jkl/pkg-path "yasnippet-0.6.1c/snippets"))
+(setq jkl/pkg-path "C:/prp/emacs-pkg"))
+
+(defconst jkl/harris-sc system-name)

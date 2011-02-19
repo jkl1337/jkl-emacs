@@ -1,4 +1,17 @@
 
+(defun jkl/load-path-add-immediate-subdirs (top-dir)
+  (let* ((contents (directory-files top-dir))
+	 (default-directory top-dir))
+    (dolist (ent contents)
+      (unless (member ent '("." ".." "RCS" "CVS" "rcs" "cvs"))
+	(when (and (string-match "\\`[[:alnum:]]" ent)
+		   (not (string-match "\\.elc?\\'" ent))
+		   (file-accessible-directory-p ent))
+	  (let ((expanded (expand-file-name ent)))
+	    (unless (file-exists-p (expand-file-name ".nosearch"
+						     expanded))
+	      (add-to-list 'load-path expanded))))))))
+		   
 (defun jkl/add-exec-paths (&rest paths)
   "Append string arguments to PATH environment and emacs @exec-path."
   (while paths
@@ -33,9 +46,9 @@
       )
     (setq args (cdr args))))
 
-(defun jkl/add-elt (list-var elt)
-  ;; FIXME: need to use add-to-list and check identity and then update var.
-  (jkl/setv list-var (cons elt (symbol-value sym))))
+(defun jkl/add-to-list (list-var elt &optional append compare-fn)
+  (add-to-list list-var elt append compare-fn)
+  (put list-var 'customized-value (list (custom-quote (eval list-var)))))
 
 (defun jkl/set-face (&rest args)
   (while args
