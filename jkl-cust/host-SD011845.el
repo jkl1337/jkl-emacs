@@ -3,6 +3,6 @@
 		    "C:/prp/Mercurial"
 		    "C:/prp/Aspell/bin")
 
-(setq jkl/pkg-path "C:/prp/emacs-pkg"))
+(setq jkl/pkg-path "C:/prp/emacs-pkg/"))
 
 (defconst jkl/harris-sc system-name)
