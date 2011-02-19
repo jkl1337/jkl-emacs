@@ -142,6 +142,14 @@
 	  'auto-save-timeout 300
 	  'make-backup-files nil)
 
+;; ELISP customization
+(add-hook 'emacs-lisp-mode-hook
+	  '(lambda ()
+	     (interactive)
+	     (turn-on-eldoc-mode)
+	     (define-key emacs-lisp-mode-map [f5] 'eval-region)
+	     (define-key emacs-lisp-mode-map (kbd "C-c <f5>") 'eval-buffer)))
+
 (unless jkl/mswinp
   (add-hook 'find-file-hooks 'jkl/remove-or-convert-trailing-ctl-M))
 
