@@ -356,7 +356,7 @@ to `lua-mode-map', otherwise they are prefixed with `lua-prefix-key'."
 (defun lua-electric-match (arg)
   "Insert character and adjust indentation."
   (interactive "P")
-  (insert-char last-command-char (prefix-numeric-value arg))
+  (insert-char last-command-event (prefix-numeric-value arg))
   (if lua-electric-flag
       (lua-indent-line))
   (blink-matching-open))
@@ -702,12 +702,12 @@ shift, or the absolute column to indent to."
   (let ((info-list (reverse info))
         (type 'relative)
         (accu 0))
-    (mapcar (lambda (x)
-              (setq accu (if (eq 'absolute (car x))
-                             (progn (setq type 'absolute)
-                                    (cdr x))
-                           (+ accu (cdr x)))))
-            info-list)
+    (mapc (lambda (x)
+	    (setq accu (if (eq 'absolute (car x))
+			   (progn (setq type 'absolute)
+				  (cdr x))
+			 (+ accu (cdr x)))))
+	  info-list)
     (cons type accu)))
 
 (defun lua-calculate-indentation-block-modifier (&optional parse-start
@@ -1001,7 +1001,7 @@ t, otherwise return nil.  BUF must exist."
       (if (not (eq major-mode 'lua-mode))
           (lua-mode))
       ;; FIXME: fix offset when executing region
-      (goto-line line)
+      (goto-char (point-min)) (forward-line (1- line))
       (message "Jumping to error in file %s on line %d" file line))))
 
 (defun lua-prompt-line ()
