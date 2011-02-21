@@ -10,6 +10,9 @@
 (defvar jkl/pkg-path (concat user-emacs-directory "pkg/")
   "The install directory for user-local 3rd-party packages")
 
+(defvar jkl/info-path (concat user-emacs-directory "info/")
+  "Additional info directory path")
+
 (defvar jkl/my-dir
   (file-name-directory (file-truename load-file-name)))
 
@@ -49,7 +52,7 @@
 ;; Consider setting additional-path with default list in order to
 ;; have custom docs separated (put them in INFOPATH)
 (add-to-list 'Info-default-directory-list 
-	     (expand-file-name (concat user-emacs-directory "info")))
+	     (expand-file-name jkl/info-path))
 
 ;; BBDB
 (require 'bbdb)
