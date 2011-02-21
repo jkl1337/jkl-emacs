@@ -1,6 +1,17 @@
 
+(add-hook 'hs-minor-mode-hook
+ 	  '(lambda  ()
+ 	     (define-key hs-minor-mode-map (kbd "C-+") 'hs-toggle-hiding)))
 
-;; PROGRAMMING
+;; LUA Mode settings
+;; lua-mode install is in top-level
+(add-hook 'lua-mode-hook
+	  (lambda ()
+	    (interactive)
+	    (hs-minor-mode)
+	    (lua-block-mode t)))
+
+
 ;; C styles
 (defconst harris-c-style
   '((c-tab-always-indent	. t)
@@ -55,8 +66,6 @@
 	indent-tabs-mode nil)
   (c-toggle-auto-newline 1))
 
-;;(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
 (defun linux-c-mode ()
   "C mode with adjusted defaults for use with the Linux kernel."
   (interactive)
@@ -73,3 +82,8 @@
   (setq c-basic-offset 4)
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
+
+(add-hook 'c-mode-common-hook
+	  '(lambda ()
+	     (interactive)
+	     (hs-minor-mode)))

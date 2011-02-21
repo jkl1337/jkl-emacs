@@ -32,6 +32,9 @@
 (defun jkl/script-dir ()
   (concat jkl/my-dir "jkl-cust/"))
 
+;; Misc GIT controlled 3rd party scripts
+(add-to-list 'load-path (concat jkl/my-dir "contrib"))
+
 (add-to-list 'load-path (concat jkl/my-dir "jkl-lib"))
 (require 'jkl-util)
 
@@ -42,11 +45,22 @@
 (jkl/load-path-add-immediate-subdirs jkl/pkg-path)
 (add-to-list 'load-path jkl/pkg-path)
 
+;; Request to merge custom info.
+;; Consider setting additional-path with default list in order to
+;; have custom docs separated (put them in INFOPATH)
+(add-to-list 'Info-default-directory-list 
+	     (expand-file-name (concat user-emacs-directory "info")))
+
 ;; BBDB
 (require 'bbdb)
 
 ;; ORG-MODE
-(jkl/try-add-pkg "org-mode/lisp" "org-mode/contrib/lisp")
+(when (car (jkl/try-add-pkg "org-mode/lisp" "org-mode/contrib/lisp"))
+  (let ((org-info-dir (concat jkl/pkg-path "org-mode/doc")))
+    (when (file-readable-p (concat org-info-dir "/dir"))
+      (add-to-list 'Info-default-directory-list
+	    (expand-file-name org-info-dir)))))
+
 (require 'org-install nil)
 
 (jkl/setv default-major-mode 'org-mode)
@@ -116,15 +130,15 @@
 
 ;; CUSTOM MAJOR MODES
 ;; MAJOR MODES - add'l major mode setup
+(autoload 'lua-block-mode "lua-block" "Lua highlight matching block")
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (jkl/add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
 ;; BEGIN CUSTOMIZATION
-(jkl/setv 'auto-mode-alist
-	  (nconc '(("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode)
-		   ("\\.lua$" . lua-mode)
-		   ("\\.gp$" . gnuplot-mode)
-		   ) auto-mode-alist))
+(jkl/add-to-list 'auto-mode-alist
+		 '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode))
+(jkl/add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(jkl/add-to-list 'auto-mode-alist '("\\.gp$" . gnuplot-mode))
 
 (global-set-key (kbd "M-w") 'copy-region-as-kill)
 

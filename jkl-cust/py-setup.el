@@ -7,3 +7,10 @@
 (pymacs-load "ropemacs" "rope-")
 (jkl/setv 'ropemacs-enable-autoimport t)
 
+;; Fix for new style Sphinx generated python info pages
+(require 'info-look)
+(info-lookup-add-help
+ :mode 'python-mode
+ :regexp "[[:alnum:]_]+"
+ :doc-spec
+ '(("(python)Index" nil "")))

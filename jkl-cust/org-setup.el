@@ -13,7 +13,7 @@
 
 (jkl/setv
  'org-fast-tag-selection-single-key t
- 'org-treat-S-cursor-todo-selection-as-state-change t
+ 'org-treat-S-cursor-todo-selection-as-state-change nil
  'org-todo-keywords '((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w@/!)" "APPT(a)" "MAYBE(m!)" "|" "DONE(d!/!) CANCELLED(c@/!) DEFFERED(f@/!)")))
 
 (setq org-capture-templates '(("t" "todo" entry (file org-default-notes-file) "* TODO %?\n%U\n%a" :clock-in t :clock-resume t)
