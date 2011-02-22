@@ -147,27 +147,32 @@ try disabling Alt-Tab switching and see how that works")
 
 ;; END APPEARANCE / BASIC FACES
 
-;; YASNIPPET
+;;;; YASNIPPET
 (require 'yasnippet)
 (yas/initialize)
 (let ((snippet-dir (concat jkl/pkg-path "yasnippet-0.6.1c/snippets")))
   (when (file-accessible-directory-p snippet-dir)
     (yas/load-directory snippet-dir)))
 
-;; NXHTML
+;;;; NXHTML
 (when (load (concat jkl/pkg-path "nxhtml/" "autostart.el") t t t)
   (tabkey2-mode t))
 
-;; ECB - Code Browser
+;;;; CEDET and ECB
+;;; my site CEDET
+(load (concat jkl/pkg-path "cedet-1.0/common/cedet") nil)
+(global-ede-mode 1)
+
+;;; ECB - Code Browser
 (require 'ecb-autoloads nil t)
 
-;; CUSTOM MAJOR MODES
-;; MAJOR MODES - add'l major mode setup
+;;;; CUSTOM MAJOR MODES
+;;; MAJOR MODES - add'l major mode setup
 (autoload 'lua-block-mode "lua-block" "Lua highlight matching block")
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (jkl/add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
-;; BEGIN CUSTOMIZATION
+;;;; BEGIN CUSTOMIZATION
 (jkl/add-to-list 'auto-mode-alist
 		 '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode))
 (jkl/add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
