@@ -54,6 +54,36 @@
 (add-to-list 'Info-default-directory-list 
 	     (expand-file-name jkl/info-path))
 
+;;;; Command/environment customizations
+; Windows msys shell
+(when jkl/mswinp
+  (let ((msys-bash-exe (locate-file "bash.exe" exec-path)))
+    (when (string-match-p "/MSYS/" (upcase msys-bash-exe))
+      (jkl/setv 'explicit-shell-file-name (file-name-sans-extension msys-bash-exe))
+      (jkl/setv 'explicit-bash-args '("--login" "--noediting" "-i"))
+      (jkl/setv 'shell-mode-hook '(lambda ()
+				    (tabkey2-mode nil)
+				    (ansi-color-for-comint-mode-on)
+				    (setq comint-scroll-show-maximum-output 'this)
+				    (make-variable-buffer-local 'comint-completion-addsuffix)
+				    (setq comint-completion-addsuffix t)
+				    (setq w32-quote-process-args ?\"))))))
+
+; For non-Windows at least make sure we have ANSI escapes working
+(unless jkl/mswinp
+  (jkl/setv 'shell-mode-hook 'ansi-color-for-comint-mode-on))
+
+; Going to try out Ctrl-Tab for a bit as a replacement for M-tab
+
+(defvar jkl/mswin-C-tab-or-disable-alt-win t
+  "If true, use C-tab as a replacement for M-tab, otherwise, let's
+try disabling Alt-Tab switching and see how that works")
+
+(when jkl/mswinp
+  (if jkl/mswin-C-tab-or-disable-alt-win
+      (define-key function-key-map [(control tab)] [?\M-\t])
+    (w32-register-hot-key [M-tab])))
+
 ;; BBDB
 (require 'bbdb)
 
@@ -166,6 +196,12 @@
 	     (turn-on-eldoc-mode)
 	     (define-key emacs-lisp-mode-map [f5] 'eval-region)
 	     (define-key emacs-lisp-mode-map (kbd "C-c <f5>") 'eval-buffer)))
+
+;; git support / non-Windows only for now
+(unless jkl/mswinp
+  (require'git)
+  (autoload 'git-blame-mode "git-blame"
+    "Minor mode for incremental blame for Git." t))
 
 (unless jkl/mswinp
   (add-hook 'find-file-hooks 'jkl/remove-or-convert-trailing-ctl-M))
