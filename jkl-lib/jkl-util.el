@@ -16,8 +16,8 @@
   "Append string arguments to PATH environment and emacs @exec-path."
   (while paths
     (let ((path (car paths)))
-      (setenv "PATH" (concat (getenv "PATH") 
-			     (if (eq system-type 'windows-nt) ";" ":")
+      (setenv "PATH" (concat (getenv "PATH")
+			     path-separator
 			     (convert-standard-filename path)))
       (setq exec-path (nconc exec-path (list path))))
     (setq paths (cdr paths))))
