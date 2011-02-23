@@ -164,6 +164,8 @@ try disabling Alt-Tab switching and see how that works")
 (global-ede-mode 1)
 
 ;;; ECB - Code Browser
+(add-hook 'ecb-before-activate-hook
+	  (lambda () (semantic-load-enable-code-helpers)))
 (require 'ecb-autoloads nil t)
 
 ;;;; CUSTOM MAJOR MODES
