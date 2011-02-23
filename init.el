@@ -64,7 +64,7 @@
       (jkl/setv 'shell-mode-hook '(lambda ()
 				    (tabkey2-mode nil)
 				    (ansi-color-for-comint-mode-on)
-				    (setq comint-scroll-show-maximum-output 'this)
+				    ;(setq comint-scroll-show-maximum-output 'this)
 				    (make-variable-buffer-local 'comint-completion-addsuffix)
 				    (setq comint-completion-addsuffix t)
 				    (setq w32-quote-process-args ?\"))))))
