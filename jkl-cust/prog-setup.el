@@ -17,6 +17,7 @@
 	    (list* '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
 		   '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
 		   '("file:.*/usr/share/devhelp/books" . w3m-browse-url)
+		   '("file:.*/usr/share/doc" . w3m-browse-url)
 		   (if (listp browse-url-browser-function)
 		       browse-url-browser-function
 		     `(("." . ,browse-url-browser-function))))))
