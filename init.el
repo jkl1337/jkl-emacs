@@ -35,11 +35,13 @@
 (defun jkl/script-dir ()
   (concat jkl/my-dir "jkl-cust/"))
 
-;; Misc GIT controlled 3rd party scripts
-(add-to-list 'load-path (concat jkl/my-dir "contrib"))
-
 (add-to-list 'load-path (concat jkl/my-dir "jkl-lib"))
 (require 'jkl-util)
+
+;; Misc GIT controlled 3rd party scripts
+(let ((contrib-dir (concat jkl/my-dir "contrib/")))
+  (jkl/load-path-add-immediate-subdirs contrib-dir)
+  (add-to-list 'load-path contrib-dir))
 
 ;; load host specific early-init
 (jkl/load-script (concat "host-" system-name ".el") t)
@@ -138,7 +140,7 @@ try disabling Alt-Tab switching and see how that works")
 (when jkl/mswinp
   (jkl/set-face 'default '((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
 			       :overline nil :underline nil :background "black" :foreground "green" 
-			       :slant normal :weight normal :height 98 :width normal
+			       :slant normal :weight normal :height 90 :width normal
 			       :foundry "*" :family "Lucida Sans Typewriter")))))
 
 (unless jkl/mswinp
