@@ -9,9 +9,14 @@
 
 ;;;; Documentation
 ;;; PyLookup
+; FIXME: I don't know a better way to do this, but I think there is
 (setq pylookup-dir (file-name-as-directory (concat jkl/pkg-path "pylookup")))
 (setq pylookup-db-file (concat pylookup-dir "pylookup.db"))
-(setq pylookup-program (concat pylookup-dir "pylookup.py"))
+
+(setq pylookup-program (concat pylookup-dir 
+			       (if jkl/mswinp "pylookup.exe"
+				 "pylookup.py")))
+
 (autoload 'pylookup-lookup "pylookup"
   "Lookup SEARCH-TERM in the Python HTML indexes." t)
 (autoload 'pylookup-update "pylookup"
