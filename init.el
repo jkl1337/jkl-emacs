@@ -44,6 +44,12 @@
 ;; load host specific early-init
 (jkl/load-script (concat "host-" system-name ".el") t)
 
+;;;; ELPA
+;; (when
+;;     (load
+;;      (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;      (package-initialize))
+
 ;; configure standard 3rd party install load path
 (jkl/load-path-add-immediate-subdirs jkl/pkg-path)
 (add-to-list 'load-path jkl/pkg-path)
@@ -84,6 +90,19 @@ try disabling Alt-Tab switching and see how that works")
       (define-key function-key-map [(control tab)] [?\M-\t])
     (w32-register-hot-key [M-tab])))
 
+;;;; w3m
+(require 'w3m-load nil t)
+(when (and (not jkl/mswinp) (featurep 'w3m-load))
+  (jkl/setv 'browse-url-browser-function
+	    (nconc (list 
+		    '("http://.*docs.python.org/". w3m-browse-url)
+		    '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
+		    '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
+		    '("file:.*/usr/share/devhelp/books" . w3m-browse-url))
+		   (if (listp browse-url-browser-function)
+		       browse-url-browser-function
+		     `(("." . ,browse-url-browser-function))))))
+
 ;; BBDB
 (require 'bbdb)
 
@@ -123,10 +142,13 @@ try disabling Alt-Tab switching and see how that works")
 			       :foundry "*" :family "Lucida Sans Typewriter")))))
 
 (unless jkl/mswinp
-  (jkl/set-face 'default '((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
-			       :overline nil :underline nil :background "black" :foreground "green" 
-			       :slant normal :weight normal :height 98 :width normal
-			       :foundry "*" :family "Lucida Sans Typewriter")))))
+  (let ((font-param))
+    ;(setq font-param '("ProggyCleanTT" . 120))
+    (setq font-param '("Lucida Sans Typewriter" . 90))
+    (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
+				 :overline nil :underline nil :background "black" :foreground "green" 
+				 :slant normal :weight normal :height ,(cdr font-param) :width normal
+				 :foundry "*" :family ,(car font-param)))))))
 
 (jkl/setv 'default-frame-alist
 	  '((width . 140)
@@ -161,11 +183,8 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; CEDET and ECB
 ;;; my site CEDET
 (load (concat jkl/pkg-path "cedet-1.0/common/cedet") nil)
-(global-ede-mode 1)
 
 ;;; ECB - Code Browser
-(add-hook 'ecb-before-activate-hook
-	  (lambda () (semantic-load-enable-code-helpers)))
 (require 'ecb-autoloads nil t)
 
 ;;;; CUSTOM MAJOR MODES
@@ -215,6 +234,7 @@ try disabling Alt-Tab switching and see how that works")
 
 (jkl/load-scripts 
  "org-setup.el"
+ ;"cedet-setup.el"
  "doc-setup.el"
  "py-setup.el"
  "prog-setup.el"
