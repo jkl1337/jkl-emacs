@@ -7,6 +7,10 @@
 (pymacs-load "ropemacs" "rope-")
 (jkl/setv 'ropemacs-enable-autoimport t)
 
+;; ipython
+(require 'ipython)
+(jkl/setv 'py-python-command-args '("-colors" "Linux"))
+
 ;;;; Documentation
 ;;; PyLookup
 ; FIXME: I don't know a better way to do this, but I think there is
