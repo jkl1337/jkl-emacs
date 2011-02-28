@@ -13,7 +13,7 @@
 
 ;;;; Documentation
 ;;; PyLookup
-; FIXME: I don't know a better way to do this, but I think there is
+;; FIXME: I don't know a better way to do this, but I think there is
 (setq pylookup-dir (file-name-as-directory (concat jkl/pkg-path "pylookup")))
 (setq pylookup-db-file (concat pylookup-dir "pylookup.db"))
 

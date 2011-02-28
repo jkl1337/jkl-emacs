@@ -71,7 +71,7 @@ directory that does not exist."
   (while args
     (let ((face (car args))
 	  (spec (cadr args)))
-      ;(put face 'customized-face spec)
+      ;;(put face 'customized-face spec)
       (face-spec-set face spec))
     (setq args (cddr args))))
 

@@ -29,8 +29,8 @@
       (when (listp file)
 	(setq noerror (cadr file))
 	(setq file (car file)))
-      (load (concat jkl/my-dir "jkl-cust/" file) noerror nil t)
-    (setq files (cdr files)))))
+      (load (concat jkl/my-dir "jkl-cust/" file) noerror nil t))
+    (setq files (cdr files))))
 
 (defun jkl/script-dir ()
   (concat jkl/my-dir "jkl-cust/"))
@@ -63,7 +63,7 @@
 	     (expand-file-name jkl/info-path))
 
 ;;;; Command/environment customizations
-; Windows msys shell
+;; Windows msys shell
 (when jkl/mswinp
   (let ((msys-bash-exe (locate-file "bash.exe" exec-path)))
     (when (string-match-p "/MSYS/" (upcase msys-bash-exe))
@@ -73,7 +73,7 @@
       (jkl/setv 'shell-mode-hook '(lambda ()
 				    (tabkey2-mode nil)
 				    (ansi-color-for-comint-mode-on)
-				    ;(setq comint-scroll-show-maximum-output 'this)
+				    ;;(setq comint-scroll-show-maximum-output 'this)
 				    (make-variable-buffer-local 'comint-completion-addsuffix)
 				    (setq comint-completion-addsuffix t)
 				    (setq w32-quote-process-args ?\"))))))
@@ -106,10 +106,10 @@ try disabling Alt-Tab switching and see how that works")
 		       browse-url-browser-function
 		     `(("." . ,browse-url-browser-function))))))
 
-;; BBDB
+;;;; BBDB
 (require 'bbdb)
 
-;; ORG-MODE
+;;;; ORG-MODE
 (when (car (jkl/try-add-pkg "org-mode/lisp" "org-mode/contrib/lisp"))
   (let ((org-info-dir (concat jkl/pkg-path "org-mode/doc")))
     (when (file-readable-p (concat org-info-dir "/dir"))
@@ -146,7 +146,7 @@ try disabling Alt-Tab switching and see how that works")
 
 (unless jkl/mswinp
   (let ((font-param))
-    ;(setq font-param '("ProggyCleanTT" . 120))
+    ;;(setq font-param '("ProggyCleanTT" . 120))
     (setq font-param '("Lucida Sans Typewriter" . 90))
     (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
 				 :overline nil :underline nil :background "black" :foreground "green" 
@@ -170,7 +170,7 @@ try disabling Alt-Tab switching and see how that works")
    (font-lock-keyword-face "LightSkyBlue")
    (font-lock-comment-face "Chocolate1")))
 
-;; END APPEARANCE / BASIC FACES
+;; END appearance / basic faces
 
 ;;;; YASNIPPET
 (require 'yasnippet)
@@ -237,7 +237,7 @@ try disabling Alt-Tab switching and see how that works")
 
 (jkl/load-scripts 
  "org-setup.el"
- ;"cedet-setup.el"
+ ;;"cedet-setup.el"
  "doc-setup.el"
  "py-setup.el"
  "prog-setup.el"

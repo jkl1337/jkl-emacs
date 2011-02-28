@@ -26,10 +26,10 @@
 
 
 (org-clock-persistence-insinuate)
-;(setq org-drawers '("PROPERTIES" "LOGBOOK" "CLOCK"))
-;(setq org-clock-into-drawer "CLOCK")
-;(setq org-clock-out-remove-zero-time-clocks t)
-;(setq org-clock-out-when-done t)
+;; (setq org-drawers '("PROPERTIES" "LOGBOOK" "CLOCK"))
+;; (setq org-clock-into-drawer "CLOCK")
+;; (setq org-clock-out-remove-zero-time-clocks t)
+;; (setq org-clock-out-when-done t)
  
 (defun gtd ()
    (interactive)

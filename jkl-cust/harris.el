@@ -15,7 +15,7 @@
 (defun setup-radio-env ()
   (interactive))
 
-; This just serves as notes basically, need to clean this up.
+;; This just serves as notes basically, need to clean this up.
 (defun hft/do-black ()
   (interactive)
   (copy-face 'default 'hft-black-face)

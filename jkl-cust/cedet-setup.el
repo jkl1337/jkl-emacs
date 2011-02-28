@@ -1,7 +1,7 @@
 (global-ede-mode nil)
 (semantic-load-enable-excessive-code-helpers)
 (require 'semantic-ia)
-;(require 'semantic-gcc)
+;;(require 'semantic-gcc)
 
 (require 'semanticdb)
 (global-semanticdb-minor-mode 1)
