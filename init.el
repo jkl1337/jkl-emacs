@@ -67,7 +67,8 @@
 (when jkl/mswinp
   (let ((msys-bash-exe (locate-file "bash.exe" exec-path)))
     (when (string-match-p "/MSYS/" (upcase msys-bash-exe))
-      (jkl/setv 'explicit-shell-file-name (file-name-sans-extension msys-bash-exe))
+      (jkl/setv 'shell-file-name (file-name-sans-extension msys-bash-exe))
+      (jkl/setv 'explicit-shell-file-name shell-file-name)
       (jkl/setv 'explicit-bash-args '("--login" "--noediting" "-i"))
       (jkl/setv 'shell-mode-hook '(lambda ()
 				    (tabkey2-mode nil)
@@ -232,7 +233,7 @@ try disabling Alt-Tab switching and see how that works")
     "Minor mode for incremental blame for Git." t))
 
 (unless jkl/mswinp
-  (add-hook 'find-file-hooks 'jkl/remove-or-convert-trailing-ctl-M))
+  (add-hook 'find-file-hook 'jkl/remove-or-convert-trailing-ctl-M))
 
 (jkl/load-scripts 
  "org-setup.el"
