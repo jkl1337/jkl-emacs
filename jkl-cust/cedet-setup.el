@@ -1,4 +1,4 @@
-(global-ede-mode nil)
+(global-ede-mode t)
 (semantic-load-enable-excessive-code-helpers)
 (require 'semantic-ia)
 ;;(require 'semantic-gcc)
