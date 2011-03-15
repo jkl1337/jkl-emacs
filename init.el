@@ -232,8 +232,8 @@ try disabling Alt-Tab switching and see how that works")
   (autoload 'git-blame-mode "git-blame"
     "Minor mode for incremental blame for Git." t))
 
-(unless jkl/mswinp
-  (add-hook 'find-file-hook 'jkl/remove-or-convert-trailing-ctl-M))
+;; (unless jkl/mswinp
+;;   (add-hook 'find-file-hook 'jkl/remove-or-convert-trailing-ctl-M))
 
 (jkl/load-scripts 
  "org-setup.el"
