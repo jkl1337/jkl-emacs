@@ -172,6 +172,9 @@ try disabling Alt-Tab switching and see how that works")
 
 ;; END appearance / basic faces
 
+;;;; GLOBAL settings
+(jkl/setv 'fill-column 72)
+
 ;;;; YASNIPPET
 (require 'yasnippet)
 (yas/initialize)
