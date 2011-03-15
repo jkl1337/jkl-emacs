@@ -14,7 +14,9 @@
 (jkl/setv
  'org-fast-tag-selection-single-key t
  'org-treat-S-cursor-todo-selection-as-state-change nil
- 'org-todo-keywords '((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w@/!)" "APPT(a)" "MAYBE(m!)" "|" "DONE(d!/!) CANCELLED(c@/!) DEFFERED(f@/!)")))
+ 'org-todo-keywords '((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w@/!)" "APPT(a)" "MAYBE(m!)" "|" "DONE(d!/!)" "CANCELLED(c@/!)" "DEFFERED(f@/!)"))
+ 'org-log-done 'time
+ 'org-log-into-drawer t)
 
 (setq org-capture-templates '(("t" "todo" entry (file org-default-notes-file) "* TODO %?\n%U\n%a" :clock-in t :clock-resume t)
 			      ("n" "note" entry (file org-default-notes-file) "* %? :NOTE:\n%U\n%a\n:CLOCK:\n:END:" :clock-in t :clock-resume t)
