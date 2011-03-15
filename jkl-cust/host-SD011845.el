@@ -7,6 +7,8 @@
 		    "C:/cygwin/opt/w3m/bin")
 
 (setq find-program "/bin/find")
+;;(setq find-ls-option '("-ls" . "-ilsd"))
+;;(setq find-ls-option '("-exec ls -ld {} \\;" . "-ld"))
 
 (jkl/setv 'w3m-command "C:/cygwin/opt/w3m/bin/w3m")
 

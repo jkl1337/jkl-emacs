@@ -1,4 +1,17 @@
 
+(defun jkl/find-heading ()
+  "Move to RX/TX in Fill-Eng for fontlock
+To be added to `font-lock-extend-region-functions'"
+  (goto-char (+ font-lock-beg 4))
+  (not (eq font-lock-beg
+	   (setq font-lock-beg (re-search-backward "[RT]X: ")))))
+
+;; (with-current-buffer "mode2-works.txt"
+;;   (font-lock-add-keywords
+;;    nil
+;;    '(("TX:.*\n.*$" . 'proto-tx-h))))
+
+
 (defvar hft/red-port
   (if (eq system-type 'windows-nt)
       "\\\\.\\COM2"
@@ -25,7 +38,7 @@
   (serial-term hft/black-port 115200)
 
   (with-current-buffer hft/black-port
-    (buffer-face-set 'hft-red-face)
+    (buffer-face-set 'hft-black-face)
     (set (make-local-variable 'emulation-mode-map-alists) nil)
     (set (make-local-variable 'term-default-bg-color) "#000000")
     (set (make-local-variable 'term-default-fg-color) "#fffff0")
