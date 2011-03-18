@@ -39,11 +39,36 @@ contain header (.h) files"
 	 	top-dir)
 	nil (current-buffer))))))
 
+(setq jkl/harris-addl-includes '("/Waveform/p25/src/lib/etherstack"))
+(setq jkl/harris-sys-includes '("/opt/qnx640/target/qnx6/usr/include"
+				"/opt/qnx640/target/qnx6/usr/include/c++/4.2.4"))
+
 (ede-cpp-root-project
  "nbhh_7_0_9"
  :file "/home/jluebs/f3b/nbhh.r7.0.9/falcon3/Makefile"
- :include-path (get-include-dirs "/home/jluebs/f3b/nbhh.r7.0.9/falcon3")
- :system-include-path '("/opt/qnx640/target/qnx6/usr/include")
+ :include-path (nconc
+		(get-include-dirs "/home/jluebs/f3b/nbhh.r7.0.9/falcon3")
+		jkl/harris-addl-includes)
+ :system-include-path jkl/harris-sys-includes
  :spp-table '( ("CONFIG_SLOT" . "default")
 	       ("CONFIG_TARGET_PLATFORM" . "hh")))
 
+(ede-cpp-root-project
+ "nbhh_7_0_8"
+ :file "/home/jluebs/f3b/nbhh.r7.0.8/falcon3/Makefile"
+ :include-path (nconc
+		(get-include-dirs "/home/jluebs/f3b/nbhh.r7.0.8/falcon3")
+		jkl/harris-addl-includes)
+ :system-include-path jkl/harris-sys-includes
+ :spp-table '( ("CONFIG_SLOT" . "default")
+	       ("CONFIG_TARGET_PLATFORM" . "hh")))
+
+(ede-cpp-root-project
+ "hh_sunrise"
+ :file "/home/jluebs/f3b/hh.sunrise/falcon3/Makefile"
+ :include-path (nconc
+		(get-include-dirs "/home/jluebs/f3b/hh.sunrise/falcon3")
+		jkl/harris-addl-includes)
+ :system-include-path  jkl/harris-sys-includes
+ :spp-table '( ("CONFIG_SLOT" . "default")
+	       ("CONFIG_TARGET_PLATFORM" . "hh")))
