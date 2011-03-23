@@ -7,6 +7,9 @@
 (pymacs-load "ropemacs" "rope-")
 (jkl/setv 'ropemacs-enable-autoimport t)
 
+;; cython
+(require 'cython-mode)
+
 ;; ipython
 (require 'ipython)
 (jkl/setv 'py-python-command-args '("-colors" "Linux"))
