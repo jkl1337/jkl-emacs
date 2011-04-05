@@ -72,6 +72,8 @@
 			(knr-argdecl-intro . -)))
 		     
     (c-echo-syntactic-information-p . t)
+    (c-hanging-semi&comma-criteria . (c-semi&comma-no-newlines-before-nonblanks
+				      c-semi&comma-inside-parenlist))
     )
   "Harris C(++)/IDL style")
 
