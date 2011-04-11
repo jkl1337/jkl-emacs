@@ -238,6 +238,9 @@ try disabling Alt-Tab switching and see how that works")
 ;; (unless jkl/mswinp
 ;;   (add-hook 'find-file-hook 'jkl/remove-or-convert-trailing-ctl-M))
 
+;; going to go ahead and default to no tabs globally
+(jkl/setv 'indent-tabs-mode nil)
+
 (jkl/load-scripts 
  "org-setup.el"
  ;;"cedet-setup.el"
