@@ -1,9 +1,9 @@
 ;; ORG-MODE enable yas/flyspell
 (add-hook 'org-mode-hook
-	  (lambda ()
-	    (set-fill-column 78)
-	    (auto-fill-mode 1)
-	    (flyspell-mode 1)))
+          (lambda ()
+            (set-fill-column 78)
+            (auto-fill-mode 1)
+            (flyspell-mode 1)))
 
 (defun jkl/lst-org-files (dir)
   (if (file-directory-p dir)
@@ -12,7 +12,7 @@
        (apply 'append (mapcar 'jkl/lst-org-files (directory-files dir t "[^.]+"))))))
 
 (jkl/set-default 'org-agenda-files
-		 (jkl/lst-org-files (concat jkl/git-repo-dir "jkl-org")))
+                 (jkl/lst-org-files (concat jkl/git-repo-dir "jkl-org")))
 
 (jkl/set-default
  'org-fast-tag-selection-single-key t
@@ -22,12 +22,12 @@
  'org-log-into-drawer t)
 
 (setq org-capture-templates '(("t" "todo" entry (file org-default-notes-file) "* TODO %?\n%U\n%a" :clock-in t :clock-resume t)
-			      ("n" "note" entry (file org-default-notes-file) "* %? :NOTE:\n%U\n%a\n:CLOCK:\n:END:" :clock-in t :clock-resume t)
-			      ("a" "appointment" entry (file+datetree jkl/org-diary-file) "* %?
+                              ("n" "note" entry (file org-default-notes-file) "* %? :NOTE:\n%U\n%a\n:CLOCK:\n:END:" :clock-in t :clock-resume t)
+                              ("a" "appointment" entry (file+datetree jkl/org-diary-file) "* %?
 %U" :clock-in t :clock-resume t)
-			      ("p" "Phone call" entry (file org-default-notes-file) "* Phone %(jkl/phone-call) - %(gjg/bbdb-company) :PHONE:\n%U\n\n%?"
-			       :clock-in t :clock-resume t)
-			      ("w" "org-protocol" entry (file org-default-notes-file) "* TODO Review %c\n%U" :immediate-finish t :clock-in t :clock-resume t)))
+                              ("p" "Phone call" entry (file org-default-notes-file) "* Phone %(jkl/phone-call) - %(gjg/bbdb-company) :PHONE:\n%U\n\n%?"
+                               :clock-in t :clock-resume t)
+                              ("w" "org-protocol" entry (file org-default-notes-file) "* TODO Review %c\n%U" :immediate-finish t :clock-in t :clock-resume t)))
 
 
 (org-clock-persistence-insinuate)

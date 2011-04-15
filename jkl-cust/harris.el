@@ -4,7 +4,7 @@
 To be added to `font-lock-extend-region-functions'"
   (goto-char (+ font-lock-beg 4))
   (not (eq font-lock-beg
-	   (setq font-lock-beg (re-search-backward "[RT]X: ")))))
+           (setq font-lock-beg (re-search-backward "[RT]X: ")))))
 
 ;; (with-current-buffer "mode2-works.txt"
 ;;   (font-lock-add-keywords
@@ -33,8 +33,8 @@ To be added to `font-lock-extend-region-functions'"
   (interactive)
   (copy-face 'default 'hft-black-face)
   (set-face-attribute 'hft-black-face nil
-		      :background "#000000"
-		      :foreground "#fffff0")
+                      :background "#000000"
+                      :foreground "#fffff0")
   (serial-term hft/black-port 115200)
 
   (with-current-buffer hft/black-port
@@ -48,8 +48,8 @@ To be added to `font-lock-extend-region-functions'"
   (interactive)
   (copy-face 'default 'hft-red-face)
   (set-face-attribute 'hft-red-face nil
-		      :background "#640000"
-		      :foreground "#fffff0")
+                      :background "#640000"
+                      :foreground "#fffff0")
 
   (serial-term hft/red-port 115200)
 

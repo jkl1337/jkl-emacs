@@ -21,8 +21,8 @@
 (setq pylookup-db-file (concat pylookup-dir "pylookup.db"))
 
 (setq pylookup-program (concat pylookup-dir 
-			       (if jkl/mswinp "pylookup.exe"
-				 "pylookup.py")))
+                               (if jkl/mswinp "pylookup.exe"
+                                 "pylookup.py")))
 
 (autoload 'pylookup-lookup "pylookup"
   "Lookup SEARCH-TERM in the Python HTML indexes." t)

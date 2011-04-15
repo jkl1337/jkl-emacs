@@ -1,24 +1,24 @@
 
 (defun jkl/load-path-add-immediate-subdirs (top-dir)
   (let* ((contents (directory-files top-dir))
-	 (default-directory top-dir))
+         (default-directory top-dir))
     (dolist (ent contents)
       (unless (member ent '("." ".." "RCS" "CVS" "rcs" "cvs"))
-	(when (and (string-match "\\`[[:alnum:]]" ent)
-		   (not (string-match "\\.elc?\\'" ent))
-		   (file-accessible-directory-p ent))
-	  (let ((expanded (expand-file-name ent)))
-	    (unless (file-exists-p (expand-file-name ".nosearch"
-						     expanded))
-	      (add-to-list 'load-path expanded))))))))
-		   
+        (when (and (string-match "\\`[[:alnum:]]" ent)
+                   (not (string-match "\\.elc?\\'" ent))
+                   (file-accessible-directory-p ent))
+          (let ((expanded (expand-file-name ent)))
+            (unless (file-exists-p (expand-file-name ".nosearch"
+                                                     expanded))
+              (add-to-list 'load-path expanded))))))))
+                   
 (defun jkl/add-exec-paths (&rest paths)
   "Append string arguments to PATH environment and emacs @exec-path."
   (while paths
     (let ((path (car paths)))
       (setenv "PATH" (concat (getenv "PATH")
-			     path-separator
-			     (convert-standard-filename path)))
+                             path-separator
+                             (convert-standard-filename path)))
       (setq exec-path (nconc exec-path (list path))))
     (setq paths (cdr paths))))
 
@@ -28,24 +28,24 @@ add-to-list if it is accessible. A list of the directories that exist
 is returned (whether added or not), with nil returned for each
 directory that does not exist."
   (mapcar (lambda (dir)
-	    (when (file-accessible-directory-p dir)
-	      (add-to-list 'load-path dir)
-	      dir))
-	  paths))
+            (when (file-accessible-directory-p dir)
+              (add-to-list 'load-path dir)
+              dir))
+          paths))
 
 (defun jkl/try-add-pkg (&rest pkg-dirs)
   (apply #'jkl/try-add-load-path
-	 (mapcar (lambda (dir)
-		   (concat jkl/pkg-path dir))
-		 pkg-dirs)))
+         (mapcar (lambda (dir)
+                   (concat jkl/pkg-path dir))
+                 pkg-dirs)))
 
 (defun jkl/set-default-internal (setter args)
   (let ((val))
     (while args
       (let ((sym (car args)))
-	(setq val (cadr args))
-	(funcall setter sym val)
-	(put sym 'customized-value (list (custom-quote val))))
+        (setq val (cadr args))
+        (funcall setter sym val)
+        (put sym 'customized-value (list (custom-quote val))))
       (setq args (cddr args)))
     val))
 
@@ -72,11 +72,11 @@ customize, using the custom-set property of the symbol, if available."
   (while args
     (let ((entry (car args)))
       (let ((symbol (indirect-variable (nth 0 entry)))
-	    (value (nth 1 entry))
-	    set)
-	(setq set (or (get symbol 'custom-set) 'custom-set-default))
-	(funcall set symbol (eval value))
-	(put symbol 'customized-value (list value))))
+            (value (nth 1 entry))
+            set)
+        (setq set (or (get symbol 'custom-set) 'custom-set-default))
+        (funcall set symbol (eval value))
+        (put symbol 'customized-value (list value))))
     (setq args (cdr args))))
 
 (defun jkl/add-to-list (list-var elt &optional append compare-fn)
@@ -86,7 +86,7 @@ customize, using the custom-set property of the symbol, if available."
 (defun jkl/set-face (&rest args)
   (while args
     (let ((face (car args))
-	  (spec (cadr args)))
+          (spec (cadr args)))
       ;;(put face 'customized-face spec)
       (face-spec-set face spec))
     (setq args (cddr args))))
@@ -94,11 +94,11 @@ customize, using the custom-set property of the symbol, if available."
 (defun jkl/set-face-colors (fl)
   (dolist (faceelt fl)
     (let ((attr-funcs '(set-face-foreground set-face-background))
-	  (face (car faceelt)))
+          (face (car faceelt)))
       (dolist (color (cdr faceelt))
-	(funcall (car attr-funcs) face color)
-	(setq sfunc (cdr attr-funcs))	   
-	)
+        (funcall (car attr-funcs) face color)
+        (setq sfunc (cdr attr-funcs))      
+        )
       )
     ))
 
@@ -108,20 +108,20 @@ customize, using the custom-set property of the symbol, if available."
   (save-excursion
     (goto-char (point-min))
     (if (search-forward "\^M" nil t)
-	;; a ^M is found
-	(if (or (= (preceding-char) ?\^J)
-		(= (following-char) ?\^J))
-	    ;; Must find a way to display the buffer before this question
-	    (if (y-or-n-p "Remove trailing ^M ? ")
-		(progn (goto-char (point-min))
-		       (perform-replace "\^M" "" nil nil nil)
-		       (pop-mark))
-	      (message "No transformation."))
-	  (if (y-or-n-p "Convert ^M into ^J ? ")
-	      (progn (goto-char (point-min))
-		     (perform-replace "\^M" "\^J" nil nil nil)
-		     (pop-mark))
-	    (message "No transformation.")))
+        ;; a ^M is found
+        (if (or (= (preceding-char) ?\^J)
+                (= (following-char) ?\^J))
+            ;; Must find a way to display the buffer before this question
+            (if (y-or-n-p "Remove trailing ^M ? ")
+                (progn (goto-char (point-min))
+                       (perform-replace "\^M" "" nil nil nil)
+                       (pop-mark))
+              (message "No transformation."))
+          (if (y-or-n-p "Convert ^M into ^J ? ")
+              (progn (goto-char (point-min))
+                     (perform-replace "\^M" "\^J" nil nil nil)
+                     (pop-mark))
+            (message "No transformation.")))
       ;;(message "No ^M in this file !")
       )))
 

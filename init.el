@@ -25,10 +25,10 @@
 (defun jkl/load-scripts (&rest files)
   (while files
     (let ((file (car files))
-	  (noerror))
+          (noerror))
       (when (listp file)
-	(setq noerror (cadr file))
-	(setq file (car file)))
+        (setq noerror (cadr file))
+        (setq file (car file)))
       (load (concat jkl/my-dir "jkl-cust/" file) noerror nil t))
     (setq files (cdr files))))
 
@@ -60,7 +60,7 @@
 ;; Consider setting additional-path with default list in order to
 ;; have custom docs separated (put them in INFOPATH)
 (add-to-list 'Info-default-directory-list 
-	     (expand-file-name jkl/info-path))
+             (expand-file-name jkl/info-path))
 
 ;;;; Command/environment customizations
 ;; Windows msys shell
@@ -72,18 +72,18 @@
       (jkl/set-default 'explicit-bash-args '("--login" "--noediting" "-i"))
       (jkl/set-default
        'shell-mode-hook '(lambda ()
-			   (tabkey2-mode nil)
-			   (ansi-color-for-comint-mode-on)
-			   ;;(setq comint-scroll-show-maximum-output 'this)
-			   (make-variable-buffer-local 'comint-completion-addsuffix)
-			   (setq comint-completion-addsuffix t)
-			   (setq w32-quote-process-args ?\"))))))
+                           (tabkey2-mode nil)
+                           (ansi-color-for-comint-mode-on)
+                           ;;(setq comint-scroll-show-maximum-output 'this)
+                           (make-variable-buffer-local 'comint-completion-addsuffix)
+                           (setq comint-completion-addsuffix t)
+                           (setq w32-quote-process-args ?\"))))))
 
-; For non-Windows at least make sure we have ANSI escapes working
+;; For non-Windows at least make sure we have ANSI escapes working
 (unless jkl/mswinp
   (jkl/set-default 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 
-; Going to try out Ctrl-Tab for a bit as a replacement for M-tab
+;; Going to try out Ctrl-Tab for a bit as a replacement for M-tab
 
 (defvar jkl/mswin-C-tab-or-disable-alt-win t
   "If true, use C-tab as a replacement for M-tab, otherwise, let's
@@ -100,13 +100,13 @@ try disabling Alt-Tab switching and see how that works")
   (jkl/set-default
    'browse-url-browser-function
    (nconc (list 
-	   '("http://.*docs.python.org/". w3m-browse-url)
-	   '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
-	   '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
-	   '("file:.*/usr/share/devhelp/books" . w3m-browse-url))
-	  (if (listp browse-url-browser-function)
-	      browse-url-browser-function
-	    `(("." . ,browse-url-browser-function))))))
+           '("http://.*docs.python.org/". w3m-browse-url)
+           '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
+           '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
+           '("file:.*/usr/share/devhelp/books" . w3m-browse-url))
+          (if (listp browse-url-browser-function)
+              browse-url-browser-function
+            `(("." . ,browse-url-browser-function))))))
 
 ;;;; BBDB
 (require 'bbdb)
@@ -116,7 +116,7 @@ try disabling Alt-Tab switching and see how that works")
   (let ((org-info-dir (concat jkl/pkg-path "org-mode/doc")))
     (when (file-readable-p (concat org-info-dir "/dir"))
       (add-to-list 'Info-default-directory-list
-	    (expand-file-name org-info-dir)))))
+		   (expand-file-name org-info-dir)))))
 
 (require 'org-install nil)
 
@@ -143,25 +143,25 @@ try disabling Alt-Tab switching and see how that works")
 (when jkl/mswinp
   (jkl/set-face 'default '((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
 			       :overline nil :underline nil :background "black" :foreground "green" 
-			       :slant normal :weight normal :height 90 :width normal
-			       :foundry "*" :family "Lucida Sans Typewriter")))))
+                               :slant normal :weight normal :height 90 :width normal
+                               :foundry "*" :family "Lucida Sans Typewriter")))))
 
 (unless jkl/mswinp
   (let ((font-param))
     ;;(setq font-param '("ProggyCleanTT" . 120))
     (setq font-param '("Lucida Sans Typewriter" . 90))
     (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
-				 :overline nil :underline nil :background "black" :foreground "green" 
-				 :slant normal :weight normal :height ,(cdr font-param) :width normal
-				 :foundry "*" :family ,(car font-param)))))))
+                                 :overline nil :underline nil :background "black" :foreground "green" 
+                                 :slant normal :weight normal :height ,(cdr font-param) :width normal
+                                 :foundry "*" :family ,(car font-param)))))))
 
 (jkl/set-default 'default-frame-alist
-		 '((width . 140)
-		   (height . 50)
-		   (foreground-color . "green")
-		   (background-color . "black")
-		   (cursor-color . "white")
-		   ))
+                 '((width . 140)
+                   (height . 50)
+                   (foreground-color . "green")
+                   (background-color . "black")
+                   (cursor-color . "white")
+                   ))
 
 (jkl/set-face-colors
  '((font-lock-type-face "yellow")
@@ -205,7 +205,7 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; BEGIN CUSTOMIZATION
 (jkl/add-to-list 'auto-mode-alist
-		 '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode))
+                 '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode))
 (jkl/add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (jkl/add-to-list 'auto-mode-alist '("\\.gp$" . gnuplot-mode))
 
@@ -220,19 +220,18 @@ try disabling Alt-Tab switching and see how that works")
 (jkl/set-default 'display-time-24hr-format t)
 
 (jkl/set-default 'inhibit-startup-screen t
-		 'initial-scratch-message nil
-		 'auto-save-interval 3000
-		 'auto-save-timeout 300
-		 'make-backup-files nil)
+                 'initial-scratch-message nil
+                 'auto-save-interval 3000
+                 'auto-save-timeout 300
+                 'make-backup-files nil)
 
 ;; ELISP customization
 (add-hook 'emacs-lisp-mode-hook
-	  '(lambda ()
-	     (interactive)
-             (setq indent-tabs-mode t)
-	     (turn-on-eldoc-mode)
-	     (define-key emacs-lisp-mode-map [f5] 'eval-region)
-	     (define-key emacs-lisp-mode-map (kbd "C-c <f5>") 'eval-buffer)))
+          '(lambda ()
+             (interactive)
+             (turn-on-eldoc-mode)
+             (define-key emacs-lisp-mode-map [f5] 'eval-region)
+             (define-key emacs-lisp-mode-map (kbd "C-c <f5>") 'eval-buffer)))
 
 ;; git support / non-Windows only for now
 (unless jkl/mswinp

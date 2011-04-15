@@ -9,7 +9,7 @@
 
 (require 'eassist)
 ;; (add-hook 'ecb-before-activate-hook
-;; 	  (lambda () (semantic-load-enable-code-helpers)))
+;;        (lambda () (semantic-load-enable-code-helpers)))
 (require 'semanticdb-global)
 (semanticdb-enable-gnu-global-databases 'c-mode)
 (semanticdb-enable-gnu-global-databases 'c++-mode)

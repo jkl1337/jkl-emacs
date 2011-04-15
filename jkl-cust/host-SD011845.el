@@ -1,10 +1,10 @@
 (jkl/add-exec-paths "C:/prp/Python27"
-		    "C:/MingW/msys/1.0/bin"
-		    "C:/prp/Git/bin"
-		    "C:/prp/Mercurial"
-		    "C:/prp/Aspell/bin"
-		    "C:/prp/gs/gs9.01/bin"
-		    "C:/cygwin/opt/w3m/bin")
+                    "C:/MingW/msys/1.0/bin"
+                    "C:/prp/Git/bin"
+                    "C:/prp/Mercurial"
+                    "C:/prp/Aspell/bin"
+                    "C:/prp/gs/gs9.01/bin"
+                    "C:/cygwin/opt/w3m/bin")
 
 (setq find-program "/bin/find")
 ;;(setq find-ls-option '("-ls" . "-ilsd"))
