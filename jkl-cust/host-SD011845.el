@@ -16,3 +16,5 @@
 (setq jkl/info-path "C:/prp/emacs-d/info/")
 
 (defconst jkl/harris-sc system-name)
+
+(jkl/load-script "harris.el")

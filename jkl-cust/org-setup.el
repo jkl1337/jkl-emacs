@@ -5,11 +5,14 @@
 	    (auto-fill-mode 1)
 	    (flyspell-mode 1)))
 
+(defun jkl/lst-org-files (dir)
+  (if (file-directory-p dir)
+      (append
+       (directory-files dir t ".org$")
+       (apply 'append (mapcar 'jkl/lst-org-files (directory-files dir t "[^.]+"))))))
+
 (jkl/set-default 'org-agenda-files
-		 (mapcar
-		  (lambda (org-file)
-		    (concat jkl/git-repo-dir "jkl-org/" org-file))
-		  '("curgtd.org")))
+		 (jkl/lst-org-files (concat jkl/git-repo-dir "jkl-org")))
 
 (jkl/set-default
  'org-fast-tag-selection-single-key t

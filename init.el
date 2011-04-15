@@ -176,6 +176,8 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; GLOBAL settings
 (jkl/set-default 'fill-column 72)
+;; going to go ahead and default to no tabs globally
+(jkl/set-default 'indent-tabs-mode nil)
 
 ;;;; YASNIPPET
 (require 'yasnippet)
@@ -241,8 +243,6 @@ try disabling Alt-Tab switching and see how that works")
 ;;; but perhaps I will assign this to a keybinding, later
 ;; (unless jkl/mswinp
 ;;   (add-hook 'find-file-hook 'jkl/remove-or-convert-trailing-ctl-M))
-
-;;; Configure find-grep to skip svn cruft
 
 (jkl/load-scripts 
  "org-setup.el"
