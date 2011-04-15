@@ -39,29 +39,44 @@ directory that does not exist."
 		   (concat jkl/pkg-path dir))
 		 pkg-dirs)))
 
-(defun jkl/set-default (&rest args)
-  "Set symbols similar to \\[set] but with multiple assignments and notify customize. Note that this will NOT use the custom-set property function, which may cause problems for some variables. @jkl/set-vars will use custom-set when available."
+(defun jkl/set-default-internal (setter args)
   (let ((val))
     (while args
       (let ((sym (car args)))
 	(setq val (cadr args))
-	(set-default sym val)
+	(funcall setter sym val)
 	(put sym 'customized-value (list (custom-quote val))))
       (setq args (cddr args)))
     val))
 
+(defun jkl/set-default-raw (&rest args)
+  "Set symbols similar to \\[set] but with multiple assignments and
+notify customize. Note that this will NOT use the custom-set property
+function, which may cause problems for some variables. @jkl/set-vars
+will use custom-set when available."
+  (jkl/set-default-internal 'set-default args))
+
+(defun jkl/set-default (&rest args)
+  "Set symbols similar via set-default or uses custom-set property but
+with multiple assignments and notify customize."
+  (jkl/set-default-internal
+   #'(lambda (sym val)
+       (funcall
+        (or (get sym 'custom-set) 'custom-set-default)
+        sym val))
+   args))
+
 (defun jkl/cust-vars (&rest args)
-  "Set quoted value of variables using the same method setup for customize, using the custom-set property of the symbol, if available."
+  "Set quoted value of variables using the same method setup for
+customize, using the custom-set property of the symbol, if available."
   (while args
     (let ((entry (car args)))
       (let ((symbol (indirect-variable (nth 0 entry)))
 	    (value (nth 1 entry))
 	    set)
 	(setq set (or (get symbol 'custom-set) 'custom-set-default))
-	(put symbol 'customized-value (list value))
 	(funcall set symbol (eval value))
-	)
-      )
+	(put symbol 'customized-value (list value))))
     (setq args (cdr args))))
 
 (defun jkl/add-to-list (list-var elt &optional append compare-fn)

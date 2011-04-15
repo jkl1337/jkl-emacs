@@ -229,6 +229,7 @@ try disabling Alt-Tab switching and see how that works")
 (add-hook 'emacs-lisp-mode-hook
 	  '(lambda ()
 	     (interactive)
+             (setq indent-tabs-mode t)
 	     (turn-on-eldoc-mode)
 	     (define-key emacs-lisp-mode-map [f5] 'eval-region)
 	     (define-key emacs-lisp-mode-map (kbd "C-c <f5>") 'eval-buffer)))
