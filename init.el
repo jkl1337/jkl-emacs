@@ -67,20 +67,21 @@
 (when jkl/mswinp
   (let ((msys-bash-exe (locate-file "bash.exe" exec-path)))
     (when (string-match-p "/MSYS/" (upcase msys-bash-exe))
-      (jkl/setv 'shell-file-name (file-name-sans-extension msys-bash-exe))
-      (jkl/setv 'explicit-shell-file-name shell-file-name)
-      (jkl/setv 'explicit-bash-args '("--login" "--noediting" "-i"))
-      (jkl/setv 'shell-mode-hook '(lambda ()
-				    (tabkey2-mode nil)
-				    (ansi-color-for-comint-mode-on)
-				    ;;(setq comint-scroll-show-maximum-output 'this)
-				    (make-variable-buffer-local 'comint-completion-addsuffix)
-				    (setq comint-completion-addsuffix t)
-				    (setq w32-quote-process-args ?\"))))))
+      (jkl/set-default 'shell-file-name (file-name-sans-extension msys-bash-exe))
+      (jkl/set-default 'explicit-shell-file-name shell-file-name)
+      (jkl/set-default 'explicit-bash-args '("--login" "--noediting" "-i"))
+      (jkl/set-default
+       'shell-mode-hook '(lambda ()
+			   (tabkey2-mode nil)
+			   (ansi-color-for-comint-mode-on)
+			   ;;(setq comint-scroll-show-maximum-output 'this)
+			   (make-variable-buffer-local 'comint-completion-addsuffix)
+			   (setq comint-completion-addsuffix t)
+			   (setq w32-quote-process-args ?\"))))))
 
 ; For non-Windows at least make sure we have ANSI escapes working
 (unless jkl/mswinp
-  (jkl/setv 'shell-mode-hook 'ansi-color-for-comint-mode-on))
+  (jkl/set-default 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 
 ; Going to try out Ctrl-Tab for a bit as a replacement for M-tab
 
@@ -96,15 +97,16 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; w3m
 (require 'w3m-load nil t)
 (when (and (not jkl/mswinp) (featurep 'w3m-load))
-  (jkl/setv 'browse-url-browser-function
-	    (nconc (list 
-		    '("http://.*docs.python.org/". w3m-browse-url)
-		    '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
-		    '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
-		    '("file:.*/usr/share/devhelp/books" . w3m-browse-url))
-		   (if (listp browse-url-browser-function)
-		       browse-url-browser-function
-		     `(("." . ,browse-url-browser-function))))))
+  (jkl/set-default
+   'browse-url-browser-function
+   (nconc (list 
+	   '("http://.*docs.python.org/". w3m-browse-url)
+	   '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
+	   '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
+	   '("file:.*/usr/share/devhelp/books" . w3m-browse-url))
+	  (if (listp browse-url-browser-function)
+	      browse-url-browser-function
+	    `(("." . ,browse-url-browser-function))))))
 
 ;;;; BBDB
 (require 'bbdb)
@@ -118,7 +120,7 @@ try disabling Alt-Tab switching and see how that works")
 
 (require 'org-install nil)
 
-(jkl/setv default-major-mode 'org-mode)
+(jkl/set-default default-major-mode 'org-mode)
 (jkl/add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 (global-set-key "\C-cl" 'org-store-link)
@@ -153,13 +155,13 @@ try disabling Alt-Tab switching and see how that works")
 				 :slant normal :weight normal :height ,(cdr font-param) :width normal
 				 :foundry "*" :family ,(car font-param)))))))
 
-(jkl/setv 'default-frame-alist
-	  '((width . 140)
-	    (height . 50)
-	    (foreground-color . "green")
-	    (background-color . "black")
-	    (cursor-color . "white")
-	    ))
+(jkl/set-default 'default-frame-alist
+		 '((width . 140)
+		   (height . 50)
+		   (foreground-color . "green")
+		   (background-color . "black")
+		   (cursor-color . "white")
+		   ))
 
 (jkl/set-face-colors
  '((font-lock-type-face "yellow")
@@ -173,7 +175,7 @@ try disabling Alt-Tab switching and see how that works")
 ;; END appearance / basic faces
 
 ;;;; GLOBAL settings
-(jkl/setv 'fill-column 72)
+(jkl/set-default 'fill-column 72)
 
 ;;;; YASNIPPET
 (require 'yasnippet)
@@ -213,13 +215,13 @@ try disabling Alt-Tab switching and see how that works")
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 
 (display-time-mode)
-(jkl/setv 'display-time-24hr-format t)
+(jkl/set-default 'display-time-24hr-format t)
 
-(jkl/setv 'inhibit-startup-screen t
-	  'initial-scratch-message nil
-	  'auto-save-interval 3000
-	  'auto-save-timeout 300
-	  'make-backup-files nil)
+(jkl/set-default 'inhibit-startup-screen t
+		 'initial-scratch-message nil
+		 'auto-save-interval 3000
+		 'auto-save-timeout 300
+		 'make-backup-files nil)
 
 ;; ELISP customization
 (add-hook 'emacs-lisp-mode-hook
@@ -231,12 +233,16 @@ try disabling Alt-Tab switching and see how that works")
 
 ;; git support / non-Windows only for now
 (unless jkl/mswinp
-  (require'git)
+  (require 'git)
   (autoload 'git-blame-mode "git-blame"
     "Minor mode for incremental blame for Git." t))
 
+;;; A find-file-hook that is interactive is arguably completely evil
+;;; but perhaps I will assign this to a keybinding, later
 ;; (unless jkl/mswinp
 ;;   (add-hook 'find-file-hook 'jkl/remove-or-convert-trailing-ctl-M))
+
+;;; Configure find-grep to skip svn cruft
 
 (jkl/load-scripts 
  "org-setup.el"

@@ -13,21 +13,23 @@
 
 ;;; Documentation helpers
 (when (and (not jkl/mswinp) (featurep 'w3m-load))
-  (jkl/setv 'browse-url-browser-function
-	    (list* '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
-		   '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
-		   '("file:.*/usr/share/devhelp/books" . w3m-browse-url)
-		   '("file:.*/usr/share/doc" . w3m-browse-url)
-		   (if (listp browse-url-browser-function)
-		       browse-url-browser-function
-		     `(("." . ,browse-url-browser-function))))))
+  (jkl/set-default
+   'browse-url-browser-function
+   (list* '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
+	  '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
+	  '("file:.*/usr/share/devhelp/books" . w3m-browse-url)
+	  '("file:.*/usr/share/doc" . w3m-browse-url)
+	  (if (listp browse-url-browser-function)
+	      browse-url-browser-function
+	    `(("." . ,browse-url-browser-function))))))
 
 (autoload 'gtk-lookup-symbol "gtk-look" nil t)
 (unless jkl/mswinp
-  (jkl/setv 'gtk-lookup-devhelp-indices
-	    '("/usr/share/gtk-doc/html/*/*.devhelp*"
-	      "/usr/local/share/gtk-doc/html/*/*.devhelp*"
-	      "/usr/share/devhelp/books/*/*.devhelp*"))
+  (jkl/set-default
+   'gtk-lookup-devhelp-indices
+   '("/usr/share/gtk-doc/html/*/*.devhelp*"
+     "/usr/local/share/gtk-doc/html/*/*.devhelp*"
+     "/usr/share/devhelp/books/*/*.devhelp*"))
   (define-key global-map [?\C-h ?\C-j] 'gtk-lookup-symbol))
 
 ;;;; C styles

@@ -39,8 +39,8 @@ directory that does not exist."
 		   (concat jkl/pkg-path dir))
 		 pkg-dirs)))
 
-(defun jkl/setv (&rest args)
-  "Set symbols similar to \\[set] but with multiple assignments and notify customize."
+(defun jkl/set-default (&rest args)
+  "Set symbols similar to \\[set] but with multiple assignments and notify customize. Note that this will NOT use the custom-set property function, which may cause problems for some variables. @jkl/set-vars will use custom-set when available."
   (let ((val))
     (while args
       (let ((sym (car args)))
@@ -50,8 +50,8 @@ directory that does not exist."
       (setq args (cddr args)))
     val))
 
-(defun jkl/set-vars (&rest args)
-  "Set quoted value of variables and notify customize."
+(defun jkl/cust-vars (&rest args)
+  "Set quoted value of variables using the same method setup for customize, using the custom-set property of the symbol, if available."
   (while args
     (let ((entry (car args)))
       (let ((symbol (indirect-variable (nth 0 entry)))
@@ -59,7 +59,7 @@ directory that does not exist."
 	    set)
 	(setq set (or (get symbol 'custom-set) 'custom-set-default))
 	(put symbol 'customized-value (list value))
-	(funcall set symbol (eval valuel))
+	(funcall set symbol (eval value))
 	)
       )
     (setq args (cdr args))))

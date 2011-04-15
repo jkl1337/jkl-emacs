@@ -5,14 +5,14 @@
 (autoload 'pymacs-exec "pymacs" nil t)
 (autoload 'pymacs-load "pymacs" nil t)
 (pymacs-load "ropemacs" "rope-")
-(jkl/setv 'ropemacs-enable-autoimport t)
+(jkl/set-default 'ropemacs-enable-autoimport t)
 
 ;; cython
 (require 'cython-mode)
 
 ;; ipython
 (require 'ipython)
-(jkl/setv 'py-python-command-args '("-colors" "Linux"))
+(jkl/set-default 'py-python-command-args '("-colors" "Linux"))
 
 ;;;; Documentation
 ;;; PyLookup

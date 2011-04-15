@@ -5,13 +5,13 @@
 	    (auto-fill-mode 1)
 	    (flyspell-mode 1)))
 
-(jkl/setv 'org-agenda-files
-	  (mapcar
-	   (lambda (org-file)
-	     (concat jkl/git-repo-dir "jkl-org/" org-file))
-	   '("curgtd.org")))
+(jkl/set-default 'org-agenda-files
+		 (mapcar
+		  (lambda (org-file)
+		    (concat jkl/git-repo-dir "jkl-org/" org-file))
+		  '("curgtd.org")))
 
-(jkl/setv
+(jkl/set-default
  'org-fast-tag-selection-single-key t
  'org-treat-S-cursor-todo-selection-as-state-change nil
  'org-todo-keywords '((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w@/!)" "APPT(a)" "MAYBE(m!)" "|" "DONE(d!/!)" "CANCELLED(c@/!)" "DEFFERED(f@/!)"))
