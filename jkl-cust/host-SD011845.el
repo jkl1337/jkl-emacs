@@ -10,7 +10,7 @@
 ;;(setq find-ls-option '("-ls" . "-ilsd"))
 ;;(setq find-ls-option '("-exec ls -ld {} \\;" . "-ld"))
 
-(jkl/set-default 'w3m-command "C:/cygwin/opt/w3m/bin/w3m")
+(jkl/default-set 'w3m-command "C:/cygwin/opt/w3m/bin/w3m")
 
 (setq jkl/pkg-path "C:/prp/emacs-d/pkg/")
 (setq jkl/info-path "C:/prp/emacs-d/info/")

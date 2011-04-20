@@ -67,10 +67,10 @@
 (when jkl/mswinp
   (let ((msys-bash-exe (locate-file "bash.exe" exec-path)))
     (when (string-match-p "/MSYS/" (upcase msys-bash-exe))
-      (jkl/set-default 'shell-file-name (file-name-sans-extension msys-bash-exe))
-      (jkl/set-default 'explicit-shell-file-name shell-file-name)
-      (jkl/set-default 'explicit-bash-args '("--login" "--noediting" "-i"))
-      (jkl/set-default
+      (jkl/custom-set 'shell-file-name (file-name-sans-extension msys-bash-exe))
+      (jkl/custom-set 'explicit-shell-file-name shell-file-name)
+      (jkl/custom-set 'explicit-bash-args '("--login" "--noediting" "-i"))
+      (jkl/custom-set
        'shell-mode-hook '(lambda ()
                            (tabkey2-mode nil)
                            (ansi-color-for-comint-mode-on)
@@ -81,7 +81,7 @@
 
 ;; For non-Windows at least make sure we have ANSI escapes working
 (unless jkl/mswinp
-  (jkl/set-default 'shell-mode-hook 'ansi-color-for-comint-mode-on))
+  (jkl/custom-set 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 
 ;; Going to try out Ctrl-Tab for a bit as a replacement for M-tab
 
@@ -97,7 +97,7 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; w3m
 (require 'w3m-load nil t)
 (when (and (not jkl/mswinp) (featurep 'w3m-load))
-  (jkl/set-default
+  (jkl/custom-set
    'browse-url-browser-function
    (nconc (list 
            '("http://.*docs.python.org/". w3m-browse-url)
@@ -116,11 +116,11 @@ try disabling Alt-Tab switching and see how that works")
   (let ((org-info-dir (concat jkl/pkg-path "org-mode/doc")))
     (when (file-readable-p (concat org-info-dir "/dir"))
       (add-to-list 'Info-default-directory-list
-		   (expand-file-name org-info-dir)))))
+                   (expand-file-name org-info-dir)))))
 
 (require 'org-install nil)
 
-(jkl/set-default default-major-mode 'org-mode)
+(jkl/custom-set 'major-mode 'org-mode)
 (jkl/add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 (global-set-key "\C-cl" 'org-store-link)
@@ -142,7 +142,7 @@ try disabling Alt-Tab switching and see how that works")
 ;; BEGIN APPEARANCE / BASIC FACES
 (when jkl/mswinp
   (jkl/set-face 'default '((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
-			       :overline nil :underline nil :background "black" :foreground "green" 
+                               :overline nil :underline nil :background "black" :foreground "green" 
                                :slant normal :weight normal :height 90 :width normal
                                :foundry "*" :family "Lucida Sans Typewriter")))))
 
@@ -155,13 +155,13 @@ try disabling Alt-Tab switching and see how that works")
                                  :slant normal :weight normal :height ,(cdr font-param) :width normal
                                  :foundry "*" :family ,(car font-param)))))))
 
-(jkl/set-default 'default-frame-alist
-                 '((width . 140)
-                   (height . 50)
-                   (foreground-color . "green")
-                   (background-color . "black")
-                   (cursor-color . "white")
-                   ))
+(jkl/custom-set 'default-frame-alist
+                '((width . 140)
+                  (height . 50)
+                  (foreground-color . "green")
+                  (background-color . "black")
+                  (cursor-color . "white")
+                  ))
 
 (jkl/set-face-colors
  '((font-lock-type-face "yellow")
@@ -175,9 +175,9 @@ try disabling Alt-Tab switching and see how that works")
 ;; END appearance / basic faces
 
 ;;;; GLOBAL settings
-(jkl/set-default 'fill-column 72)
+(jkl/custom-set 'fill-column 72)
 ;; going to go ahead and default to no tabs globally
-(jkl/set-default 'indent-tabs-mode nil)
+(jkl/custom-set 'indent-tabs-mode nil)
 
 ;;;; YASNIPPET
 (require 'yasnippet)
@@ -217,13 +217,13 @@ try disabling Alt-Tab switching and see how that works")
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 
 (display-time-mode)
-(jkl/set-default 'display-time-24hr-format t)
+(jkl/custom-set 'display-time-24hr-format t)
 
-(jkl/set-default 'inhibit-startup-screen t
-                 'initial-scratch-message nil
-                 'auto-save-interval 3000
-                 'auto-save-timeout 300
-                 'make-backup-files nil)
+(jkl/custom-set 'inhibit-startup-screen t
+                'initial-scratch-message nil
+                'auto-save-interval 3000
+                'auto-save-timeout 300
+                'make-backup-files nil)
 
 ;; ELISP customization
 (add-hook 'emacs-lisp-mode-hook

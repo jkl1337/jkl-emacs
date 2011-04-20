@@ -13,7 +13,7 @@
 
 ;;; Documentation helpers
 (when (and (not jkl/mswinp) (featurep 'w3m-load))
-  (jkl/set-default
+  (jkl/custom-set
    'browse-url-browser-function
    (list* '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
           '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
@@ -25,7 +25,7 @@
 
 (autoload 'gtk-lookup-symbol "gtk-look" nil t)
 (unless jkl/mswinp
-  (jkl/set-default
+  (jkl/custom-set
    'gtk-lookup-devhelp-indices
    '("/usr/share/gtk-doc/html/*/*.devhelp*"
      "/usr/local/share/gtk-doc/html/*/*.devhelp*"

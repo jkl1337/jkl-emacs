@@ -11,10 +11,10 @@
        (directory-files dir t ".org$")
        (apply 'append (mapcar 'jkl/lst-org-files (directory-files dir t "[^.]+"))))))
 
-(jkl/set-default 'org-agenda-files
-                 (jkl/lst-org-files (concat jkl/git-repo-dir "jkl-org")))
+(jkl/custom-set 'org-agenda-files
+                (jkl/lst-org-files (concat jkl/git-repo-dir "jkl-org")))
 
-(jkl/set-default
+(jkl/custom-set
  'org-fast-tag-selection-single-key t
  'org-treat-S-cursor-todo-selection-as-state-change nil
  'org-todo-keywords '((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w@/!)" "APPT(a)" "MAYBE(m!)" "|" "DONE(d!/!)" "CANCELLED(c@/!)" "DEFFERED(f@/!)"))

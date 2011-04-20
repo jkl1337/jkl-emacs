@@ -39,7 +39,7 @@ directory that does not exist."
                    (concat jkl/pkg-path dir))
                  pkg-dirs)))
 
-(defun jkl/set-default-internal (setter args)
+(defun jkl/set-internal (setter args)
   (let ((val))
     (while args
       (let ((sym (car args)))
@@ -49,17 +49,17 @@ directory that does not exist."
       (setq args (cddr args)))
     val))
 
-(defun jkl/set-default-raw (&rest args)
+(defun jkl/default-set (&rest args)
   "Set symbols similar to \\[set] but with multiple assignments and
 notify customize. Note that this will NOT use the custom-set property
 function, which may cause problems for some variables. @jkl/set-vars
 will use custom-set when available."
-  (jkl/set-default-internal 'set-default args))
+  (jkl/set-internal 'set-default args))
 
-(defun jkl/set-default (&rest args)
+(defun jkl/custom-set (&rest args)
   "Set symbols similar via set-default or uses custom-set property but
 with multiple assignments and notify customize."
-  (jkl/set-default-internal
+  (jkl/set-internal
    #'(lambda (sym val)
        (funcall
         (or (get sym 'custom-set) 'custom-set-default)
