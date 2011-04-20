@@ -15,6 +15,8 @@
 (setq jkl/pkg-path "C:/prp/emacs-d/pkg/")
 (setq jkl/info-path "C:/prp/emacs-d/info/")
 
+(setq jkl/clisp-dir "C:/prp/clisp-2.49/full/")
+
 (defconst jkl/harris-sc system-name)
 
 (jkl/load-script "harris.el")

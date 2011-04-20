@@ -250,6 +250,7 @@ try disabling Alt-Tab switching and see how that works")
  "doc-setup.el"
  "py-setup.el"
  "prog-setup.el"
+ "clisp-setup.el"
  )
 
 (setq custom-file (concat jkl/my-dir "custom.el"))
