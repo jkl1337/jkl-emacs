@@ -3,6 +3,19 @@
           '(lambda  ()
              (define-key hs-minor-mode-map (kbd "C-+") 'hs-toggle-hiding)))
 
+;; Lisp in general (SLIME)
+(eval-after-load 'slime
+  '(define-key slime-mode-map (kbd "C-c p")
+     'slime-pprint-eval-last-expression))
+
+;; Clojure
+;; Inferior lisp command
+(defun clj-inf ()
+  "Run inferior lisp mode with clojure"
+  (interactive)
+  (inferior-lisp "java -cp c:/prp/clojure-1.2.0/clojure.jar clojure.main")
+)
+
 ;; LUA Mode settings
 ;; lua-mode install is in top-level
 (add-hook 'lua-mode-hook

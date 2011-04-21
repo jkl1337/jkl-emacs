@@ -47,10 +47,11 @@
 (jkl/load-script (concat "host-" system-name ".el") t)
 
 ;;;; ELPA
-;; (when
-;;     (load
-;;      (expand-file-name "~/.emacs.d/elpa/package.el"))
-;;      (package-initialize))
+;; package.el is carried in the contrib directory for now
+(require 'package)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize) 
 
 ;; configure standard 3rd party install load path
 (jkl/load-path-add-immediate-subdirs jkl/pkg-path)
@@ -179,6 +180,10 @@ try disabling Alt-Tab switching and see how that works")
 ;; going to go ahead and default to no tabs globally
 (jkl/custom-set 'indent-tabs-mode nil)
 
+;;;; LISP / SLIME
+(when (require 'slime-autoloads nil t)
+  (slime-setup))
+
 ;;;; YASNIPPET
 (require 'yasnippet)
 (yas/initialize)
@@ -226,12 +231,16 @@ try disabling Alt-Tab switching and see how that works")
                 'make-backup-files nil)
 
 ;; ELISP customization
+
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+
 (add-hook 'emacs-lisp-mode-hook
           '(lambda ()
              (interactive)
-             (turn-on-eldoc-mode)
              (define-key emacs-lisp-mode-map [f5] 'eval-region)
              (define-key emacs-lisp-mode-map (kbd "C-c <f5>") 'eval-buffer)))
+
+(add-hook 'emacs-lisp-mode-hook 'jkl/remove-elc-on-save)
 
 ;; git support / non-Windows only for now
 (unless jkl/mswinp
