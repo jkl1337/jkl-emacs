@@ -12,14 +12,11 @@
           (concat jkl/clisp-exe " -B " jkl/clisp-dir " -M " jkl/clisp-dir "lispinit.mem -ansi -q")
         (concat jkl/clisp-exe " -B " jkl/clisp-dir " -ansi -q")))
 
-;;; SLIME setup
-(setq inferior-lisp-program
-      (concat "clisp"
-              (if (file-directory-p (concat jkl/clisp-dir "full"))
-                  " -K full" "")))
-
-(when (require 'slime-autoloads)
-  (slime-setup))
+;;; SLIME setup - Slime needs to be provided by ELPA
+(jkl/custom-set 'inferior-lisp-program
+                (concat "clisp"
+                        (if (file-directory-p (concat jkl/clisp-dir "full"))
+                            " -K full" "")))
 
 ;;; ILISP/Inferior Lisp hook customizations
 (defun jkl/setup-ilisp ()

@@ -1,0 +1,3 @@
+[submodule "contrib/slime"]
+	path = contrib/slime
+	url = https://github.com/technomancy/slime

@@ -1,3 +1,5 @@
+(setq user-emacs-directory "C:/prp/emacs-d/")
+
 (jkl/add-exec-paths "C:/prp/Python27"
                     "C:/MingW/msys/1.0/bin"
                     "C:/prp/Git/bin"

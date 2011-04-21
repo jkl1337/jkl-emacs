@@ -1,4 +1,12 @@
 
+(defun jkl/remove-elc-on-save ()
+  "Hooks the `after-save-hook' to delete elc files."
+  (add-hook 'after-save-hook
+            (lambda ()
+              (if (file-exists-p (concat buffer-file-name "c"))
+                  (delete-file (concat buffer-file-name "c"))))
+            nil t))
+
 (defun jkl/load-path-add-immediate-subdirs (top-dir)
   (let* ((contents (directory-files top-dir))
          (default-directory top-dir))
