@@ -1,7 +1,7 @@
 ;; ORG-MODE enable yas/flyspell
 (add-hook 'org-mode-hook
           (lambda ()
-            (set-fill-column 78)
+            (setq fill-column 78)
             (auto-fill-mode 1)
             (flyspell-mode 1)))
 
