@@ -1,5 +1,7 @@
 ;; TODO: Add documentation hooks/standardization
 
+(defvar jkl/clisp-dir "/usr/lib/clisp-2.49/")
+
 (setq jkl/clisp-exe
       (if jkl/mswinp
           (concat jkl/clisp-dir "lisp.exe")
@@ -11,9 +13,13 @@
         (concat jkl/clisp-exe " -B " jkl/clisp-dir " -ansi -q")))
 
 ;;; SLIME setup
-(setq inferior-lisp-program "clisp -K full")
-(require 'slime-autoloads)
-(slime-setup)
+(setq inferior-lisp-program
+      (concat "clisp"
+              (if (file-directory-p (concat jkl/clisp-dir "full"))
+                  " -K full" "")))
+
+(when (require 'slime-autoloads)
+  (slime-setup))
 
 ;;; ILISP/Inferior Lisp hook customizations
 (defun jkl/setup-ilisp ()
