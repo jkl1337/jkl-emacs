@@ -13,10 +13,13 @@
         (concat jkl/clisp-exe " -B " jkl/clisp-dir " -ansi -q")))
 
 ;;; SLIME setup - Slime needs to be provided by ELPA
-(jkl/custom-set 'inferior-lisp-program
-                (concat "clisp"
-                        (if (file-directory-p (concat jkl/clisp-dir "full"))
-                            " -K full" "")))
+(setq jkl/slime-lisps
+     `(,(concat "clisp"
+                (if (file-directory-p jkl/clisp-dir)
+                    " -K full" ""))
+       "c:/prp/ccl/wx86cl.exe"))
+
+(jkl/custom-set 'inferior-lisp-program (car jkl/slime-lisps))
 
 ;;; ILISP/Inferior Lisp hook customizations
 (defun jkl/setup-ilisp ()

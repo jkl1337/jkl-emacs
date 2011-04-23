@@ -182,7 +182,9 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; LISP / SLIME
 (when (require 'slime-autoloads nil t)
-  (slime-setup))
+  ;; (add-to-list 'load-path
+  ;;              (concat (file-name-directory (symbol-file 'slime-setup)) "contrib"))
+  (slime-setup '(inferior-slime)))
 
 ;;;; YASNIPPET
 (require 'yasnippet)
