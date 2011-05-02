@@ -19,4 +19,7 @@
 
 (defconst jkl/harris-sc system-name)
 
+(eval-after-load "slime"
+  '(jkl/custom-set 'inferior-lisp-program "c:/prp/ccl-trunk/wx86cl.exe"))
+
 (jkl/load-script "harris.el")

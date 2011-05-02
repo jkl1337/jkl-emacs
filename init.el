@@ -176,15 +176,8 @@ try disabling Alt-Tab switching and see how that works")
 
 ;; END appearance / basic faces
 
-;;;; GLOBAL settings
-(jkl/custom-set 'fill-column 72)
-;; going to go ahead and default to no tabs globally
-(jkl/custom-set 'indent-tabs-mode nil)
-
 ;;;; LISP / SLIME
 (when (require 'slime-autoloads nil t)
-  ;; (add-to-list 'load-path
-  ;;              (concat (file-name-directory (symbol-file 'slime-setup)) "contrib"))
   (slime-setup '(inferior-slime)))
 
 ;;;; YASNIPPET
@@ -205,13 +198,25 @@ try disabling Alt-Tab switching and see how that works")
 ;;; ECB - Code Browser
 (require 'ecb-autoloads nil t)
 
+;;; cscope
+;; try xcscope for now
+(require 'xcscope)
+
 ;;;; CUSTOM MAJOR MODES
+
 ;;; MAJOR MODES - add'l major mode setup
 (autoload 'lua-block-mode "lua-block" "Lua highlight matching block")
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (jkl/add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
 ;;;; BEGIN CUSTOMIZATION
+;;; GLOBAL settings
+(global-set-key "\M-/" 'hippie-expand)
+
+(jkl/custom-set 'fill-column 72)
+;; going to go ahead and default to no tabs globally
+(jkl/custom-set 'indent-tabs-mode nil)
+
 (jkl/add-to-list 'auto-mode-alist
                  '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode))
 (jkl/add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))

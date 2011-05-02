@@ -25,17 +25,26 @@
             (lua-block-mode t)))
 
 ;;; Documentation helpers
-(when (and (not jkl/mswinp) (featurep 'w3m-load))
+(when (featurep 'w3m-load)
   (jkl/custom-set
    'browse-url-browser-function
-   (list '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
-         '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
-         '("file:.*/usr/share/devhelp/books" . w3m-browse-url)
-         '("file:.*/usr/share/doc" . w3m-browse-url)
-         '("\\(file://\\)?/.*/hyperspec" . w3m-browse-url)
-         '("http://www\\.clisp\\.org/impnotes" . w3m-browse-url)
-         '("http://clisp\\.cons\\.org/impnotes" . w3m-browse-url)
-         '("." . browse-url-default-browser))))
+   (nconc
+    (unless jkl/mswinp
+      ;; Non-windows platform only
+      (list
+       '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
+       '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
+       '("file:.*/usr/share/devhelp/books" . w3m-browse-url)
+       '("file:.*/usr/share/doc" . w3m-browse-url)
+       '("\\(file://\\)?/.*/hyperspec" . w3m-browse-url)))
+    ;; Common set
+    (list
+     '("http://www\\.clisp\\.org/impnotes" . w3m-browse-url)
+     '("http://clisp\\.cons\\.org/impnotes" . w3m-browse-url)
+     '("http://www\\.lispworks\\.com/reference/HyperSpec" . w3m-browse-url)
+     `("." . ,(if jkl/mswinp 'browse-url-default-windows-browser
+                'browse-url-default-browser))))))
+
 
 (autoload 'gtk-lookup-symbol "gtk-look" nil t)
 (unless jkl/mswinp
