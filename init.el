@@ -46,22 +46,22 @@
 ;; load host specific early-init
 (jkl/load-script (concat "host-" system-name ".el") t)
 
+;; Request to merge custom info.
+;; Consider setting additional-path with default list in order to
+;; have custom docs separated (put them in INFOPATH)
+(add-to-list 'Info-default-directory-list 
+             (expand-file-name jkl/info-path))
+
+;; configure standard 3rd party install load path
+(jkl/load-path-add-immediate-subdirs jkl/pkg-path)
+(add-to-list 'load-path jkl/pkg-path)
+
 ;;;; ELPA
 ;; package.el is carried in the contrib directory for now
 (require 'package)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize) 
-
-;; configure standard 3rd party install load path
-(jkl/load-path-add-immediate-subdirs jkl/pkg-path)
-(add-to-list 'load-path jkl/pkg-path)
-
-;; Request to merge custom info.
-;; Consider setting additional-path with default list in order to
-;; have custom docs separated (put them in INFOPATH)
-(add-to-list 'Info-default-directory-list 
-             (expand-file-name jkl/info-path))
 
 ;;;; Command/environment customizations
 ;; Windows msys shell
@@ -116,7 +116,8 @@ try disabling Alt-Tab switching and see how that works")
 (when (car (jkl/try-add-pkg "org-mode/lisp" "org-mode/contrib/lisp"))
   (let ((org-info-dir (concat jkl/pkg-path "org-mode/doc")))
     (when (file-readable-p (concat org-info-dir "/dir"))
-      (add-to-list 'Info-default-directory-list
+      (info-initialize)
+      (add-to-list 'Info-directory-list
                    (expand-file-name org-info-dir)))))
 
 (require 'org-install nil)
