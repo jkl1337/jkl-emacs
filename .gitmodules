@@ -1,3 +1,6 @@
 [submodule "contrib/slime"]
 	path = contrib/slime
 	url = https://github.com/technomancy/slime
+[submodule "contrib/emms"]
+	path = contrib/emms
+	url = git://git.sv.gnu.org/emms.git

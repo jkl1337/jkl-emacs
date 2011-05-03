@@ -116,6 +116,7 @@ try disabling Alt-Tab switching and see how that works")
 (when (car (jkl/try-add-pkg "org-mode/lisp" "org-mode/contrib/lisp"))
   (let ((org-info-dir (concat jkl/pkg-path "org-mode/doc")))
     (when (file-readable-p (concat org-info-dir "/dir"))
+      (require 'info)
       (info-initialize)
       (add-to-list 'Info-directory-list
                    (expand-file-name org-info-dir)))))

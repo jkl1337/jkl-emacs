@@ -1,4 +1,7 @@
-(when jkl/mswinp
+
+(require 'emms-setup)
+
+(when (and nil jkl/mswinp)
   (setq pylookup-program (concat pylookup-dir "pylookup.bat"))
   (unless (file-exists-p pylookup-program)
     (let ((explicit-shell-file-name "cmd.exe"))
