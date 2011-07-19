@@ -4,3 +4,6 @@
 [submodule "contrib/emms"]
 	path = contrib/emms
 	url = git://git.sv.gnu.org/emms.git
+[submodule "contrib/org-mode"]
+	path = contrib/org-mode
+	url = git://orgmode.org/org-mode.git
