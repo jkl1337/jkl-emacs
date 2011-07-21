@@ -147,7 +147,7 @@ try disabling Alt-Tab switching and see how that works")
   (jkl/set-face 'default '((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
                                :overline nil :underline nil :background "black" :foreground "green" 
                                :slant normal :weight normal :height 90 :width normal
-                               :foundry "*" :family "Lucida Sans Typewriter")))))
+                               :foundry "*" :family "Lucida Console")))))
 
 (unless jkl/mswinp
   (let ((font-param))
@@ -194,7 +194,9 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; CEDET and ECB
 ;;; my site CEDET
-(load (concat jkl/pkg-path "cedet-1.0/common/cedet") nil)
+(let ((cedet-load-file (concat jkl/pkg-path "cedet-1.0/common/cedet")))
+  (when (file-exists-p cedet-load-file)
+    (load cedet-load-file nil)))
 
 ;;; ECB - Code Browser
 (require 'ecb-autoloads nil t)
