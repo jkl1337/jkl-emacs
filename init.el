@@ -152,7 +152,7 @@ try disabling Alt-Tab switching and see how that works")
 (unless jkl/mswinp
   (let ((font-param))
     ;;(setq font-param '("ProggyCleanTT" . 120))
-    (setq font-param '("Lucida Sans Typewriter" . 90))
+    (setq font-param '("Terminus" . 100))
     (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
                                  :overline nil :underline nil :background "black" :foreground "green" 
                                  :slant normal :weight normal :height ,(cdr font-param) :width normal
@@ -193,13 +193,19 @@ try disabling Alt-Tab switching and see how that works")
   (tabkey2-mode t))
 
 ;;;; CEDET and ECB
-;;; my site CEDET
+;;; This is only relevant for older emacs now
 (let ((cedet-load-file (concat jkl/pkg-path "cedet-1.0/common/cedet")))
-  (when (file-exists-p cedet-load-file)
+  (when (file-exists-p (concat cedet-load-file ".el"))
     (load cedet-load-file nil)))
 
 ;;; ECB - Code Browser
 (require 'ecb-autoloads nil t)
+
+;;;; JDEE
+(let ((jdee-lisp-dir (concat jkl/pkg-path "jdee/lisp")))
+  (when (file-directory-p jdee-lisp-dir)
+    (add-to-list 'load-path (concat jkl/pkg-path "jdee/lisp"))
+    (load "jde-autoload")))
 
 ;;; cscope
 ;; try xcscope for now
