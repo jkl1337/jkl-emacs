@@ -1,4 +1,13 @@
-;; PYTHON - Pymacs and ropemacs
+;;;; PYTHON - Pymacs and ropemacs
+
+;;; ipython
+;; requires python-mode
+(require 'ipython)
+(jkl/custom-set 'py-python-command-args '("--colors=Linux"))
+
+(when (file-executable-p "/usr/bin/python2")
+  (setq pymacs-python-command "python2"))
+
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
 (autoload 'pymacs-eval "pymacs" nil t)
@@ -10,9 +19,6 @@
 ;; cython
 (require 'cython-mode)
 
-;; ipython
-(require 'ipython)
-(jkl/custom-set 'py-python-command-args '("-colors" "Linux"))
 
 ;;;; Documentation
 ;;; PyLookup
