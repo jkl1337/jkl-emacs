@@ -226,10 +226,16 @@ try disabling Alt-Tab switching and see how that works")
 ;; going to go ahead and default to no tabs globally
 (jkl/custom-set 'indent-tabs-mode nil)
 
-(jkl/add-to-list 'auto-mode-alist
+(add-to-list 'auto-mode-alist
                  '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode))
-(jkl/add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-(jkl/add-to-list 'auto-mode-alist '("\\.gp$" . gnuplot-mode))
+(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(add-to-list 'auto-mode-alist '("\\.gp$" . gnuplot-mode))
+
+;; arch and pacman PKGBUILD files
+(add-to-list 'auto-mode-alist (cons "PKGBUILD$"
+                                    #'(lambda ()
+                                        (sh-mode)
+                                        (sh-set-shell "bash" t))))
 
 (global-set-key (kbd "M-w") 'copy-region-as-kill)
 
