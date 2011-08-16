@@ -123,7 +123,7 @@ try disabling Alt-Tab switching and see how that works")
 
 (require 'org-install nil)
 
-(jkl/custom-set 'major-mode 'org-mode)
+(jkl/custom-set 'major-mode 'text-mode)
 (jkl/add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 (global-set-key "\C-cl" 'org-store-link)
@@ -176,6 +176,9 @@ try disabling Alt-Tab switching and see how that works")
    (font-lock-comment-face "Chocolate1")))
 
 ;; END appearance / basic faces
+
+;;;; GTAGS
+(autoload 'gtags-mode "gtags" "" t)
 
 ;;;; LISP / SLIME
 (when (require 'slime-autoloads nil t)
@@ -264,6 +267,9 @@ try disabling Alt-Tab switching and see how that works")
              (define-key emacs-lisp-mode-map (kbd "C-c <f5>") 'eval-buffer)))
 
 (add-hook 'emacs-lisp-mode-hook 'jkl/remove-elc-on-save)
+
+;;;; PERFORCE
+(jkl/add-to-list 'vc-handled-backends 'P4)
 
 ;; git support / non-Windows only for now
 (unless jkl/mswinp

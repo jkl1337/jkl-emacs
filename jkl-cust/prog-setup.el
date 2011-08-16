@@ -128,6 +128,12 @@
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
 
+;;; GTAGS
+(let ((en-gtags #'(lambda ()
+                    (gtags-mode 1))))
+  (add-hook 'c++-mode-hook en-gtags)
+  (add-hook 'c-mode-hook en-gtags))
+
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (interactive)
