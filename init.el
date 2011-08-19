@@ -101,6 +101,7 @@ try disabling Alt-Tab switching and see how that works")
   (jkl/custom-set
    'browse-url-browser-function
    (nconc (list 
+           '("file:.*/pylookup/python-2" . w3m-browse-url)
            '("http://.*docs.python.org/". w3m-browse-url)
            '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
            '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
@@ -197,9 +198,14 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; CEDET and ECB
 ;;; This is only relevant for older emacs now
-(let ((cedet-load-file (concat jkl/pkg-path "cedet-1.0/common/cedet")))
-  (when (file-exists-p (concat cedet-load-file ".el"))
-    (load cedet-load-file nil)))
+
+(let ((cedet-paths
+       `(,(concat jkl/pkg-path "cedet-1.0/common/cedet")
+         "/usr/share/emacs/site-lisp/cedet/common/cedet")))
+  (dolist (pth cedet-paths)
+    (when (file-exists-p (concat pth ".el"))
+      (load pth nil)
+      (return))))
 
 ;;; ECB - Code Browser
 (require 'ecb-autoloads nil t)
