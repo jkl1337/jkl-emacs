@@ -110,6 +110,18 @@ try disabling Alt-Tab switching and see how that works")
               browse-url-browser-function
             `(("." . ,browse-url-browser-function))))))
 
+;;;; EMMS
+(let ((emms-lisp-dir (concat jkl/my-dir "contrib/emms/lisp")))
+  (when (file-readable-p (concat emms-lisp-dir "/emms-setup.elc"))
+    (add-to-list 'load-path emms-lisp-dir)
+    (require 'emms-setup)
+    (emms-standard)
+    (emms-default-players)
+    (define-emms-simple-player mpg123 '(file url)
+      (emms-player-simple-regexp "mp3" "mp2")
+      "mpg123")
+    (jkl/custom-set 'emms-player-list (cons 'emms-player-mpg123 emms-player-list))))
+
 ;;;; BBDB
 (require 'bbdb)
 
@@ -275,7 +287,8 @@ try disabling Alt-Tab switching and see how that works")
 (add-hook 'emacs-lisp-mode-hook 'jkl/remove-elc-on-save)
 
 ;;;; PERFORCE
-(jkl/add-to-list 'vc-handled-backends 'P4)
+;; Adding this backend causes indefinite wait in all non-rev controlled directories
+;;(jkl/add-to-list 'vc-handled-backends 'P4)
 
 ;; git support / non-Windows only for now
 (unless jkl/mswinp
