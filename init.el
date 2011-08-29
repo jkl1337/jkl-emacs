@@ -117,10 +117,11 @@ try disabling Alt-Tab switching and see how that works")
     (require 'emms-setup)
     (emms-standard)
     (emms-default-players)
-    (define-emms-simple-player mpg123 '(file url)
-      (emms-player-simple-regexp "mp3" "mp2")
-      "mpg123")
-    (jkl/custom-set 'emms-player-list (cons 'emms-player-mpg123 emms-player-list))))
+    ;; (define-emms-simple-player mpg123 '(file url)
+    ;;   (emms-player-simple-regexp "mp3" "mp2")
+    ;;   "mpg123")
+    ;; (jkl/custom-set 'emms-player-list (cons 'emms-player-mpg123 emms-player-list))
+    (add-to-list 'Info-default-directory-list (expand-file-name (concat emms-lisp-dir "/../doc")))))
 
 ;;;; BBDB
 (require 'bbdb)
@@ -129,10 +130,7 @@ try disabling Alt-Tab switching and see how that works")
 (when (car (jkl/try-add-pkg "org-mode/lisp" "org-mode/contrib/lisp"))
   (let ((org-info-dir (concat jkl/pkg-path "org-mode/doc")))
     (when (file-readable-p (concat org-info-dir "/dir"))
-      (require 'info)
-      (info-initialize)
-      (add-to-list 'Info-directory-list
-                   (expand-file-name org-info-dir)))))
+      (add-to-list 'Info-default-directory-list (expand-file-name org-info-dir)))))
 
 (require 'org-install nil)
 
