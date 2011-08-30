@@ -2,8 +2,8 @@
 
 ;;; ipython
 ;; requires python-mode
-(require 'ipython)
-(jkl/custom-set 'py-python-command-args '("--colors=Linux"))
+;;(require 'ipython)
+;;(jkl/custom-set 'py-python-command-args '("--colors=Linux"))
 
 (when (file-executable-p "/usr/bin/python2")
   (setq pymacs-python-command "python2"))
