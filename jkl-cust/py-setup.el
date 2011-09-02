@@ -6,7 +6,9 @@
 ;;(jkl/custom-set 'py-python-command-args '("--colors=Linux"))
 
 (when (file-executable-p "/usr/bin/python2")
-  (setq pymacs-python-command "python2"))
+  (setq pymacs-python-command "python2")
+  (jkl/custom-set 'py-python-command "python2")
+  (jkl/custom-set 'py-default-interpreter "python2"))
 
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")

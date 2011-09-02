@@ -1,8 +1,5 @@
-;; FIXME: prevent duplicate load-path nonsense on Harris SC setup, what with using site-lisp and all
 ;; TODO: change paren mode highlight faces
 ;; see face-user-default-spec in faces.el TODO
-
-(defvar emacs-debug-loading t)
 
 (defconst jkl/mswinp
   (eq system-type 'windows-nt))
@@ -45,6 +42,18 @@
 
 ;; load host specific early-init
 (jkl/load-script (concat "host-" system-name ".el") t)
+
+;; site CEDET early override
+(let ((cedet-paths
+       `(,(concat jkl/pkg-path "cedet/common/cedet")
+         "/usr/share/emacs/site-lisp/cedet/common/cedet")))
+  (while cedet-paths
+    (let ((pth (car cedet-paths)))
+          (when (or
+                 (file-exists-p (concat pth ".elc"))
+                 (file-exists-p (concat pth ".el")))
+            (load pth nil)))
+    (setq cedet-paths (cdr cedet-paths))))
 
 ;; Request to merge custom info.
 ;; Consider setting additional-path with default list in order to
@@ -207,15 +216,6 @@ try disabling Alt-Tab switching and see how that works")
   (tabkey2-mode t))
 
 ;;;; CEDET and ECB
-;;; This is only relevant for older emacs now
-
-(let ((cedet-paths
-       `(,(concat jkl/pkg-path "cedet-1.0/common/cedet")
-         "/usr/share/emacs/site-lisp/cedet/common/cedet")))
-  (dolist (pth cedet-paths)
-    (when (file-exists-p (concat pth ".el"))
-      (load pth nil)
-      (return))))
 
 ;;; ECB - Code Browser
 (require 'ecb-autoloads nil t)
@@ -255,6 +255,8 @@ try disabling Alt-Tab switching and see how that works")
                                     #'(lambda ()
                                         (sh-mode)
                                         (sh-set-shell "bash" t))))
+
+(add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
 
 (global-set-key (kbd "M-w") 'copy-region-as-kill)
 
