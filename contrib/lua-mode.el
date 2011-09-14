@@ -37,6 +37,12 @@
 
 ;;; Commentary:
 
+;; Thanks to Rafael Sanchez <rafael@cornerdimension.com> for patch
+;; adding lua-mode to interpreter-mode-alist
+
+;; Thanks to Leonardo Etcheverry <leo@kalio.net> for enabling
+;; narrow-to-defun functionality
+
 ;; Thanks to Tobias Polzin <polzin@gmx.de> for function indenting
 ;; patch: Indent "(" like "{"
 
@@ -87,6 +93,9 @@
 
 
 ;;; Code:
+(eval-when-compile
+  (require 'cl))
+
 (require 'comint)
 
 ;; Local variables
@@ -210,6 +219,12 @@ If the latter is nil, the keymap translates into `lua-mode-map' verbatim.")
   "Regular expression that describes tracebacks and errors."
   :type 'regexp
   :group 'lua)
+
+(defcustom lua-indent-string-contents nil
+  "If non-nil, contents of multiline string will be indented.
+Otherwise leading amount of whitespace on each line is preserved."
+  :group 'lua
+  :type 'boolean)
 
 (defcustom lua-jump-on-traceback t
   "*Jump to innermost traceback location in *lua* buffer.  When this
@@ -370,10 +385,14 @@ The following keys are bound:
 
     (set (make-local-variable 'parse-sexp-lookup-properties) t)
     (lua-mark-all-multiline-literals)
+    (lua--automark-multiline-update-timer)
     (run-hooks 'lua-mode-hook)))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+
+;;;###autoload
+(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
 (defun lua-electric-match (arg)
   "Insert character and adjust indentation."
@@ -408,16 +427,22 @@ This function replaces previous prefix-key binding with a new one."
 
 (defun lua-string-p (&optional pos)
   "Returns true if the point is in a string."
-  (elt (syntax-ppss pos) 3))
+  (save-excursion (elt (syntax-ppss pos) 3)))
 
 (defun lua-comment-p (&optional pos)
   "Returns true if the point is in a comment."
-  (elt (syntax-ppss pos) 4))
+  (save-excursion (elt (syntax-ppss pos) 4)))
 
 (defun lua-comment-or-string-p (&optional pos)
   "Returns true if the point is in a comment or string."
-  (let ((parse-result (syntax-ppss pos)))
-    (or (elt parse-result 3) (elt parse-result 4))))
+  (save-excursion (let ((parse-result (syntax-ppss pos)))
+                    (or (elt parse-result 3) (elt parse-result 4)))))
+
+(defun lua-comment-or-string-start (&optional pos)
+  "Returns start position of string or comment which contains point.
+
+If point is not inside string or comment, return nil."
+  (save-excursion (elt (syntax-ppss pos) 8)))
 
 (defun lua-indent-line ()
   "Indent current line for Lua mode.
@@ -427,7 +452,7 @@ Return the amount the indentation changed by."
         ;; save point as a distance to eob - it's invariant w.r.t indentation
         (pos (- (point-max) (point))))
     (back-to-indentation)
-    (if (lua-string-p)  ;; don't indent if inside multiline string literal
+    (if (and (not lua-indent-string-contents) (lua-string-p))
         (goto-char (- (point-max) pos)) ;; just restore point position
 
       (setq indent (max 0 (- (lua-calculate-indentation nil)
@@ -455,7 +480,8 @@ ignored, nil otherwise."
         (case-fold-search nil))
     (catch 'found
       (while (funcall search-func regexp limit t)
-        (if (not (funcall ignore-func))
+        (if (and (not (funcall ignore-func (match-beginning 0)))
+                 (not (funcall ignore-func (match-end 0))))
             (throw 'found (point)))))))
 
 (defconst lua-block-regexp
@@ -1192,7 +1218,7 @@ left out."
 
 If TYPE is string, mark char  as string delimiter. If TYPE is comment,
 mark char as comment delimiter.  Otherwise, remove the mark if any."
-  (let ((old-modified-p (buffer-modified-p)))
+  (let ((old-modified-p (buffer-modified-p)) (inhibit-modification-hooks t))
     (unwind-protect
         (lua-put-char-syntax-table pos (lua-get-multiline-delim-syntax type))
       (set-buffer-modified-p old-modified-p))))
@@ -1213,9 +1239,9 @@ mark char as comment delimiter.  Otherwise, remove the mark if any."
 If BEGIN is nil, start from `beginning-of-buffer'.
 If END is nil, stop at `end-of-buffer'."
   (interactive)
-  (let ((old-modified-p (buffer-modified-p)))
+  (let ((old-modified-p (buffer-modified-p)) (inhibit-modification-hooks t))
     (unwind-protect
-        (remove-text-properties (or begin 1) (or end (buffer-size)) '(syntax-table ()))
+        (remove-text-properties (or begin (point-min)) (or end (point-max)) '(syntax-table ()))
       (set-buffer-modified-p old-modified-p)))
   (font-lock-fontify-buffer))
 
@@ -1238,7 +1264,7 @@ If END is nil, stop at `end-of-buffer'."
 
   (lua-unmark-multiline-literals begin end)
   (save-excursion
-    (goto-char (or begin 1))
+    (goto-char (or begin (point-min)))
 
     (while (and
             ;; must check  for point range,  because matching previous
@@ -1262,11 +1288,68 @@ If END is nil, stop at `end-of-buffer'."
         (let (ml-begin ml-end)
           (setq ml-begin (match-beginning 0))
           (when (re-search-forward (format "\\]%s\\]" (or (match-string 1) "")) nil 'noerror)
-            (message "found match %s" (match-string 0))
+            ;; (message "found match %s" (match-string 0))
             (setq ml-end (match-end 0)))
           (lua-mark-multiline-region ml-begin ml-end))))))
 
-(provide 'lua-mode)
+(defvar lua-automark-multiline-timer nil
+  "Contains idle-timer object used for automatical multiline literal markup which must be cleaned up on exit.")
+(make-variable-buffer-local 'lua-automark-multiline-timer)
 
+(defvar lua-automark-multiline-start-pos nil
+  "Contains position from which automark procedure should start.
+
+Automarking shall start at the point before which no modification has been
+made since last automark. Additionally, if such point is inside string or
+comment, rewind start position to its beginning.
+
+nil means automark is unnecessary because there were no updates.")
+(make-variable-buffer-local 'lua-automark-multiline-start-pos)
+
+(defun lua--automark-update-start-pos (change-begin change-end old-len)
+  "Updates `lua-automark-multiline-start-pos' upon buffer modification."
+  (setq lua-automark-multiline-start-pos
+        (or (lua-comment-or-string-start change-begin) change-begin)))
+
+(defun lua--automark-multiline-update-timer ()
+  (lua--automark-multiline-cleanup)  ;; reset previous timer if it existed
+  (when lua-automark-multiline-interval
+    (add-hook 'change-major-mode-hook 'lua--automark-multiline-cleanup nil 'local)
+    (add-hook 'after-change-functions 'lua--automark-update-start-pos  nil 'local)
+    (setq lua-automark-multiline-timer
+          (run-with-idle-timer lua-automark-multiline-interval 'repeat
+                               'lua--automark-multiline-run))))
+
+(defun lua--automark-multiline-cleanup ()
+  "Disable automatical multiline construct marking"
+  (unless (null lua-automark-multiline-timer)
+    (cancel-timer lua-automark-multiline-timer)
+    (setq lua-automark-multiline-timer nil)))
+
+(defun lua--automark-multiline-run ()
+  (when (<= (buffer-size) lua-automark-multiline-maxsize)
+    (when lua-automark-multiline-start-pos
+      (lua-mark-all-multiline-literals lua-automark-multiline-start-pos)
+      (setq lua-automark-multiline-start-pos nil))))
+
+(defun lua--customize-set-automark-multiline-interval (symbol value)
+  (set symbol value)
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (eq major-mode 'lua-mode)
+        (lua--automark-multiline-update-timer)))))
+
+(defcustom lua-automark-multiline-interval 1
+  "If not 0, specifies idle time in seconds after which lua-mode will mark multiline literals."
+  :group 'lua
+  :type 'integer
+  :set 'lua--customize-set-automark-multiline-interval)
+
+(defcustom lua-automark-multiline-maxsize 100000
+  "Maximum buffer size for which lua-mode will mark multiline literals automatically."
+  :group 'lua
+  :type 'integer)
+
+(provide 'lua-mode)
 
 ;;; lua-mode.el ends here
