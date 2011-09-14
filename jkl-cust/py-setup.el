@@ -5,10 +5,16 @@
 ;;(require 'ipython)
 ;;(jkl/custom-set 'py-python-command-args '("--colors=Linux"))
 
+(require 'python-mode)
 (when (file-executable-p "/usr/bin/python2")
   (setq pymacs-python-command "python2")
+  (jkl/custom-set 'py-shell-name "python2")
   (jkl/custom-set 'py-python-command "python2")
   (jkl/custom-set 'py-default-interpreter "python2"))
+
+;; CEDET causes this to load, and it really fouls shit up for me with python-mode
+;; Leave out for now
+(remove-hook 'python-mode-hook 'wisent-python-default-setup)
 
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")

@@ -233,9 +233,15 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; CUSTOM MAJOR MODES
 
 ;;; MAJOR MODES - add'l major mode setup
+
+;; LUA Mode
 (autoload 'lua-block-mode "lua-block" "Lua highlight matching block")
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (jkl/add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+
+(let ((jlua-sh "~/bin/jlua"))
+  (when (file-executable-p jlua-sh)
+    (jkl/custom-set 'lua-default-application (expand-file-name jlua-sh))))
 
 ;;;; BEGIN CUSTOMIZATION
 ;;; GLOBAL settings
