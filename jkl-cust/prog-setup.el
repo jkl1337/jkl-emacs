@@ -103,6 +103,10 @@
   "Harris C(++)/IDL style")
 
 (c-add-style "harris" harris-c-style)
+(c-add-style "windows"
+             '("ellemtel"
+               (indent-tabs-mode . nil)
+               (c-basic-offset . 4)))
 
 (defun harris-c-mode ()
   (interactive)
@@ -129,6 +133,7 @@
   (setq indent-tabs-mode nil))
 
 ;;; GTAGS
+(jkl/custom-set 'gtags-suggested-key-mapping t)
 (let ((en-gtags #'(lambda ()
                     (gtags-mode 1))))
   (add-hook 'c++-mode-hook en-gtags)
