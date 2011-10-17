@@ -1,3 +1,4 @@
+(eval-when-compile (require 'cl))
 
 (defun jkl/remove-elc-on-save ()
   "Hooks the `after-save-hook' to delete elc files."
@@ -88,6 +89,8 @@ customize, using the custom-set property of the symbol, if available."
     (setq args (cdr args))))
 
 (defun jkl/add-to-list (list-var elt &optional append compare-fn)
+  "Set value of LIST-VAR similar to add-to-list but also update
+CUSTOMIZED-VALUE property"
   (add-to-list list-var elt append compare-fn)
   (put list-var 'customized-value (list (custom-quote (eval list-var)))))
 
