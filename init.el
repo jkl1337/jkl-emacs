@@ -104,6 +104,10 @@ try disabling Alt-Tab switching and see how that works")
       (define-key function-key-map [(control tab)] [?\M-\t])
     (w32-register-hot-key [M-tab])))
 
+;;;; MARKDOWN-MODE
+(autoload 'markdown-mode "markdown-mode")
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+
 ;;;; w3m
 (require 'w3m-load nil t)
 (when (and (not jkl/mswinp) (featurep 'w3m-load))
@@ -144,7 +148,7 @@ try disabling Alt-Tab switching and see how that works")
 (require 'org-install nil)
 
 (jkl/custom-set 'major-mode 'text-mode)
-(jkl/add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
@@ -237,7 +241,7 @@ try disabling Alt-Tab switching and see how that works")
 ;; LUA Mode
 (autoload 'lua-block-mode "lua-block" "Lua highlight matching block")
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-(jkl/add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
 (let ((jlua-sh "~/bin/jlua"))
   (when (file-executable-p jlua-sh)
