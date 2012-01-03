@@ -41,7 +41,9 @@
   (add-to-list 'load-path contrib-dir))
 
 ;; load host specific early-init
-(jkl/load-script (concat "host-" system-name ".el") t)
+(jkl/load-script (concat "host-"
+			 (substring system-name 0 (string-match "\\." system-name))
+			 ".el") t)
 
 ;; site CEDET early override
 (let ((cedet-paths
