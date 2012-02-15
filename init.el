@@ -35,7 +35,7 @@
 (add-to-list 'load-path (concat jkl/my-dir "jkl-lib"))
 (require 'jkl-util)
 
-;; Misc GIT controlled 3rd party scripts
+;;;; Misc 3rd party scripts
 (let ((contrib-dir (concat jkl/my-dir "contrib/")))
   (jkl/load-path-add-immediate-subdirs contrib-dir)
   (add-to-list 'load-path contrib-dir))
@@ -43,9 +43,22 @@
 ;; load host specific early-init
 (jkl/load-script (concat "host-" system-name ".el") t)
 
+;;;; EL-GET
+
+(jkl/custom-set 'el-get-dir (concat user-emacs-directory "el-get/"))
+
+;;; Hacks
+; https://github.com/dimitri/el-get/issues/529
+(let ((cedet-dir (expand-file-name "cedet" el-get-dir)))
+  (add-to-list 'load-path (expand-file-name
+                           "common" cedet-dir))
+  (add-to-list 'load-path (expand-file-name
+                           "speedbar" cedet-dir))
+  (require 'inversion nil t))
+
 ;; site CEDET early override
 (let ((cedet-paths
-       `(,(concat jkl/pkg-path "cedet/common/cedet")
+       `(,(expand-file-name "cedet" (concat el-get-dir "cedet/common/"))
          "/usr/share/emacs/site-lisp/cedet/common/cedet")))
   (while cedet-paths
     (let ((pth (car cedet-paths)))
@@ -55,6 +68,69 @@
             (load pth nil)))
     (setq cedet-paths (cdr cedet-paths))))
 
+;;; Bootstrap el-get
+(add-to-list 'load-path (concat el-get-dir "el-get"))
+(unless (require 'el-get nil t)
+  (url-retrieve
+   "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
+   (lambda (s)
+     (let (el-get-master-branch)
+       (end-of-buffer)
+       (eval-print-last-sexp))))
+  (require 'el-get))
+
+;;; el-get recipes
+(setq el-get-sources
+      '((:name jdee
+               :website "http://jdee.sourceforge.net/"
+               :description "The JDEE is an add-on software package that turns Emacs into a comprehensive system for creating, editing, debugging, and documenting Java applications."
+               :type git
+               :depends cedet
+               :url "/home/jluebs/git/jdee"
+               :build `(,(concat "ant bindist -Dbuild.bin.emacs=" el-get-emacs " -Delib.dir= -Dcedet.dir=" el-get-dir "cedet -Ddist.dir=dist"))
+               ;; :build ("touch `find . -name Makefile`" "make")
+               :load-path ("dist/lisp"))
+	(:name pymacs
+	       :description "Interface between Emacs Lisp and Python"
+	       :type git
+	       :url "http://github.com/pinard/Pymacs.git"
+	       :post-init
+	       (lambda ()
+		 ;; do PYTHONPATH=~/.emacs.d/el-get/pymacs/:$PYTHONPATH
+		 (setenv
+		  "PYTHONPATH"
+		  (let ((pp (or (getenv "PYTHONPATH") "")))
+		    (concat default-directory
+			    (unless (string-prefix-p ":" pp) ":")
+			    pp)))
+		 (autoload 'pymacs-load "pymacs" nil t)
+		 (autoload 'pymacs-eval "pymacs" nil t)
+		 (autoload 'pymacs-exec "pymacs" nil t)
+		 (autoload 'pymacs-call "pymacs")
+		 (autoload 'pymacs-apply "pymacs"))
+	       :build `(,(concat "make"
+				 (if (file-executable-p "/usr/bin/python2")
+				     " PYTHON=python2" " "))))))
+
+(setq jkl/el-get-packages
+ '(el-get
+   cedet
+   ecb
+   escreen
+   jdee
+   auto-complete
+   nxhtml
+   org-mode
+   pylookup
+   python-mode
+   pymacs
+   lua-mode
+   emms
+   xcscope
+   git-blame))
+
+(el-get 'sync jkl/el-get-packages)
+
 ;; Request to merge custom info.
 ;; Consider setting additional-path with default list in order to
 ;; have custom docs separated (put them in INFOPATH)
@@ -62,15 +138,15 @@
              (expand-file-name jkl/info-path))
 
 ;; configure standard 3rd party install load path
-(jkl/load-path-add-immediate-subdirs jkl/pkg-path)
-(add-to-list 'load-path jkl/pkg-path)
+;; (jkl/load-path-add-immediate-subdirs jkl/pkg-path)
+;; (add-to-list 'load-path jkl/pkg-path)
 
 ;;;; ELPA
 ;; package.el is carried in the contrib directory for now
-(require 'package)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
-(package-initialize) 
+;; (require 'package)
+;; (add-to-list 'package-archives
+;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
+;; (package-initialize) 
 
 ;;;; Command/environment customizations
 ;; Windows msys shell
@@ -137,7 +213,7 @@ try disabling Alt-Tab switching and see how that works")
     (add-to-list 'Info-default-directory-list (expand-file-name (concat emms-lisp-dir "/../doc")))))
 
 ;;;; BBDB
-(require 'bbdb)
+;; (require 'bbdb)
 
 ;;;; ORG-MODE
 (when (car (jkl/try-add-pkg "org-mode/lisp" "org-mode/contrib/lisp"))
@@ -202,46 +278,47 @@ try disabling Alt-Tab switching and see how that works")
 ;; END appearance / basic faces
 
 ;;;; GTAGS
-(autoload 'gtags-mode "gtags" "" t)
+;; (autoload 'gtags-mode "gtags" "" t)
 
 ;;;; LISP / SLIME
-(when (require 'slime-autoloads nil t)
-  (slime-setup '(inferior-slime)))
+;; (when (require 'slime-autoloads nil t)
+;;   (slime-setup '(inferior-slime)))
 
 ;;;; YASNIPPET
-(require 'yasnippet)
-(yas/initialize)
-(let ((snippet-dir (concat jkl/pkg-path "yasnippet-0.6.1c/snippets")))
-  (when (file-accessible-directory-p snippet-dir)
-    (yas/load-directory snippet-dir)))
+;; (require 'yasnippet)
+;; (yas/initialize)
+;; (let ((snippet-dir (concat jkl/pkg-path "yasnippet-0.6.1c/snippets")))
+;;   (when (file-accessible-directory-p snippet-dir)
+;;     (yas/load-directory snippet-dir)))
 
 ;;;; NXHTML
-(when (load (concat jkl/pkg-path "nxhtml/" "autostart.el") t t t)
-  (tabkey2-mode t))
+;; (when (load (concat jkl/pkg-path "nxhtml/" "autostart.el") t t t)
+;;   (tabkey2-mode t))
 
 ;;;; CEDET and ECB
 
 ;;; ECB - Code Browser
-(require 'ecb-autoloads nil t)
+;; (require 'ecb-autoloads nil t)
 
 ;;;; JDEE
-(let ((jdee-lisp-dir (concat jkl/pkg-path "jdee/lisp")))
-  (when (file-directory-p jdee-lisp-dir)
-    (add-to-list 'load-path (concat jkl/pkg-path "jdee/lisp"))
-    (load "jde-autoload")))
+;; (let ((jdee-lisp-dir (concat jkl/pkg-path "jdee/lisp")))
+;;   (when (file-directory-p jdee-lisp-dir)
+;;     (add-to-list 'load-path (concat jkl/pkg-path "jdee/lisp"))
+;;     (load "jde-autoload")))
+;;(load "jde-autoload")
 
 ;;; cscope
 ;; try xcscope for now
-(require 'xcscope)
+;; (require 'xcscope)
 
 ;;;; CUSTOM MAJOR MODES
 
 ;;; MAJOR MODES - add'l major mode setup
 
 ;; LUA Mode
-(autoload 'lua-block-mode "lua-block" "Lua highlight matching block")
-(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+;; (autoload 'lua-block-mode "lua-block" "Lua highlight matching block")
+;; (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+;; (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
 (let ((jlua-sh "~/bin/jlua"))
   (when (file-executable-p jlua-sh)
@@ -284,7 +361,7 @@ try disabling Alt-Tab switching and see how that works")
                 'auto-save-timeout 300
                 'make-backup-files nil)
 
-;; ELISP customization
+;;; ELISP customization
 
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
