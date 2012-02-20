@@ -89,7 +89,7 @@
                :description "The JDEE is an add-on software package that turns Emacs into a comprehensive system for creating, editing, debugging, and documenting Java applications."
                :type git
                :depends cedet
-               :url "/home/jluebs/git/jdee"
+               :url "http://github.com/jkl1337/jdee.git"
                :build `(,(concat "ant bindist -Dbuild.bin.emacs=" el-get-emacs " -Delib.dir= -Dcedet.dir=" el-get-dir "cedet -Ddist.dir=dist"))
                ;; :build ("touch `find . -name Makefile`" "make")
                :load-path ("dist/lisp"))
@@ -125,7 +125,14 @@
                :features bbdb-loaddefs
                :autoloads nil
                :post-init (lambda () (bbdb-initialize)))
-        
+        (:name ecb
+               :description "Emacs Code Browser"
+               :type cvs
+               :depends cedet
+               :module "ecb"
+               :url ":pserver:anonymous@ecb.cvs.sourceforge.net:/cvsroot/ecb"
+               :build `(("make" "CEDET=" ,(concat (shell-quote-argument el-get-dir) "cedet/common/")
+                         ,(concat "EMACS=" (shell-quote-argument el-get-emacs)))))
         ))
 
 (setq jkl/el-get-packages
