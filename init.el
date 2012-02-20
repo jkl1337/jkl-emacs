@@ -154,6 +154,9 @@
 
 (el-get 'sync jkl/el-get-packages)
 
+;; Hack for nxml-child-indent being screwed up in highlight-indentation
+(jkl/custom-set 'nxml-child-indent 2)
+
 ;; Request to merge custom info.
 ;; Consider setting additional-path with default list in order to
 ;; have custom docs separated (put them in INFOPATH)
