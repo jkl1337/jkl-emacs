@@ -133,6 +133,19 @@
                :url ":pserver:anonymous@ecb.cvs.sourceforge.net:/cvsroot/ecb"
                :build `(("make" "CEDET=" ,(concat (shell-quote-argument el-get-dir) "cedet/common/")
                          ,(concat "EMACS=" (shell-quote-argument el-get-emacs)))))
+        (:name python-mode
+               :type git
+               :url "https://github.com/jkl1337/python-mode.git"
+               :description "Major mode for editing Python programs"
+               :features (python-mode doctest-mode)
+               :depends highlight-indentation
+               :compile ("python-mode.el" "python-extended-executes.el" "test/doctest-mode.el")
+               :load "test/doctest-mode.el"
+               :post-init (lambda ()
+                            (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
+                            (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+                            (autoload 'python-mode "python-mode" "Python editing mode." t)))
+
         ))
 
 (setq jkl/el-get-packages
@@ -160,9 +173,6 @@
    html5))
 
 (el-get 'sync jkl/el-get-packages)
-
-;; Hack for nxml-child-indent being screwed up in highlight-indentation
-(jkl/custom-set 'nxml-child-indent 2)
 
 ;; Request to merge custom info.
 ;; Consider setting additional-path with default list in order to
@@ -343,6 +353,9 @@ try disabling Alt-Tab switching and see how that works")
 (jkl/custom-set 'fill-column 72)
 ;; going to go ahead and default to no tabs globally
 (jkl/custom-set 'indent-tabs-mode nil)
+
+;;; show-trailing-whitespace
+(jkl/custom-set 'show-trailing-whitespace t)
 
 (add-to-list 'auto-mode-alist
                  '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode))
