@@ -357,6 +357,8 @@ try disabling Alt-Tab switching and see how that works")
 ;;; show-trailing-whitespace
 (jkl/custom-set 'show-trailing-whitespace t)
 
+(add-to-list 'interpreter-mode-alist '("dash" . sh-mode))
+
 (add-to-list 'auto-mode-alist
                  '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode))
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
