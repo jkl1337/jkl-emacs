@@ -141,11 +141,13 @@
                :depends highlight-indentation
                :compile ("python-mode.el" "python-extended-executes.el" "test/doctest-mode.el")
                :load "test/doctest-mode.el"
-               :post-init (lambda ()
-                            (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
-                            (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-                            (autoload 'python-mode "python-mode" "Python editing mode." t)))
-
+               :prepare (progn
+                          (autoload 'python-mode "python-mode"
+                            "Python editing mode." t)
+                          (add-to-list 'auto-mode-alist
+                                       '("\\.py$" . python-mode))
+                          (add-to-list 'interpreter-mode-list
+                                       '("python" . python-mode))))
         ))
 
 (setq jkl/el-get-packages
