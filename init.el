@@ -48,7 +48,7 @@
 ;;;; EL-GET
 
 (jkl/custom-set 'el-get-dir (concat user-emacs-directory "el-get/"))
-(jkl/custom-set 'el-get-git-shallow-clone t)
+(jkl/custom-set 'el-get-git-shallow-clone nil) ;; FIXME: have to disable for org-mode horkage
 
 ;;; Hacks
 ; https://github.com/dimitri/el-get/issues/529
@@ -124,7 +124,7 @@
                :build `("autoconf" ,(concat "./configure --with-texmf-dir=/usr/share/texmf --with-emacs=" el-get-emacs) "make bbdb")
                :features bbdb-loaddefs
                :autoloads nil
-               :post-init (lambda () (bbdb-initialize)))
+               :post-init (progn (bbdb-initialize)))
         (:name ecb
                :description "Emacs Code Browser"
                :type cvs
@@ -148,6 +148,22 @@
                                        '("\\.py$" . python-mode))
                           (add-to-list 'interpreter-mode-list
                                        '("python" . python-mode))))
+
+        ;; stupid org-mode git broke
+        (:name org-mode
+               :website "http://orgmode.org/"
+               :description "Org-mode is for keeping notes, maintaining ToDo lists, doing project planning, and authoring with a fast and effective plain-text system."
+               :type git
+               :checkout "release_7.8.07"
+               :url "git://orgmode.org/org-mode.git"
+               :info "doc"
+               :build `,(mapcar
+                          (lambda (target)
+                            (list "make" target (concat "EMACS=" (shell-quote-argument el-get-emacs))))
+                          '("clean" "all"))
+               :load-path ("." "lisp" "contrib/lisp")
+               :autoloads nil
+               :features org-install)
         ))
 
 (setq jkl/el-get-packages
