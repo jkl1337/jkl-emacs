@@ -149,6 +149,14 @@
                           (add-to-list 'interpreter-mode-alist
                                        '("python" . python-mode))))
 
+        (:name lua-mode
+               :description "A major-mode for editing Lua scripts"
+               :website "https://github.com/immerrr/lua-mode"
+               :description "A major mode for editing Lua scripts."
+               :type git
+               :branch "compile-fix"
+               :url "https://github.com/jkl1337/lua-mode")
+
         ;; stupid org-mode git broke
         ;; (:name org-mode
         ;;        :website "http://orgmode.org/"
