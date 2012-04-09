@@ -352,7 +352,9 @@ try disabling Alt-Tab switching and see how that works")
 
 (let ((jlua-sh "~/bin/jlua"))
   (when (file-executable-p jlua-sh)
-    (jkl/custom-set 'lua-default-application (expand-file-name jlua-sh))))
+    (jkl/custom-set 'lua-default-application (expand-file-name jlua-sh)))
+  (when (executable-find "luajit")
+    (setenv "LUAI" "luajit")))
 
 ;;;; BEGIN CUSTOMIZATION
 ;;; GLOBAL settings
