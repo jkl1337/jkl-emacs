@@ -156,7 +156,12 @@
                :type git
                :branch "compile-fix"
                :url "https://github.com/jkl1337/lua-mode")
-
+        (:name csharp-mode
+               :website "https://code.google.com/p/csharpmode/"
+               :description "This is a mode for editing C# in emacs. It's based on cc-mode, v5.30.3 and above."
+               :type git
+               :url "luebsj@luebsphoto.com:/srv/git/csharp-mode.git"
+               :features csharp-mode)
         ;; stupid org-mode git broke
         ;; (:name org-mode
         ;;        :website "http://orgmode.org/"

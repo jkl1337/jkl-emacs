@@ -11,6 +11,11 @@
        (directory-files dir t ".org$")
        (apply 'append (mapcar 'jkl/lst-org-files (directory-files dir t "[^.]+"))))))
 
+(jkl/custom-set 'org-babel-load-languages
+                '((emacs-lisp . t)
+                  (sh . t)
+                  (ditaa . t)))
+
 (jkl/custom-set 'org-agenda-files
                 (jkl/lst-org-files (concat jkl/git-repo-dir "jkl-org")))
 
