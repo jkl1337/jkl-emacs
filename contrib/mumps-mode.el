@@ -258,11 +258,11 @@
   ;;
   ;; set up keyboard mappings
   ;;
-  (global-set-key (kbd "<f6>") 'lkm-global-at-point)
-  (global-set-key (kbd "<f7>") 'lkm-gtm-global-lookup)
-  (global-set-key (kbd "<f8>") 'lkm-jump-to-routine-def)
-  (global-set-key (kbd "<f5>") 'lkm-complete-symbol)
-  (global-set-key (kbd "<f9>") 'lkm-gtm-compile)
+  ;; (global-set-key (kbd "<f6>") 'lkm-global-at-point)
+  ;; (global-set-key (kbd "<f7>") 'lkm-gtm-global-lookup)
+  ;; (global-set-key (kbd "<f8>") 'lkm-jump-to-routine-def)
+  ;; (global-set-key (kbd "<f5>") 'lkm-complete-symbol)
+  ;; (global-set-key (kbd "<f9>") 'lkm-gtm-compile)
 
   ;;
   ;; set up the MUMPS menu to be loaded after the Tools menu
