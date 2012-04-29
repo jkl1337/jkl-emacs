@@ -417,7 +417,7 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; PERFORCE
 ;; Adding this backend causes indefinite wait in all non-rev controlled directories
-;;(jkl/add-to-list 'vc-handled-backends 'P4)
+(jkl/add-to-list 'vc-handled-backends 'P4)
 
 ;; git support / non-Windows only for now
 (unless jkl/mswinp
