@@ -407,7 +407,8 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; PERFORCE
 ;; Adding this backend causes indefinite wait in all non-rev controlled directories
 (jkl/custom-set 'vc-p4-require-p4config t)
-(jkl/add-to-list 'vc-handled-backends 'P4)
+;; Damn, it's not working well
+;; (jkl/add-to-list 'vc-handled-backends 'P4) 
 
 ;; git support / non-Windows only for now
 (unless jkl/mswinp
