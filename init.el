@@ -85,6 +85,7 @@
                :url "http://github.com/jkl1337/jdee.git"
                :build `(,(concat "ant bindist -Dbuild.bin.emacs=" el-get-emacs " -Delib.dir= -Dcedet.dir=" el-get-dir "cedet -Ddist.dir=dist"))
                ;; :build ("touch `find . -name Makefile`" "make")
+               :branch "bzr-cedet"
                :load-path ("dist/lisp"))
         (:name pymacs
                :description "Interface between Emacs Lisp and Python"
