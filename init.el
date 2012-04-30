@@ -162,28 +162,24 @@
                :type git
                :url "luebsj@luebsphoto.com:/srv/git/csharp-mode.git"
                :features csharp-mode)
-        ;; stupid org-mode git broke
-        ;; (:name org-mode
-        ;;        :website "http://orgmode.org/"
-        ;;        :description "Org-mode is for keeping notes, maintaining ToDo lists, doing project planning, and authoring with a fast and effective plain-text system."
-        ;;        :type git
-        ;;        :checkout "release_7.8.07"
-        ;;        :url "git://orgmode.org/org-mode.git"
-        ;;        :info "doc"
-        ;;        :build `,(mapcar
-        ;;                   (lambda (target)
-        ;;                     (list "make" target (concat "EMACS=" (shell-quote-argument el-get-emacs))))
-        ;;                   '("clean" "all"))
-        ;;        :load-path ("." "lisp" "contrib/lisp")
-        ;;        :autoloads nil
-        ;;        :features org-install)
+
+        (:name html5
+               :website "http://github.com/hober/html5-el"
+               :description "Umbrella project for projects adding HTML5 support to Emacs. This recipe is a work in progress."
+               :type git
+               :url "http://github.com/hober/html5-el"
+               :after (eval-after-load
+                          "rng-loc"
+                        '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml")))
+               :features whattf-dt
+               :build ("make relaxng"))
         ))
 
 (setq jkl/el-get-packages
  '(el-get git-emacs fuzzy popup cedet ecb escreen jdee auto-complete
    nxhtml org-mode pylookup python-mode pymacs lua-mode emms xcscope
    git-blame slime yasnippet csharp-mode bbdb bbdb-vcard jquery-doc
-   html5))
+   html5 js2-mode))
 
 (el-get 'sync jkl/el-get-packages)
 
@@ -417,6 +413,7 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; PERFORCE
 ;; Adding this backend causes indefinite wait in all non-rev controlled directories
+(jkl/custom-set 'vc-p4-require-p4config t)
 (jkl/add-to-list 'vc-handled-backends 'P4)
 
 ;; git support / non-Windows only for now
