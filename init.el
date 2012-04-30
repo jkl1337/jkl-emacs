@@ -46,30 +46,13 @@
 			 ".el") t)
 
 ;;;; EL-GET
-
 (jkl/custom-set 'el-get-dir (concat user-emacs-directory "el-get/"))
 (jkl/custom-set 'el-get-git-shallow-clone t)
 
-;;; Hacks
-; https://github.com/dimitri/el-get/issues/529
-(let ((cedet-dir (expand-file-name "cedet" el-get-dir)))
-  (add-to-list 'load-path (expand-file-name
-                           "common" cedet-dir))
-  (add-to-list 'load-path (expand-file-name
-                           "speedbar" cedet-dir))
-  (require 'inversion nil t))
-
-;; site CEDET early override
-(let ((cedet-paths
-       `(,(expand-file-name "cedet" (concat el-get-dir "cedet/common/"))
-         "/usr/share/emacs/site-lisp/cedet/common/cedet")))
-  (while cedet-paths
-    (let ((pth (car cedet-paths)))
-          (when (or
-                 (file-exists-p (concat pth ".elc"))
-                 (file-exists-p (concat pth ".el")))
-            (load pth nil)))
-    (setq cedet-paths (cdr cedet-paths))))
+;;; bootstreap CEDET early
+(let ((cedet-load-file (concat (expand-file-name "cedet" el-get-dir) "/cedet-devel-load.el")))
+  (when (file-exists-p cedet-load-file)
+    (load-file cedet-load-file)))
 
 ;;; Bootstrap el-get
 (add-to-list 'load-path (concat el-get-dir "el-get"))
@@ -84,7 +67,17 @@
 
 ;;; el-get recipes
 (setq el-get-sources
-      '((:name jdee
+      '(
+	(:name cedet
+	       :website "http://cedet.sourceforge.net/"
+	       :description "CEDET is a Collection of Emacs Development Environment Tools written with the end goal of creating an advanced development environment in Emacs."
+	       :type bzr
+	       :url "bzr://cedet.bzr.sourceforge.net/bzrroot/cedet/code/trunk"
+	       :build ("touch `find . -name Makefile`" "make")
+	       :build/windows-nt ("echo #!/bin/sh > tmp.sh & echo touch `/usr/bin/find . -name Makefile` >> tmp.sh & echo make FIND=/usr/bin/find >> tmp.sh"
+				  "sed 's/^M$//' tmp.sh  > tmp2.sh"
+				  "sh ./tmp2.sh" "rm ./tmp.sh ./tmp2.sh"))
+	(:name jdee
                :website "http://jdee.sourceforge.net/"
                :description "The JDEE is an add-on software package that turns Emacs into a comprehensive system for creating, editing, debugging, and documenting Java applications."
                :type git
