@@ -69,14 +69,7 @@
 (setq el-get-sources
       '(
 	(:name cedet
-	       :website "http://cedet.sourceforge.net/"
-	       :description "CEDET is a Collection of Emacs Development Environment Tools written with the end goal of creating an advanced development environment in Emacs."
-	       :type bzr
-	       :url "bzr://cedet.bzr.sourceforge.net/bzrroot/cedet/code/trunk"
-	       :build ("touch `find . -name Makefile`" "make")
-	       :build/windows-nt ("echo #!/bin/sh > tmp.sh & echo touch `/usr/bin/find . -name Makefile` >> tmp.sh & echo make FIND=/usr/bin/find >> tmp.sh"
-				  "sed 's/^M$//' tmp.sh  > tmp2.sh"
-				  "sh ./tmp2.sh" "rm ./tmp.sh ./tmp2.sh"))
+               :load-path nil)
 	(:name jdee
                :website "http://jdee.sourceforge.net/"
                :description "The JDEE is an add-on software package that turns Emacs into a comprehensive system for creating, editing, debugging, and documenting Java applications."
@@ -88,85 +81,33 @@
                :branch "bzr-cedet"
                :load-path ("dist/lisp"))
         (:name pymacs
-               :description "Interface between Emacs Lisp and Python"
-               :type git
-               :url "http://github.com/pinard/Pymacs.git"
-               :post-init
-               (lambda ()
-                 ;; do PYTHONPATH=~/.emacs.d/el-get/pymacs/:$PYTHONPATH
-                 (setenv
-                  "PYTHONPATH"
-                  (let ((pp (or (getenv "PYTHONPATH") "")))
-                    (concat default-directory
-                            (unless (string-prefix-p ":" pp) ":")
-                            pp)))
-                 (autoload 'pymacs-load "pymacs" nil t)
-                 (autoload 'pymacs-eval "pymacs" nil t)
-                 (autoload 'pymacs-exec "pymacs" nil t)
-                 (autoload 'pymacs-call "pymacs")
-                 (autoload 'pymacs-apply "pymacs"))
                :build `(,(concat "make"
                                  (if (file-executable-p "/usr/bin/python2")
                                      " PYTHON=python2" " "))))
-        (:name bbdb
-               :website "http://bbdb.sourceforge.net/"
-               :description "The Insidious Big Brother Database (BBDB) is a contact management utility."
-               :type git
-               :url "git://git.savannah.nongnu.org/bbdb.git"
-               :load-path ("./lisp")
-               ;; if using vm, add `--with-vm-dir=DIR' after ./configure
-               :build `("autoconf" ,(concat "./configure --with-texmf-dir=/usr/share/texmf --with-emacs=" el-get-emacs) "make bbdb")
-               :features bbdb-loaddefs
-               :autoloads nil
-               :post-init (progn (bbdb-initialize)))
         (:name ecb
-               :description "Emacs Code Browser"
-               :type cvs
                :depends cedet
-               :module "ecb"
-               :url ":pserver:anonymous@ecb.cvs.sourceforge.net:/cvsroot/ecb"
                :build `(("make" "CEDET=" ,(concat (shell-quote-argument el-get-dir) "cedet/common/")
                          ,(concat "EMACS=" (shell-quote-argument el-get-emacs)))))
         (:name python-mode
-               :type git
                :url "https://github.com/jkl1337/python-mode.git"
-               :description "Major mode for editing Python programs"
-               :features (python-mode doctest-mode)
                :depends highlight-indentation
                :compile ("python-mode.el" "python-extended-executes.el" "test/doctest-mode.el")
-               :load "test/doctest-mode.el"
-               :prepare (progn
-                          (autoload 'python-mode "python-mode"
-                            "Python editing mode." t)
-                          (add-to-list 'auto-mode-alist
-                                       '("\\.py$" . python-mode))
-                          (add-to-list 'interpreter-mode-alist
-                                       '("python" . python-mode))))
+               :load "test/doctest-mode.el")
 
         (:name lua-mode
-               :description "A major-mode for editing Lua scripts"
-               :website "https://github.com/immerrr/lua-mode"
-               :description "A major mode for editing Lua scripts."
-               :type git
                :branch "compile-fix"
                :url "https://github.com/jkl1337/lua-mode")
         (:name csharp-mode
-               :website "https://code.google.com/p/csharpmode/"
-               :description "This is a mode for editing C# in emacs. It's based on cc-mode, v5.30.3 and above."
-               :type git
-               :url "luebsj@luebsphoto.com:/srv/git/csharp-mode.git"
-               :features csharp-mode)
+               :url "luebsj@luebsphoto.com:/srv/git/csharp-mode.git")
 
         (:name html5
-               :website "http://github.com/hober/html5-el"
-               :description "Umbrella project for projects adding HTML5 support to Emacs. This recipe is a work in progress."
-               :type git
-               :url "http://github.com/hober/html5-el"
                :after (eval-after-load
                           "rng-loc"
-                        '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml")))
-               :features whattf-dt
-               :build ("make relaxng"))
+                        '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml"))))
+
+        (:name org-mode
+               :url "luebsj@luebsphoto.com:/srv/git/orgmode.git"
+               :branch "jkl-fixes")
         ))
 
 (setq jkl/el-get-packages
