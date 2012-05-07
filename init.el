@@ -68,6 +68,13 @@
 ;;; el-get recipes
 (setq el-get-sources
       '(
+	(:name auto-complete
+	       :post-init (progn
+			    (require 'auto-complete)
+			    (add-to-list 'ac-dictionary-directories
+					 (expand-file-name "dict"))
+			    (require 'auto-complete-config)
+			    (ac-config-default)))
 	(:name cedet
                :load-path nil)
 	(:name jdee
@@ -76,7 +83,11 @@
                :type git
                :depends cedet
                :url "http://github.com/jkl1337/jdee.git"
-               :build `(,(concat "ant bindist -Dbuild.bin.emacs=" el-get-emacs " -Delib.dir= -Dcedet.dir=" el-get-dir "cedet -Ddist.dir=dist"))
+               :build `(,(concat
+			  "CLASSPATH="
+			  (let ((cp "/usr/share/java/ant-contrib.jar"))
+			    (when (file-exists-p cp) cp))
+			  " ant bindist -Dbuild.bin.emacs=" el-get-emacs " -Delib.dir= -Dcedet.dir=" el-get-dir "cedet -Ddist.dir=dist"))
                ;; :build ("touch `find . -name Makefile`" "make")
                :branch "bzr-cedet"
                :load-path ("dist/lisp"))
@@ -86,7 +97,7 @@
                                      " PYTHON=python2" " "))))
         (:name ecb
                :depends cedet
-               :build `(("make" "CEDET=" ,(concat (shell-quote-argument el-get-dir) "cedet/common/")
+               :build `(("make" "CEDET=" ,(concat el-get-dir "cedet/lisp/common/")
                          ,(concat "EMACS=" (shell-quote-argument el-get-emacs)))))
         (:name python-mode
                :url "https://github.com/jkl1337/python-mode.git"
@@ -97,10 +108,13 @@
         (:name lua-mode
                :branch "compile-fix"
                :url "https://github.com/jkl1337/lua-mode")
-        (:name csharp-mode
-               :url "luebsj@luebsphoto.com:/srv/git/csharp-mode.git")
-
-        (:name html5
+	(:name csharp-mode
+	       :website "https://code.google.com/p/csharpmode/"
+	       :description "This is a mode for editing C# in emacs. It's based on cc-mode, v5.30.3 and above."
+	       :type git
+               :url "luebsj@luebsphoto.com:/srv/git/csharp-mode.git"
+	       :features csharp-mode)
+	(:name html5
                :after (eval-after-load
                           "rng-loc"
                         '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml"))))
@@ -111,10 +125,12 @@
         ))
 
 (setq jkl/el-get-packages
- '(el-get git-emacs fuzzy popup cedet ecb escreen jdee auto-complete
+ '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
    nxhtml org-mode pylookup python-mode pymacs lua-mode emms xcscope
-   git-blame slime yasnippet csharp-mode bbdb bbdb-vcard jquery-doc
+   git-blame slime yasnippet csharp-mode bbdb jquery-doc
    html5 js2-mode))
+
+;; TODO: fix: bbdb-vcard (bad mode map put in loaddefs)
 
 (el-get 'sync jkl/el-get-packages)
 
