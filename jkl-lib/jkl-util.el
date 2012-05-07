@@ -1,5 +1,9 @@
 (eval-when-compile (require 'cl))
 
+(defun jkl/path-or-nil (path)
+  "Return PATH if path exists, otherwise nil"
+  (when (file-exists-p path) path))
+
 (defun jkl/remove-elc-on-save ()
   "Hooks the `after-save-hook' to delete elc files."
   (add-hook 'after-save-hook
