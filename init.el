@@ -76,6 +76,8 @@
 			    (require 'auto-complete-config)
 			    (ac-config-default)))
 	(:name cedet
+	       :build/darwin `("touch `find . -name Makefile`"
+			       ,(concat "make EMACS=" el-get-emacs))
                :load-path nil)
 	(:name jdee
                :website "http://jdee.sourceforge.net/"
@@ -131,6 +133,7 @@
    html5 js2-mode))
 
 ;; TODO: fix: bbdb-vcard (bad mode map put in loaddefs)
+;; fix slime to not require tex?
 
 (el-get 'sync jkl/el-get-packages)
 
@@ -250,7 +253,9 @@ try disabling Alt-Tab switching and see how that works")
 (unless jkl/mswinp
   (let ((font-param))
     ;;(setq font-param '("ProggyCleanTT" . 120))
-    (setq font-param '("Terminus" . 100))
+    (setq font-param (if (eq  'darwin system-type)
+                         '("Terminus (TTF)" . 140)
+                       '("Terminus" . 100)))
     (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
                                  :overline nil :underline nil :background "black" :foreground "green" 
                                  :slant normal :weight normal :height ,(cdr font-param) :width normal
@@ -384,12 +389,6 @@ try disabling Alt-Tab switching and see how that works")
 (jkl/custom-set 'vc-p4-require-p4config t)
 ;; Damn, it's not working well
 ;; (jkl/add-to-list 'vc-handled-backends 'P4) 
-
-;; git support / non-Windows only for now
-(unless jkl/mswinp
-  (require 'git)
-  (autoload 'git-blame-mode "git-blame"
-    "Minor mode for incremental blame for Git." t))
 
 ;;; A find-file-hook that is interactive is arguably completely evil
 ;;; but perhaps I will assign this to a keybinding, later
