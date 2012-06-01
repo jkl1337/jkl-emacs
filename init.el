@@ -346,6 +346,7 @@ try disabling Alt-Tab switching and see how that works")
 (add-to-list 'auto-mode-alist
                  '("\\.\\([Ff][Rr][Mm]\\|[Bb][Aa][Ss]\\|[Cc][Ll][Ss]\\)$" . visual-basic-mode))
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(add-to-list 'auto-mode-alist '("\\.rockspec$" . lua-mode))
 (add-to-list 'auto-mode-alist '("\\.gp$" . gnuplot-mode))
 
 ;; arch and pacman PKGBUILD files
