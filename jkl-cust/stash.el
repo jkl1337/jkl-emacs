@@ -1,4 +1,7 @@
 
+(defadvice flymake-post-syntax-check (before flymake-force-check-was-interrupted)
+    (setq flymake-check-was-interrupted t))
+(ad-activate 'flymake-post-syntax-check)
 ;; (require 'emms-setup)
 
 ;; (when (and nil jkl/mswinp)

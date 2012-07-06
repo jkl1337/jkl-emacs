@@ -1,6 +1,11 @@
+
+(jkl/custom-set 'semantic-new-buffer-setup-functions
+                (append '((cpp-mode . semantic-default-c-setup)
+                          (c-mode . semantic-default-c-setup))
+                        semantic-new-buffer-setup-functions))
+
 (global-ede-mode t)
 (semantic-load-enable-excessive-code-helpers)
-(require 'semantic-ia)
 ;;(require 'semantic-gcc)
 
 (require 'semanticdb)
