@@ -87,7 +87,7 @@
                :url "http://github.com/jkl1337/jdee.git"
                :build `(,(concat
 			  "CLASSPATH="
-			  (let ((cp "/usr/share/java/ant-contrib.jar"))
+			  (let ((cp "/usr/share/java/apache-ant/lib/ant-contrib-1.0b3.jar"))
 			    (when (file-exists-p cp) cp))
 			  " ant bindist -Dbuild.bin.emacs=" el-get-emacs " -Delib.dir= -Dcedet.dir=" el-get-dir "cedet -Ddist.dir=dist"))
                ;; :build ("touch `find . -name Makefile`" "make")
