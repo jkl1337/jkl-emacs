@@ -288,6 +288,8 @@ try disabling Alt-Tab switching and see how that works")
          (new-height
           (if (< cur-height 96) 96 72)))
     (set-face-attribute 'default nil :height new-height)))
+(define-key (current-global-map) (kbd "C-+") 'text-scale-increase)
+(define-key (current-global-map) (kbd "C--") 'text-scale-decrease)
 (define-key jkl/func-map "f" 'jkl/font-switch)
 
 ;; END appearance / basic faces
