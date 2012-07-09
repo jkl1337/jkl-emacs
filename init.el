@@ -40,6 +40,10 @@
   (jkl/load-path-add-immediate-subdirs contrib-dir)
   (add-to-list 'load-path contrib-dir))
 
+;; Snippet, testing keymap
+(setq jkl/func-map (make-sparse-keymap))
+(define-key (current-global-map) [f6] jkl/func-map)
+
 ;; load host specific early-init
 (jkl/load-script (concat "host-"
 			 (substring system-name 0 (string-match "\\." system-name))
@@ -108,7 +112,7 @@
                :load "test/doctest-mode.el")
 
         (:name lua-mode
-               :branch "compile-fix"
+               :branch "jkl_indent"
                :url "https://github.com/jkl1337/lua-mode")
 	(:name csharp-mode
 	       :website "https://code.google.com/p/csharpmode/"
@@ -130,10 +134,7 @@
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
    nxhtml org-mode pylookup python-mode pymacs lua-mode emms xcscope
    git-blame slime yasnippet csharp-mode bbdb jquery-doc
-   html5 js2-mode))
-
-;; TODO: fix: bbdb-vcard (bad mode map put in loaddefs)
-;; fix slime to not require tex?
+   html5 js2-mode magit))
 
 (el-get 'sync jkl/el-get-packages)
 
@@ -149,6 +150,9 @@
 ;; (add-to-list 'package-archives
 ;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
 ;; (package-initialize) 
+
+;;;; CUSTOM KEY BINDINGS
+(define-key jkl/func-map "c" 'recompile)
 
 ;;;; Command/environment customizations
 ;; Windows msys shell
@@ -234,7 +238,7 @@ try disabling Alt-Tab switching and see how that works")
 
 (global-set-key (kbd "<f12>") 'org-agenda)
 
-(define-key global-map [f9] (make-sparse-keymap))
+(define-key (current-global-map) [f9] (make-sparse-keymap))
 
 (global-set-key (kbd "<f9> c") 'calendar)
 (global-set-key (kbd "<f9> b") 'bbdb)
@@ -277,6 +281,14 @@ try disabling Alt-Tab switching and see how that works")
    (font-lock-function-name-face "turquoise1")
    (font-lock-keyword-face "LightSkyBlue")
    (font-lock-comment-face "Chocolate1")))
+
+(defun jkl/font-switch ()
+  (interactive)
+  (let* ((cur-height (face-attribute 'default :height))
+         (new-height
+          (if (< cur-height 96) 96 72)))
+    (set-face-attribute 'default nil :height new-height)))
+(define-key jkl/func-map "f" 'jkl/font-switch)
 
 ;; END appearance / basic faces
 
