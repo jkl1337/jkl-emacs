@@ -32,7 +32,7 @@
  'org-log-done 'time
  'org-log-into-drawer t)
 
-(setq org-capture-templates '(("t" "todo" entry (file org-default-notes-file) "* TODO %?\n%U\n%a" :clock-in t :clock-resume t)
+(setq org-capture-templates '(("t" "todo" entry (file org-default-notes-file) "* TODO %?\n%U\n%a")
                               ("n" "note" entry (file org-default-notes-file) "* %? :NOTE:\n%U\n%a\n:CLOCK:\n:END:" :clock-in t :clock-resume t)
                               ("a" "appointment" entry (file+datetree jkl/org-diary-file) "* %?
 %U" :clock-in t :clock-resume t)
