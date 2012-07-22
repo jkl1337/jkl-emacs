@@ -19,6 +19,12 @@
 (jkl/custom-set 'org-agenda-files
                 (jkl/lst-org-files (concat jkl/git-repo-dir "jkl-org")))
 
+(jkl/custom-set 'org-directory
+                (concat jkl/git-repo-dir "jkl-org"))
+
+(jkl/custom-set 'org-default-notes-file
+                (concat org-directory "/notes.org"))
+
 (jkl/custom-set
  'org-fast-tag-selection-single-key t
  'org-treat-S-cursor-todo-selection-as-state-change nil
