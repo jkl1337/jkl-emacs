@@ -114,6 +114,10 @@
         (:name lua-mode
                :branch "jkl_indent"
                :url "https://github.com/jkl1337/lua-mode")
+        (:name markdown-mode
+               :branch "jkl"
+               :url "https://github.com/jkl1337/markdown-mode")
+
 	(:name csharp-mode
 	       :website "https://code.google.com/p/csharpmode/"
 	       :description "This is a mode for editing C# in emacs. It's based on cc-mode, v5.30.3 and above."
@@ -123,17 +127,12 @@
 	(:name html5
                :after (eval-after-load
                           "rng-loc"
-                        '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml"))))
-
-        (:name org-mode
-               :url "luebsj@luebsphoto.com:/srv/git/orgmode.git"
-               :branch "jkl-fixes")
-        ))
+                        '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml")))))
 
 (setq jkl/el-get-packages
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
-   nxhtml org-mode pylookup python-mode pymacs lua-mode emms xcscope
-   git-blame slime yasnippet csharp-mode bbdb jquery-doc
+   markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
+   emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
    html5 js2-mode magit))
 
 (el-get 'sync jkl/el-get-packages)
