@@ -302,7 +302,7 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; YASNIPPET
 ;; (require 'yasnippet)
-;;(add-to-list 'yas/snippet-dirs (concat user-emacs-directory "yasnippet"))
+(add-to-list 'yas/snippet-dirs (concat jkl/my-dir "yasnippet"))
 (yas/initialize)
 
 ;;;; NXHTML
