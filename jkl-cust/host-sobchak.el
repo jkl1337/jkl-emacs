@@ -4,8 +4,9 @@
 (global-set-key [end] 'move-end-of-line)
 (global-set-key [kp-delete] 'delete-char)
 
-(jkl/custom-set 'mac-option-modifier 'super
-		'mac-command-modifier 'meta)
+(jkl/custom-set 'mac-control-modifier 'meta
+                'mac-option-modifier 'super
+		'mac-command-modifier 'control)
 
 (setq user-emacs-directory "/Users/jluebs/emacs/")
 (setq jkl/pkg-path (concat user-emacs-directory "pkg/"))

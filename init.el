@@ -257,7 +257,8 @@ try disabling Alt-Tab switching and see how that works")
   (let ((font-param))
     ;;(setq font-param '("ProggyCleanTT" . 120))
     (setq font-param (if (eq  'darwin system-type)
-                         '("Terminus (TTF)" . 140)
+                         ;;'("Terminus (TTF)" . 140)
+                         '("Monaco" . 120)
                        '("Terminus" . 100)))
     (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
                                  :overline nil :underline nil :background "black" :foreground "green" 
@@ -301,7 +302,8 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; YASNIPPET
 ;; (require 'yasnippet)
-(yas/global-mode t)
+;;(add-to-list 'yas/snippet-dirs (concat user-emacs-directory "yasnippet"))
+(yas/initialize)
 
 ;;;; NXHTML
 (tabkey2-mode)
@@ -326,6 +328,14 @@ try disabling Alt-Tab switching and see how that works")
                   (makefile-mode . semantic-default-make-setup)))
 
 ;;; ECB - Code Browser
+
+;;;; AUTO-COMPLETE
+;;(jkl/custom-set 'ac-quick-help-delay 0.5)
+;;(ac-set-trigger-key "\s-\t")
+(defun jkl/ac-objc-mode-setup ()
+  (when (require 'auto-complete-clang nil t)
+    (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources))))
+;;(add-hook 'objc-mode-hook 'jkl/ac-objc-mode-setup)
 
 ;;;; JDEE
 
