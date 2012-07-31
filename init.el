@@ -332,6 +332,10 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; AUTO-COMPLETE
 ;;(jkl/custom-set 'ac-quick-help-delay 0.5)
 ;;(ac-set-trigger-key "\s-\t")
+(defun ac-js2-mode-setup ()
+  (setq ac-sources (append '(ac-source-yasnippet) ac-sources)))
+(add-hook 'js2-mode-hook 'ac-js2-mode-setup)
+
 (defun jkl/ac-objc-mode-setup ()
   (when (require 'auto-complete-clang nil t)
     (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources))))
