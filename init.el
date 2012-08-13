@@ -330,6 +330,17 @@ try disabling Alt-Tab switching and see how that works")
                   (makefile-imake-mode . semantic-default-make-setup)
                   (makefile-mode . semantic-default-make-setup)))
 
+(defun jkl/test-cedet ()
+  (interactive)
+  (jkl/add-to-list 'semantic-new-buffer-setup-functions
+                   '(c++-mode . semantic-default-c-setup))
+  (jkl/add-to-list 'semantic-new-buffer-setup-functions
+                   '(c-mode . semantic-default-c-setup))
+  (global-ede-mode t)
+  (semantic-load-enable-excessive-code-helpers)
+  (semanticdb-enable-gnu-global-databases 'c-mode)
+  (semanticdb-enable-gnu-global-databases 'c++-mode))
+
 ;;; ECB - Code Browser
 
 ;;;; AUTO-COMPLETE
