@@ -132,6 +132,14 @@
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
 
+(defvar jkl/cc-style)
+(setq jkl/cc-style
+      '("stroustrup"
+    (indent-tabs-mode . nil)
+    (c-offsets-alist . ((innamespace . 0)))))
+
+(c-add-style "vhs-cc-style" jkl/cc-style)
+
 ;;; GTAGS
 (jkl/custom-set 'gtags-suggested-key-mapping t)
 (let ((en-gtags #'(lambda ()
