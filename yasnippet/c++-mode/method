@@ -1,0 +1,7 @@
+# name: method
+# key: method
+# --
+${1:void} `(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`::${3:methodName}(${4:args})
+{
+    `yas/selected-text`$0
+}

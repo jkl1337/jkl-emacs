@@ -1,0 +1,18 @@
+# name: supdog
+# key: supdog
+# --
+#ifndef SUP_`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`_h_
+#define SUP_`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`_h_
+
+namespace Sup {
+`yas/selected-text`$0
+}
+
+/*
+ * Local Variables:
+ * mode: c++
+ * c-file-style: "vhs-cc-style"
+ * End:
+ */
+
+#endif
