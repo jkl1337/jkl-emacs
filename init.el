@@ -228,7 +228,7 @@ try disabling Alt-Tab switching and see how that works")
     (when (file-readable-p (concat org-info-dir "/dir"))
       (add-to-list 'Info-default-directory-list (expand-file-name org-info-dir)))))
 
-(require 'org-install nil)
+(require 'org nil)
 
 (jkl/custom-set 'major-mode 'text-mode)
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
