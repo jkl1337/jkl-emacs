@@ -118,9 +118,9 @@
                :branch "jkl"
                :url "https://github.com/jkl1337/markdown-mode")
 
-        (:name org-mode
-               :branch "jkl"
-               :url "https://github.com/jkl1337/org-mode")
+        ;; (:name org-mode
+        ;;        :branch "jkl"
+        ;;        :url "https://github.com/jkl1337/org-mode")
 	(:name csharp-mode
 	       :website "https://code.google.com/p/csharpmode/"
 	       :description "This is a mode for editing C# in emacs. It's based on cc-mode, v5.30.3 and above."
