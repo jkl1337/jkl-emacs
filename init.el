@@ -448,6 +448,7 @@ try disabling Alt-Tab switching and see how that works")
  "py-setup.el"
  "prog-setup.el"
  "clisp-setup.el"
+ "clojure-setup.el"
  )
 
 (setq custom-file (concat jkl/my-dir "custom.el"))
