@@ -336,6 +336,10 @@ try disabling Alt-Tab switching and see how that works")
                    '(c++-mode . semantic-default-c-setup))
   (jkl/add-to-list 'semantic-new-buffer-setup-functions
                    '(c-mode . semantic-default-c-setup))
+
+  (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+  (require 'semantic/bovine/c)
+  (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("Foundation_API" . ""))
   (global-ede-mode t)
   (semantic-load-enable-excessive-code-helpers)
   (semanticdb-enable-gnu-global-databases 'c-mode)
