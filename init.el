@@ -49,6 +49,54 @@
 			 (substring system-name 0 (string-match "\\." system-name))
 			 ".el") t)
 
+;; BEGIN APPEARANCE / BASIC FACES - with fallback when color-theme is not installed
+(when jkl/mswinp
+  (jkl/set-face 'default '((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
+                               :overline nil :underline nil :background "black" :foreground "green" 
+                               :slant normal :weight normal :height 90 :width normal
+                               :foundry "*" :family "Lucida Console")))))
+
+(unless jkl/mswinp
+  (let ((font-param))
+    ;;(setq font-param '("ProggyCleanTT" . 120))
+    (setq font-param (if (eq  'darwin system-type)
+                         ;;'("Terminus (TTF)" . 140)
+                         '("Menlo" . 120)
+                       '("Terminus" . 100)))
+    (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
+                                 :overline nil :underline nil :background "black" :foreground "green" 
+                                 :slant normal :weight normal :height ,(cdr font-param) :width normal
+                                 :foundry "*" :family ,(car font-param)))))))
+
+(jkl/custom-set 'default-frame-alist
+                '((width . 140)
+                  (height . 50)
+                  (foreground-color . "green")
+                  (background-color . "black")
+                  (cursor-color . "white")
+                  ))
+
+(jkl/set-face-colors
+ '((font-lock-type-face "yellow")
+   (font-lock-string-face "orange")
+   (font-lock-constant-face "plum1")
+   (font-lock-variable-name-face "LightGoldenrod")
+   (font-lock-function-name-face "turquoise1")
+   (font-lock-keyword-face "LightSkyBlue")
+   (font-lock-comment-face "Chocolate1")))
+
+(defun jkl/font-switch ()
+  (interactive)
+  (let* ((cur-height (face-attribute 'default :height))
+         (new-height
+          (if (< cur-height 96) 96 72)))
+    (set-face-attribute 'default nil :height new-height)))
+(define-key (current-global-map) (kbd "C-+") 'text-scale-increase)
+(define-key (current-global-map) (kbd "C--") 'text-scale-decrease)
+(define-key jkl/func-map "f" 'jkl/font-switch)
+
+;; END appearance / basic faces
+
 ;;;; EL-GET
 (jkl/custom-set 'el-get-dir (concat user-emacs-directory "el-get/"))
 (jkl/custom-set 'el-get-git-shallow-clone t)
@@ -134,6 +182,7 @@
 
 (setq jkl/el-get-packages
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
+   color-theme
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
    emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
    html5 js2-mode magit clojure-mode nrepl multi-web-mode paredit))
@@ -252,54 +301,6 @@ try disabling Alt-Tab switching and see how that works")
 (global-set-key (kbd "<f9> g") 'gnus)
 
 (global-set-key (kbd "C-M-r") 'org-capture)
-
-;; BEGIN APPEARANCE / BASIC FACES
-(when jkl/mswinp
-  (jkl/set-face 'default '((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
-                               :overline nil :underline nil :background "black" :foreground "green" 
-                               :slant normal :weight normal :height 90 :width normal
-                               :foundry "*" :family "Lucida Console")))))
-
-(unless jkl/mswinp
-  (let ((font-param))
-    ;;(setq font-param '("ProggyCleanTT" . 120))
-    (setq font-param (if (eq  'darwin system-type)
-                         ;;'("Terminus (TTF)" . 140)
-                         '("Monaco" . 120)
-                       '("Terminus" . 100)))
-    (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
-                                 :overline nil :underline nil :background "black" :foreground "green" 
-                                 :slant normal :weight normal :height ,(cdr font-param) :width normal
-                                 :foundry "*" :family ,(car font-param)))))))
-
-(jkl/custom-set 'default-frame-alist
-                '((width . 140)
-                  (height . 50)
-                  (foreground-color . "green")
-                  (background-color . "black")
-                  (cursor-color . "white")
-                  ))
-
-(jkl/set-face-colors
- '((font-lock-type-face "yellow")
-   (font-lock-string-face "orange")
-   (font-lock-constant-face "plum1")
-   (font-lock-variable-name-face "LightGoldenrod")
-   (font-lock-function-name-face "turquoise1")
-   (font-lock-keyword-face "LightSkyBlue")
-   (font-lock-comment-face "Chocolate1")))
-
-(defun jkl/font-switch ()
-  (interactive)
-  (let* ((cur-height (face-attribute 'default :height))
-         (new-height
-          (if (< cur-height 96) 96 72)))
-    (set-face-attribute 'default nil :height new-height)))
-(define-key (current-global-map) (kbd "C-+") 'text-scale-increase)
-(define-key (current-global-map) (kbd "C--") 'text-scale-decrease)
-(define-key jkl/func-map "f" 'jkl/font-switch)
-
-;; END appearance / basic faces
 
 ;;;; GTAGS
 (autoload 'gtags-mode "gtags" "" t)
