@@ -136,7 +136,7 @@
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
    emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
-   html5 js2-mode magit clojure-mode nrepl multi-web-mode))
+   html5 js2-mode magit clojure-mode nrepl multi-web-mode paredit))
 
 (el-get 'sync jkl/el-get-packages)
 
