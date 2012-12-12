@@ -24,7 +24,7 @@
             (unless (file-exists-p (expand-file-name ".nosearch"
                                                      expanded))
               (add-to-list 'load-path expanded))))))))
-                   
+
 (defun jkl/add-exec-paths (&rest paths)
   "Append string arguments to PATH environment and emacs @exec-path."
   (while paths
@@ -139,5 +139,10 @@ CUSTOMIZED-VALUE property"
             (message "No transformation.")))
       ;;(message "No ^M in this file !")
       )))
+
+(defun jkl/define-mode-keys (keymap key-defs)
+  "Define a list of keys for keymap"
+  (dolist (key-def key-defs)
+    (define-key keymap (car key-def) (cdr key-def))))
 
 (provide 'jkl-util)
