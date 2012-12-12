@@ -136,7 +136,7 @@
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
    emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
-   html5 js2-mode magit clojure-mode))
+   html5 js2-mode magit clojure-mode nrepl multi-web-mode))
 
 (el-get 'sync jkl/el-get-packages)
 
@@ -155,6 +155,10 @@
 
 ;;;; CUSTOM KEY BINDINGS
 (define-key jkl/func-map "c" 'recompile)
+
+;; Flymake error nav
+(global-set-key [f10] 'flymake-goto-prev-error)
+(global-set-key [f11] 'flymake-goto-next-error)
 
 ;;;; Command/environment customizations
 ;; Windows msys shell
@@ -348,7 +352,11 @@ try disabling Alt-Tab switching and see how that works")
 ;;; ECB - Code Browser
 
 ;;;; AUTO-COMPLETE
-;;(jkl/custom-set 'ac-quick-help-delay 0.5)
+(jkl/custom-set 'ac-quick-help-delay 0.75)
+
+(define-key ac-complete-mode-map "\M-n" 'ac-next)
+(define-key ac-complete-mode-map "\M-p" 'ac-previous)
+
 ;;(ac-set-trigger-key "\s-\t")
 (defun ac-js2-mode-setup ()
   (setq ac-sources (append '(ac-source-yasnippet) ac-sources)))
