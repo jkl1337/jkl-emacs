@@ -178,7 +178,9 @@
 	(:name html5
                :after (eval-after-load
                           "rng-loc"
-                        '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml"))))))
+                        '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml"))))
+        (:name "multi-web-mode"
+               :pkgname "fgallina/multi-web-mode")))
 
 (setq jkl/el-get-packages
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
