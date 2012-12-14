@@ -314,7 +314,7 @@ try disabling Alt-Tab switching and see how that works")
 (yas/initialize)
 
 ;;;; NXHTML
-(tabkey2-mode)
+;;(tabkey2-mode)
 
 ;;;; CEDET and ECB
 
@@ -367,6 +367,10 @@ try disabling Alt-Tab switching and see how that works")
   (when (require 'auto-complete-clang nil t)
     (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources))))
 ;;(add-hook 'objc-mode-hook 'jkl/ac-objc-mode-setup)
+
+;; javascript mode - nxhtml is a pain in my ass
+(setq auto-mode-alist
+      (delq (car (member '("\\.js\\'" . javascript-mode) auto-mode-alist)) auto-mode-alist))
 
 ;;;; JDEE
 
