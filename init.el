@@ -184,7 +184,7 @@
 
 (setq jkl/el-get-packages
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
-   color-theme
+   color-theme ac-nrepl
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
    emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
    html5 js2-mode magit clojure-mode nrepl multi-web-mode paredit))
