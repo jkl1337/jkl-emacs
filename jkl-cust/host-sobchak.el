@@ -1,5 +1,4 @@
 
-(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
 (global-set-key [home] 'move-beginning-of-line)
 (global-set-key [end] 'move-end-of-line)
 (global-set-key [kp-delete] 'delete-char)
