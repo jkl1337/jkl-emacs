@@ -25,6 +25,16 @@
                                                      expanded))
               (add-to-list 'load-path expanded))))))))
 
+(defun jkl/add-exec-path (path &optional prepend)
+  "Append string argument path to PATH environment and emacs @exec-path."
+  (let ((a (getenv "PATH"))
+        (b (convert-standard-filename path)))
+    (when prepend
+      (let (tmp)
+        (setq tmp b b a a tmp)))
+    (setenv "PATH" (concat a path-separator b)))
+  (add-to-list 'exec-path path (not prepend)))
+
 (defun jkl/add-exec-paths (&rest paths)
   "Append string arguments to PATH environment and emacs @exec-path."
   (while paths
