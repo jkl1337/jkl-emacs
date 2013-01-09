@@ -355,7 +355,7 @@ try disabling Alt-Tab switching and see how that works")
 ;;; ECB - Code Browser
 
 ;;;; AUTO-COMPLETE
-(jkl/custom-set 'ac-quick-help-delay 0.75)
+(jkl/custom-set 'ac-quick-help-delay 1.0)
 
 (define-key ac-complete-mode-map "\M-n" 'ac-next)
 (define-key ac-complete-mode-map "\M-p" 'ac-previous)
