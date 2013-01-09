@@ -7,4 +7,4 @@
   (multi-web-global-mode 1)
 
   (add-hook 'nxml-mode-hook (lambda ()
-                              (add-to-list (make-local-variable 'yas/extra-modes) 'html-mode))))
+                              (add-to-list (make-local-variable 'yas-extra-modes) 'html-mode))))
