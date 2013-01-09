@@ -7,6 +7,8 @@
                 'mac-option-modifier 'super
 		'mac-command-modifier 'control)
 
+(jkl/add-exec-path "/Library/Frameworks/Python.framework/Versions/2.7/bin" t)
+
 (setq user-emacs-directory "/Users/jluebs/emacs/")
 (setq jkl/pkg-path (concat user-emacs-directory "pkg/"))
 (setq jkl/info-path (concat user-emacs-directory "info/"))
