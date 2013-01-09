@@ -8,14 +8,6 @@
   '(define-key slime-mode-map (kbd "C-c p")
      'slime-pprint-eval-last-expression))
 
-;; Clojure
-;; Inferior lisp command
-(defun clj-inf ()
-  "Run inferior lisp mode with clojure"
-  (interactive)
-  (inferior-lisp "java -cp c:/prp/clojure-1.2.0/clojure.jar clojure.main")
-)
-
 ;; LUA Mode settings
 ;; lua-mode install is in top-level
 (add-hook 'lua-mode-hook
@@ -95,7 +87,6 @@
                         (case-label . 0)
                         (block-open . 0)
                         (knr-argdecl-intro . -)))
-                     
     (c-echo-syntactic-information-p . t)
     (c-hanging-semi&comma-criteria . (c-semi&comma-no-newlines-before-nonblanks
                                       c-semi&comma-inside-parenlist))
