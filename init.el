@@ -307,9 +307,6 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; GTAGS
 (autoload 'gtags-mode "gtags" "" t)
 
-;;;; LISP / SLIME
-(slime-setup '(inferior-slime))
-
 ;;;; YASNIPPET
 ;; (require 'yasnippet)
 (add-to-list 'yas-snippet-dirs (concat jkl/my-dir "yasnippet"))

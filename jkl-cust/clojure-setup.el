@@ -10,3 +10,4 @@
             (nrepl-turn-on-eldoc-mode)
             (paredit-mode)))
 
+(setq clojurescript-clj-repl (concat jkl/my-dir "bin/browser-repl"))
