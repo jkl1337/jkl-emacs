@@ -61,7 +61,7 @@
     ;;(setq font-param '("ProggyCleanTT" . 120))
     (setq font-param (if (eq  'darwin system-type)
                          ;;'("Terminus (TTF)" . 140)
-                         '("Menlo" . 120)
+                         '("Monaco" . 100)
                        '("Terminus" . 100)))
     (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
                                  :overline nil :underline nil :background "black" :foreground "green" 
