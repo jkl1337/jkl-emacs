@@ -15,12 +15,10 @@
     (error) (setq rct-method-completion-table nil)))
 
 (defun ac-rct-candidates ()
-  (all-completions
-   ac-prefix
-   (mapcar
+  (mapcar
     (lambda (completion)
       (replace-regexp-in-string "\t.*$" "" (car completion)))
-    rct-method-completion-table)))
+    rct-method-completion-table))
 
 (eval-after-load "auto-complete"
   '(progn
