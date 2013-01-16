@@ -27,6 +27,7 @@
      (ac-define-source jkl-rcodetools
        '((prefix . rct-prefix)
          (init . ac-rct-init)
-         (candidates . ac-rct-candidates)))
+         (candidates . ac-rct-candidates)
+         (requires . 1)))
 
      (add-hook 'ruby-mode-hook 'jkl/ac-ruby-mode-setup)))
