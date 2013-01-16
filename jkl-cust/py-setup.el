@@ -18,28 +18,48 @@
             (concat ac-prefix completion))
           (rope-completions)))
 
-(ac-define-source jropemacs
-  '((candidates . ac-ropemacs-candidates)
-    (symbol . "p")))
+(defvar ac-jropemacs-completions-cache nil)
+(make-variable-buffer-local 'ac-jropemacs-completions-cache)
+
+(ac-define-source pysmell
+  '((candidates
+     . (lambda ()
+         (require 'pysmell)
+         (pysmell-get-all-completions)))))
+
+;; This probably doesn't help much. ropemacs is still terribly slow on Darwin.
+(when (eq system-type 'darwin)
+  (defadvice pymacs-start-services (around activate)
+    (let ((process-connection-type nil))
+      ad-do-it)))
 
 (ac-define-source jropemacs-dot
-  '((candidates . ac-ropemacs-candidates)
+  '((init . (lambda ()
+              (setq ac-jropemacs-completions-cache
+                    (mapcar
+                     (lambda (completion)
+                       (concat ac-prefix completion))
+                     (ignore-errors (rope-completions))))))
+    (candidates . ac-ropemacs-completions-cache)
     (symbol . "p")
     (prefix . c-dot)
-    (requires . 0)))
+    (requires . 1)))
 
+;; Slow as hell on OSX
 (defun ac-jropemacs-setup ()
   (interactive)
-  (setq ac-sources (append '(ac-source-jropemacs
-                             ac-source-jropemacs-dot) ac-sources)))
+  (setq ac-sources (append '(ac-source-jropemacs-dot) ac-sources)))
+
+(defun ac-pysmell-setup ()
+  (interactive)
+  (setq ac-sources (append ac-sources '(ac-source-pysmell))))
 
 (defun ac-python-mode-setup ()
   (add-to-list 'ac-sources 'ac-source-yasnippet))
 
 (add-hook 'python-mode-hook 'ac-python-mode-setup)
-(add-hook 'python-mode-hook
-          (lambda ()
-            (define-key jkl/func-map "r" 'ac-jropemacs-setup)))
+(unless (eq system-type 'darwin)
+  (add-hook 'python-mode-hook 'ac-jropemacs-setup))
 
 ;; CEDET causes this to load, and it really fouls shit up for me with python-mode
 ;; Leave out for now
