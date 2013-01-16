@@ -28,7 +28,7 @@
 (defun jkl/add-exec-path (path &optional prepend)
   "Append string argument path to PATH environment and emacs @exec-path."
   (let ((a (getenv "PATH"))
-        (b (convert-standard-filename path)))
+        (b (directory-file-name (convert-standard-filename path))))
     (when prepend
       (let (tmp)
         (setq tmp b b a a tmp)))
