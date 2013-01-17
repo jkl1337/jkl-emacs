@@ -1,3 +1,18 @@
+(eval-after-load "coffee-mode"
+  '(progn
+     (let ((map coffee-mode-map))
+       (mapcan (lambda (ks)
+                 (define-key map (read-kbd-macro ks) nil))
+               '("A-r", "A-R", "A-M-r"))
+       (define-key map (kbd "s-r") 'coffee-compile-buffer)
+       (define-key map (kbd "s-R") 'coffee-compile-region)
+       (define-key map (kbd "s-M-r") 'coffee-repl))
+     (jkl/custom-set 'coffee-tab-width 2)))
+
+(add-hook 'coffee-mode-hook
+          (lambda ()
+            (define-key ma
+            (define-key
 (when (require 'multi-web-mode nil t)
   (setq mweb-default-major-mode 'nxml-mode)
   (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
