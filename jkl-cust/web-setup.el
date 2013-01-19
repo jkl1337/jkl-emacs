@@ -3,7 +3,7 @@
      (let ((map coffee-mode-map))
        (mapcan (lambda (ks)
                  (define-key map (read-kbd-macro ks) nil))
-               '("A-r", "A-R", "A-M-r"))
+               '("A-r" "A-R" "A-M-r"))
        (define-key map (kbd "s-r") 'coffee-compile-buffer)
        (define-key map (kbd "s-R") 'coffee-compile-region)
        (define-key map (kbd "s-M-r") 'coffee-repl))
