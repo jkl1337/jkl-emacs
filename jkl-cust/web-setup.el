@@ -9,10 +9,6 @@
        (define-key map (kbd "s-M-r") 'coffee-repl))
      (jkl/custom-set 'coffee-tab-width 2)))
 
-(add-hook 'coffee-mode-hook
-          (lambda ()
-            (define-key ma
-            (define-key
 (when (require 'multi-web-mode nil t)
   (setq mweb-default-major-mode 'nxml-mode)
   (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
