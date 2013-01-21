@@ -9,6 +9,20 @@
        (define-key map (kbd "s-M-r") 'coffee-repl))
      (jkl/custom-set 'coffee-tab-width 2)))
 
+(eval-after-load "js2-mode"
+  '(progn
+     (add-hook 'js2-post-parse-callbacks 'jkl-js2-parse-global-vars-decls)
+
+     (defun jkl-js2-parse-global-vars-decls ()
+       (let ((btext (replace-regexp-in-string
+                     ": *true" " "
+                     (replace-regexp-in-string "[\n\t ]+" " " (buffer-substring-no-properties 1 (buffer-size)) t t))))
+         (setq js2-additional-externs
+               (split-string
+                (if (string-match "/\\* *global *\\(.*?\\) *\\*/" btext) (match-string-no-properties 1 btext) "")
+                " *, *" t))
+         ))))
+
 (when (require 'multi-web-mode nil t)
   (setq mweb-default-major-mode 'nxml-mode)
   (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
