@@ -392,6 +392,13 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; BEGIN CUSTOMIZATION
 ;;; GLOBAL settings
+(global-set-key "\C-cd" (lambda ()
+                          (interactive)
+                          (let ((cur-window (selected-window)))
+                            (other-window 1)
+                            (quit-window)
+                            (select-window cur-window))))
+
 (global-set-key "\M-/" 'hippie-expand)
 
 (jkl/custom-set 'fill-column 72)
