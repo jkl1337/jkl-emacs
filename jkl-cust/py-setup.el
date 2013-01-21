@@ -5,16 +5,25 @@
 ;;(require 'ipython)
 ;;(jkl/custom-set 'py-python-command-args '("--colors=Linux"))
 
+;; This probably doesn't help much. ropemacs is still terribly slow on Darwin.
+(when (eq system-type 'darwin)
+  (defadvice pymacs-start-services (around activate)
+    (let ((process-connection-type nil))
+      ad-do-it)))
+
+(jkl/custom-set 'py-load-pymacs-p t)
+(jkl/custom-set 'py-install-directory (concat el-get-dir "python-mode"))
+(jkl/custom-set 'py-complete-function 'py-complete-completion-at-point)
+
 (require 'python-mode)
+(when (fboundp 'py-load-pycomplete)
+  (py-load-pycomplete))
+
 (when (file-executable-p "/usr/bin/python2")
   (setq pymacs-python-command "python2")
   (jkl/custom-set 'py-shell-name "python2")
   (jkl/custom-set 'py-python-command "python2")
   (jkl/custom-set 'py-default-interpreter "python2"))
-
-(jkl/custom-set 'py-load-pymacs-p t)
-(jkl/custom-set 'py-install-directory (concat el-get-dir "python-mode"))
-(jkl/custom-set 'py-complete-function 'py-complete-completion-at-point)
 
 ;; Auto-complete with rope
 (defun ac-ropemacs-candidates ()
@@ -30,12 +39,6 @@
      . (lambda ()
          (require 'pysmell)
          (pysmell-get-all-completions)))))
-
-;; This probably doesn't help much. ropemacs is still terribly slow on Darwin.
-(when (eq system-type 'darwin)
-  (defadvice pymacs-start-services (around activate)
-    (let ((process-connection-type nil))
-      ad-do-it)))
 
 (ac-define-source jropemacs-dot
   '((init . (lambda ()
@@ -62,7 +65,9 @@
   (add-to-list 'ac-sources 'ac-source-yasnippet))
 
 (add-hook 'python-mode-hook 'ac-python-mode-setup)
-(unless (eq system-type 'darwin)
+
+(when (not (or (featurep 'pycomplete)
+	       (eq system-type 'darwin)))
   (add-hook 'python-mode-hook 'ac-jropemacs-setup))
 
 ;; CEDET causes this to load, and it really fouls shit up for me with python-mode
