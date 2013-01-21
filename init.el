@@ -154,10 +154,11 @@
                :build `(("make" "CEDET=" ,(concat el-get-dir "cedet/lisp/common/")
                          ,(concat "EMACS=" (shell-quote-argument el-get-emacs)))))
         (:name python-mode
-               :url "https://github.com/jkl1337/python-mode.git"
-               :depends highlight-indentation
-               :compile ("python-mode.el" "python-extended-executes.el" "test/doctest-mode.el")
-               :load "test/doctest-mode.el")
+               ;; :url "https://github.com/jkl1337/python-mode.git"
+               ;; :depends highlight-indentation
+               :compile ("python-mode.el" "python-extended-executes.el" "test/doctest-mode.el"
+                         "completion" "extensions")
+               )
 
         (:name lua-mode
                :branch "jkl_indent"
@@ -326,7 +327,7 @@ try disabling Alt-Tab switching and see how that works")
                   (html-mode . semantic-default-html-setup)
                   (jde-mode . wisent-java-default-setup)
                   (java-mode . wisent-java-default-setup)
-                  (python-mode . wisent-python-default-setup)
+                  ;;(python-mode . wisent-python-default-setup)
                   (scheme-mode . semantic-default-scheme-setup)
                   (srecode-template-mode . srecode-template-setup-parser)
                   (texinfo-mode . semantic-default-texi-setup)

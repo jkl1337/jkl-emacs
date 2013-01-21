@@ -12,6 +12,9 @@
   (jkl/custom-set 'py-python-command "python2")
   (jkl/custom-set 'py-default-interpreter "python2"))
 
+(jkl/custom-set 'py-install-directory (concat el-get-dir "python-mode"))
+(jkl/custom-set 'py-complete-function 'py-complete-completion-at-point)
+
 ;; Auto-complete with rope
 (defun ac-ropemacs-candidates ()
   (mapcar (lambda (completion)
