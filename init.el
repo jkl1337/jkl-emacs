@@ -164,7 +164,7 @@
                :url "https://github.com/jkl1337/lua-mode")
         (:name markdown-mode
                :branch "jkl"
-               :url "https://github.com/jkl1337/markdown-mode")
+               :url "https://github.com/milkypostman/markdown-mode")
 
         ;; (:name org-mode
         ;;        :branch "jkl"
