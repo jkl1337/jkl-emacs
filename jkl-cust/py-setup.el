@@ -12,6 +12,7 @@
   (jkl/custom-set 'py-python-command "python2")
   (jkl/custom-set 'py-default-interpreter "python2"))
 
+(jkl/custom-set 'py-load-pymacs-p t)
 (jkl/custom-set 'py-install-directory (concat el-get-dir "python-mode"))
 (jkl/custom-set 'py-complete-function 'py-complete-completion-at-point)
 
