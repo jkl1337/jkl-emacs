@@ -155,7 +155,7 @@
                          ,(concat "EMACS=" (shell-quote-argument el-get-emacs)))))
         (:name python-mode
                ;; :url "https://github.com/jkl1337/python-mode.git"
-               ;; :depends highlight-indentation
+               :depends highlight-indentation
                :compile ("python-mode.el" "python-extended-executes.el" "test/doctest-mode.el"
                          "completion" "extensions")
                )
