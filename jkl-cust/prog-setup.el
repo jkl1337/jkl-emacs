@@ -23,18 +23,18 @@
    (nconc
     (unless jkl/mswinp
       ;; Non-windows platform only
-      (list
-       '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
-       '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
-       '("file:.*/usr/share/devhelp/books" . w3m-browse-url)
-       '("file:.*/usr/share/doc" . w3m-browse-url)
-       '("\\(file://\\)?/.*/hyperspec" . w3m-browse-url)))
+      '(("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
+        ("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
+        ("file:.*/usr/share/devhelp/books" . w3m-browse-url)
+        ("file:.*/usr/share/doc" . w3m-browse-url)
+        ("\\(file://\\)?/.*/hyperspec" . w3m-browse-url)))
     ;; Common set
-    (list
-     '("http://www\\.clisp\\.org/impnotes" . w3m-browse-url)
-     '("http://clisp\\.cons\\.org/impnotes" . w3m-browse-url)
-     '("http://www\\.lispworks\\.com/reference/HyperSpec" . w3m-browse-url)
-     `("." . ,(if jkl/mswinp 'browse-url-default-windows-browser
+    `(("file:.*/pylookup/python-2" . w3m-browse-url)
+      ("http://.*docs.python.org/". w3m-browse-url)
+      ("http://www\\.clisp\\.org/impnotes" . w3m-browse-url)
+      ("http://clisp\\.cons\\.org/impnotes" . w3m-browse-url)
+      ("http://www\\.lispworks\\.com/reference/HyperSpec" . w3m-browse-url)
+      ("." . ,(if jkl/mswinp 'browse-url-default-windows-browser
                 'browse-url-default-browser))))))
 
 

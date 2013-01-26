@@ -251,21 +251,6 @@ try disabling Alt-Tab switching and see how that works")
 (autoload 'markdown-mode "markdown-mode")
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
-;;;; w3m
-(require 'w3m-load nil t)
-(when (and (not jkl/mswinp) (featurep 'w3m-load))
-  (jkl/custom-set
-   'browse-url-browser-function
-   (nconc (list 
-           '("file:.*/pylookup/python-2" . w3m-browse-url)
-           '("http://.*docs.python.org/". w3m-browse-url)
-           '("file:.*/usr/local/share/gtk-doc/html" . w3m-browse-url)
-           '("file:.*/usr/share/gtk-doc/html" . w3m-browse-url)
-           '("file:.*/usr/share/devhelp/books" . w3m-browse-url))
-          (if (listp browse-url-browser-function)
-              browse-url-browser-function
-            `(("." . ,browse-url-browser-function))))))
-
 ;;;; EMMS
 (let ((emms-lisp-dir (concat jkl/my-dir "contrib/emms/lisp")))
   (when (file-readable-p (concat emms-lisp-dir "/emms-setup.elc"))
