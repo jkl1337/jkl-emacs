@@ -96,12 +96,12 @@
 ;; cython
 (require 'cython-mode)
 
-
 ;;;; Documentation
 ;;; PyLookup
-;; FIXME: I don't know a better way to do this, but I think there is
-;; (setq pylookup-dir (file-name-as-directory (concat jkl/pkg-path "pylookup")))
-;; (setq pylookup-db-file (concat pylookup-dir "pylookup.db"))
+(let ((pylookup-dir (concat user-emacs-directory "pylookup/")))
+  (unless (file-directory-p pylookup-dir)
+    (make-directory pylookup-dir))
+  (setq pylookup-db-file (concat pylookup-dir "pylookup.db")))
 
 ;; (setq pylookup-program (concat pylookup-dir 
 ;;                                (if jkl/mswinp "pylookup.exe"
@@ -111,8 +111,7 @@
 ;;   "Lookup SEARCH-TERM in the Python HTML indexes." t)
 ;; (autoload 'pylookup-update "pylookup"
 ;;   "Run pylookup-update and create the database at `pylookup-db-file'." t)
-;; (define-key global-map [?\C-h ?\C-l] 'pylookup-lookup)
-
+(define-key global-map [?\C-h ?\C-l] 'pylookup-lookup)
 
 ;;; Info look
 ;; Fix for new style Sphinx generated python info pages
