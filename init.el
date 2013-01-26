@@ -251,6 +251,15 @@ try disabling Alt-Tab switching and see how that works")
 (autoload 'markdown-mode "markdown-mode")
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
+;;;; browser.el
+;; LXDE xdg-open goes through PCManFM which chokes on file URLs containng
+;; fragments. Kinda sucks
+(defadvice browse-url-can-use-xdg-open (around activate)
+  (if (or (member (getenv "DESKTOP_SESSION") '("LXDE" "Lubuntu"))
+          (equal (getenv "XDG_CURRENT_DESKTOP") "LXDE"))
+      nil
+    ad-do-it))
+
 ;;;; EMMS
 (let ((emms-lisp-dir (concat jkl/my-dir "contrib/emms/lisp")))
   (when (file-readable-p (concat emms-lisp-dir "/emms-setup.elc"))
