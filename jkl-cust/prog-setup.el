@@ -17,7 +17,7 @@
             (lua-block-mode t)))
 
 ;;; Documentation helpers
-(when (featurep 'w3m-load)
+(when (fboundp 'w3m-browse-url)
   (jkl/custom-set
    'browse-url-browser-function
    (nconc
