@@ -386,6 +386,11 @@ try disabling Alt-Tab switching and see how that works")
     (setenv "LUAI" "luajit")))
 
 ;;;; BEGIN CUSTOMIZATION
+
+;;; TRAMP administer root files on remote hosts
+(jkl/add-to-list 'tramp-default-proxies-alist '(".*" "\\`root\\'" "/ssh:luebsj@%h:"))
+(jkl/add-to-list 'tramp-default-proxies-alist '("\\`vhs-git" "\\`root\\'" "/ssh:jluebs@%h:"))
+
 ;;; GLOBAL settings
 (global-set-key "\C-cd" (lambda ()
                           (interactive)
