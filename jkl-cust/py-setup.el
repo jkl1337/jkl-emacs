@@ -5,6 +5,18 @@
 ;;(require 'ipython)
 ;;(jkl/custom-set 'py-python-command-args '("--colors=Linux"))
 
+(defmacro jkl/define-py-shell (name desc)
+  "Define a custom python interpreter for shell `name'"
+  `(defun ,(intern name) (&optional argprompt dedicated switch)
+     ,(concat "Start a " desc " interpreter;
+
+Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs.")
+     (interactive "P")
+     (py-shell argprompt dedicated ,name switch)))
+
+(jkl/define-py-shell "ipython2" "IPython 2.x")
+
 ;; This probably doesn't help much. ropemacs is still terribly slow on Darwin.
 (when (eq system-type 'darwin)
   (defadvice pymacs-start-services (around activate)
@@ -55,7 +67,10 @@
 ;; Slow as hell on OSX
 (defun ac-jropemacs-setup ()
   (interactive)
-  (setq ac-sources (append '(ac-source-jropemacs-dot) ac-sources)))
+  (setq ac-sources '(ac-source-jropemacs-dot ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers)))
+
+;; (set 'ac-sources (cons 'ac-source-jropemacs-dot (remq 'ac-source-pycomplete ac-sources))))
+;;  (setq ac-sources (append '(ac-source-jropemacs-dot) ac-sources)))
 
 (defun ac-pysmell-setup ()
   (interactive)
