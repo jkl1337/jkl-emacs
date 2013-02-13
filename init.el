@@ -183,6 +183,7 @@
 
 (setq jkl/el-get-packages
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
+   ido-ubiquitous
    color-theme ac-nrepl
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
    inf-ruby rcodetools rvm
@@ -425,7 +426,17 @@ try disabling Alt-Tab switching and see how that works")
 
 (global-set-key (kbd "M-w") 'copy-region-as-kill)
 
-(iswitchb-mode 1)
+(ido-mode t)
+(ido-ubiquitous t)
+(setq ido-enable-prefix nil
+      ido-enable-flex-matching t
+      ido-auto-merge-work-directories-length nil
+      ido-create-new-buffer 'always
+      ido-use-filename-at-point 'guess
+      ido-use-virtual-buffers t
+      ido-handle-duplicate-virtual-buffers 2
+      ido-max-prospects 10)
+
 (show-paren-mode 1)
 ;;(transient-mark-mode -1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -446,7 +457,7 @@ try disabling Alt-Tab switching and see how that works")
 (add-hook 'emacs-lisp-mode-hook
           '(lambda ()
              (interactive)
-             (define-key emacs-lisp-mode-map [f5] 'eval-region)
+             (define-key emacs-lisp-mode-map (kbd "C-c C-r") 'eval-region)
              (define-key emacs-lisp-mode-map (kbd "C-c <f5>") 'eval-buffer)))
 
 (add-hook 'emacs-lisp-mode-hook 'jkl/remove-elc-on-save)
