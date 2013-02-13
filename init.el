@@ -186,6 +186,7 @@
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
    color-theme ac-nrepl
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
+   inf-ruby rcodetools rvm
    inf-ruby rcodetools
    emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
    html5 js2-mode multi-web-mode coffee-mode
