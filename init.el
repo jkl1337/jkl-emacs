@@ -163,7 +163,6 @@
                :branch "jkl_indent"
                :url "https://github.com/jkl1337/lua-mode")
         (:name markdown-mode
-               :branch "jkl"
                :url "https://github.com/milkypostman/markdown-mode")
 
         ;; (:name org-mode
