@@ -475,6 +475,8 @@ try disabling Alt-Tab switching and see how that works")
  )
 
 (setq custom-file (concat jkl/my-dir "custom.el"))
+(unless (file-exists-p custom-file)
+  (with-temp-file custom-file))
 (load custom-file)
 
 (server-start)
