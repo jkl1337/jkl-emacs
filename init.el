@@ -62,7 +62,7 @@
     (setq font-param (if (eq  'darwin system-type)
                          ;;'("Terminus (TTF)" . 140)
                          '("Monaco" . 100)
-                       '("Terminus" . 100)))
+                       '("Monaco" . 90)))
     (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
                                  :overline nil :underline nil :background "black" :foreground "green" 
                                  :slant normal :weight normal :height ,(cdr font-param) :width normal
@@ -187,7 +187,6 @@
    color-theme ac-nrepl
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
    inf-ruby rcodetools rvm
-   inf-ruby rcodetools
    emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
    html5 js2-mode multi-web-mode coffee-mode
    magit
