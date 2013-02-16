@@ -59,10 +59,10 @@
 (unless jkl/mswinp
   (let ((font-param))
     ;;(setq font-param '("ProggyCleanTT" . 120))
-    (setq font-param (if (eq  'darwin system-type)
-                         ;;'("Terminus (TTF)" . 140)
-                         '("Monaco" . 100)
-                       '("Monaco" . 90)))
+    (setq font-param (cond
+                      ((boundp 'jkl/font-face) jkl/font-face)
+                      ((eq  'darwin system-type) '("Monaco" . 90))
+                      (t '("Monaco" . 80))))
     (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
                                  :overline nil :underline nil :background "black" :foreground "green" 
                                  :slant normal :weight normal :height ,(cdr font-param) :width normal
