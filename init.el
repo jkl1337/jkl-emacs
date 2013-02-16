@@ -186,7 +186,7 @@
    ido-ubiquitous
    color-theme ac-nrepl
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
-   inf-ruby rcodetools rvm rinary rhtml-mode
+   inf-ruby rcodetools rvm rinari rhtml-mode
    emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
    html5 js2-mode multi-web-mode coffee-mode
    magit
