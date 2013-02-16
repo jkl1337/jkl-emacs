@@ -387,8 +387,8 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; BEGIN CUSTOMIZATION
 
 ;;; TRAMP administer root files on remote hosts
-(jkl/add-to-list 'tramp-default-proxies-alist '(".*" "\\`root\\'" "/ssh:luebsj@%h:"))
-(jkl/add-to-list 'tramp-default-proxies-alist '("\\`vhs-git" "\\`root\\'" "/ssh:jluebs@%h:"))
+(jkl/add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:luebsj@%h:"))
+(jkl/add-to-list 'tramp-default-proxies-alist '((regexp-quote (system-name)) nil nil))
 
 ;;; GLOBAL settings
 (global-set-key "\C-cd" (lambda ()
