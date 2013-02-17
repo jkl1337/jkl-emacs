@@ -1,5 +1,6 @@
 ;; TODO: change paren mode highlight faces
 ;; see face-user-default-spec in faces.el TODO
+;; TODO: Change the require predicates to use fboundp and support lazy loading
 
 (defconst jkl/mswinp
   (eq system-type 'windows-nt))
@@ -207,26 +208,30 @@
         (:name dbgr
                :depends (test-simple load-relative loc-changes)
                :features (loc-changes load-relative test-simple)
-               :url "https://github.com/jkl1337/emacs-dbgr")))
+               :url "https://github.com/jkl1337/emacs-dbgr")
+        (:name pkgbuild-mode
+               :lazy t)))
 
-(setq jkl/el-get-packages
- '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
-   flymake ; wow, the emacs one is a POS
-   ido-ubiquitous
-   color-theme
-   bbdb bbdb-vcard org-mode
-   rainbow-mode rainbow-delimiters
-   markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
-   flymake-easy
-   rcodetools rvm rdebug rinari rhtml-mode rspec-mode yari rsense ruby-block
-   yaml-mode haml-mode
-   emms xcscope git-blame slime yasnippet csharp-mode jquery-doc
-   html5 js2-mode multi-web-mode coffee-mode
-   sass-mode
-   magit
-   clojure-mode nrepl ac-nrepl paredit))
+(progn
+  (setq jkl/el-get-packages
+        '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
+                 pkgbuild-mode
+                 flymake ; wow, the emacs one is a POS
+                 ido-ubiquitous
+                 color-theme
+                 bbdb bbdb-vcard org-mode
+                 rainbow-mode rainbow-delimiters
+                 markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
+                 flymake-easy
+                 rcodetools rvm rdebug rinari rhtml-mode rspec-mode yari rsense ruby-block
+                 yaml-mode haml-mode
+                 emms xcscope git-blame slime yasnippet csharp-mode jquery-doc
+                 html5 js2-mode multi-web-mode coffee-mode
+                 sass-mode
+                 magit
+                 clojure-mode nrepl ac-nrepl paredit))
 
-(el-get 'sync jkl/el-get-packages)
+  (el-get 'sync jkl/el-get-packages))
 
 ;; Request to merge custom info.
 ;; Consider setting additional-path with default list in order to
@@ -451,10 +456,12 @@ try disabling Alt-Tab switching and see how that works")
 (add-to-list 'auto-mode-alist '("\\.gp$" . gnuplot-mode))
 
 ;; arch and pacman PKGBUILD files
-(add-to-list 'auto-mode-alist (cons "PKGBUILD$"
-                                    #'(lambda ()
-                                        (sh-mode)
-                                        (sh-set-shell "bash" t))))
+(add-to-list 'auto-mode-alist (cons "/PKGBUILD$"
+                                    (if (fboundp 'pkgbuild-mode)
+                                        'pkgbuild-mode
+                                      #'(lambda ()
+                                          (sh-mode)
+                                          (sh-set-shell "bash" t)))))
 
 (add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
 
