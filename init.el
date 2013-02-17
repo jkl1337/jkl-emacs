@@ -180,8 +180,8 @@
                         '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml"))))
         (:name "multi-web-mode"
                :pkgname "fgallina/multi-web-mode")
-        (:name flymake-ruby
-               :depends flymake-easy)
+        (name flymake-ruby
+              :depends flymake-easy)
         (:name flymake-easy
                :type github
                :description "Helpers for easily building Emacs flymake checkers"
@@ -198,6 +198,7 @@
    ido-ubiquitous
    color-theme ac-nrepl
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
+   flymake-ruby
    rcodetools rvm rinari rhtml-mode rspec-mode yari rsense
    yaml-mode
    emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc

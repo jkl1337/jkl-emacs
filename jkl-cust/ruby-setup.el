@@ -1,9 +1,18 @@
 
+(setq flymake-ruby-err-line-patterns  '(("^\\(?:SyntaxError in \\)?\\(.*\.rb\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)))
+
+(global-rinari-mode 1)
+
 (eval-after-load 'ruby-mode
   '(progn
      (setq ruby-use-encoding-map nil)
      (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
      (define-key ruby-mode-map (kbd "C-M-h") 'backward-kill-word)))
+
+(jkl/custom-set 'rinari-major-modes '(dired-mode ruby-mode css-mode sass-mode
+                                                 coffee-mode js2-mode javascript-mode
+                                                 yaml-mode
+                                                 dired-mode))
 
 (define-key 'help-command (kbd "C-r") 'yari)
 
@@ -21,10 +30,6 @@
            (with-current-buffer comp-buffer-name
              (delete-region (point-min) (point-max))))))
      (ad-activate 'ruby-do-run-w/compilation)))
-
-(jkl/custom-set 'rinari-major-modes '(mumamo-after-change-major-mode-hook
-                                      dired-mode-hook ruby-mode-hook
-                                      css-mode-hook yaml-mode-hook javascript-mode-hook))
 
 ;;; Rake
 
