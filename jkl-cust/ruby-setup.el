@@ -1,5 +1,42 @@
 
-(setq flymake-ruby-err-line-patterns  '(("^\\(?:SyntaxError in \\)?\\(.*\.rb\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)))
+(eval-after-load 'ruby-mode
+  '(progn
+     (require 'flymake-easy)
+
+     (defconst flymake-ruby-err-line-patterns
+       '(("^\\(?:SyntaxError in \\)?\\(.*\.rb\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)))
+
+     (defvar flymake-ruby-executable "ruby"
+       "The ruby executable to use for syntax checking.")
+
+     ;; Invoke ruby with '-c' to get syntax checking
+     (defun flymake-ruby-command (filename)
+       "Construct a command that flymake can use to check ruby source."
+       (list flymake-ruby-executable "-w" "-c" filename))
+
+;;;###autoload
+     (defun flymake-ruby-load ()
+       "Configure flymake mode to check the current buffer's ruby syntax."
+       (interactive)
+       (flymake-easy-load 'flymake-ruby-command
+                          flymake-ruby-err-line-patterns
+                          'tempdir
+                          "rb"))
+
+     (add-to-list 'flymake-allowed-file-name-masks  '(".+\\.rb$" nil))
+     (add-to-list 'flymake-allowed-file-name-masks '("Rakefile$" nil))
+
+     (defun flymake-ruby-maybe-enable ()
+       (when (and buffer-file-name
+                  (file-writable-p (file-name-directory buffer-file-name))
+                  (file-writable-p buffer-file-name))
+         (local-set-key (kbd "C-c d") 'flymake-display-err-menu-for-current-line)
+         (flymake-ruby-load)))
+
+     (provide 'flymake-ruby)
+
+     (add-hook 'ruby-mode-hook 'flymake-ruby-maybe-enable)))
+
 
 (global-rinari-mode 1)
 
@@ -10,6 +47,8 @@
      (define-key ruby-mode-map (kbd "C-M-h") 'backward-kill-word)))
 
 (jkl/custom-set 'rinari-major-modes '(dired-mode ruby-mode css-mode sass-mode
+                                                 rhtml-mode
+                                                 eruby-html-mumamo-mode eruby-nxhtml-mumamo-mode
                                                  coffee-mode js2-mode javascript-mode
                                                  yaml-mode
                                                  dired-mode))
