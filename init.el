@@ -183,27 +183,18 @@
                             (setq rsense-home (concat el-get-dir "rsense"))))
 
         (:name test-simple
-               :website "https://github.com/rocky/emacs-test-simple"
+               :description "Unit Test Framework for Emacs Lisp"
                :type github
                :pkgname "rocky/emacs-test-simple"
-               :build
-               (let ((load-path-env (mapconcat 'identity load-path ":")))
-                 (mapcar
-                  (lambda (command)
-                    (list "sh" "-c"
-                          (format "EMACSLOADPATH=%s %s"
-                                  (shell-quote-argument load-path-env)
-                                  (shell-quote-argument command))))
-                  '("./autogen.sh" "./configure" "make")))
-               :features (test-simple)
-               )
+               :build ("./autogen.sh" "./configure" "make"))
 
         (:name dbgr
                :depends (test-simple load-relative loc-changes)
                :features (loc-changes load-relative test-simple)
                :url "https://github.com/jkl1337/emacs-dbgr")
         (:name pkgbuild-mode
-               :lazy t)))
+               :lazy t)
+        ))
 
 (progn
   (setq jkl/el-get-packages
