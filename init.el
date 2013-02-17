@@ -460,8 +460,10 @@ try disabling Alt-Tab switching and see how that works")
 
 (global-set-key (kbd "M-w") 'copy-region-as-kill)
 
-(ido-mode t)
-(ido-ubiquitous t)
+(ido-mode 1)
+(ido-ubiquitous-mode 1)
+(ido-ubiquitous-disable-in execute-extended-command)
+
 (setq ido-enable-prefix nil
       ido-enable-flex-matching t
       ido-auto-merge-work-directories-length nil
