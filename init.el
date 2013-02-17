@@ -378,7 +378,10 @@ try disabling Alt-Tab switching and see how that works")
 (jkl/add-to-list 'tramp-default-proxies-alist '((regexp-quote (system-name)) nil nil))
 
 ;;; GLOBAL settings
-(define-key 'help-command "\C-f" 'find-function-at-point)
+(find-function-setup-keys)
+(define-key 'help-command "\C-f" 'find-function)
+(define-key 'help-command "\C-v" 'find-variable)
+
 (global-set-key "\C-c\C-d" (lambda ()
                               (interactive)
                               (let ((cur-window (selected-window)))
