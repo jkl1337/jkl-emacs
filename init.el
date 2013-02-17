@@ -165,9 +165,6 @@
         (:name markdown-mode
                :url "https://github.com/milkypostman/markdown-mode")
 
-        ;; (:name org-mode
-        ;;        :branch "jkl"
-        ;;        :url "https://github.com/jkl1337/org-mode")
 	(:name csharp-mode
 	       :website "https://code.google.com/p/csharpmode/"
 	       :description "This is a mode for editing C# in emacs. It's based on cc-mode, v5.30.3 and above."
@@ -180,8 +177,6 @@
                         '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml"))))
         (:name "multi-web-mode"
                :pkgname "fgallina/multi-web-mode")
-        (name flymake-ruby
-              :depends flymake-easy)
         (:name flymake-easy
                :type github
                :description "Helpers for easily building Emacs flymake checkers"
@@ -191,21 +186,45 @@
                :build ("ant")
                :compile "etc"
                :post-init (progn
-                            (setq rsense-home (concat el-get-dir "rsense"))))))
+                            (setq rsense-home (concat el-get-dir "rsense"))))
+
+        (:name test-simple
+               :website "https://github.com/rocky/emacs-test-simple"
+               :type github
+               :pkgname "rocky/emacs-test-simple"
+               :build
+               (let ((load-path-env (mapconcat 'identity load-path ":")))
+                 (mapcar
+                  (lambda (command)
+                    (list "sh" "-c"
+                          (format "EMACSLOADPATH=%s %s"
+                                  (shell-quote-argument load-path-env)
+                                  (shell-quote-argument command))))
+                  '("./autogen.sh" "./configure" "make")))
+               :features (test-simple)
+               )
+
+        (:name dbgr
+               :depends (test-simple load-relative loc-changes)
+               :features (loc-changes load-relative test-simple)
+               :url "https://github.com/jkl1337/emacs-dbgr")))
 
 (setq jkl/el-get-packages
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
+   flymake ; wow, the emacs one is a POS
    ido-ubiquitous
-   color-theme ac-nrepl
+   color-theme
+   bbdb bbdb-vcard org-mode
+   rainbow-mode rainbow-delimiters
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
-   flymake-ruby
-   rcodetools rvm rinari rhtml-mode rspec-mode yari rsense
-   yaml-mode
-   emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
+   flymake-easy
+   rcodetools rvm rdebug rinari rhtml-mode rspec-mode yari rsense ruby-block
+   yaml-mode haml-mode
+   emms xcscope git-blame slime yasnippet csharp-mode jquery-doc
    html5 js2-mode multi-web-mode coffee-mode
    sass-mode
    magit
-   clojure-mode nrepl paredit))
+   clojure-mode nrepl ac-nrepl paredit))
 
 (el-get 'sync jkl/el-get-packages)
 
@@ -325,6 +344,7 @@ try disabling Alt-Tab switching and see how that works")
 (yas-global-mode)
 
 ;;;; NXHTML
+(jkl/custom-set 'mumamo-chunk-coloring 10)
 ;;(tabkey2-mode)
 
 ;;;; CEDET and ECB
