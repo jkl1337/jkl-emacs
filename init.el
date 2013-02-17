@@ -218,6 +218,12 @@
   (el-get 'sync jkl/el-get-packages))
 
 (byte-recompile-directory (jkl/script-dir) 0)
+
+(jkl/load-script "themes")
+(condition-case nil
+    (color-theme-cool-dark)
+    (error nil))
+
 ;; Request to merge custom info.
 ;; Consider setting additional-path with default list in order to
 ;; have custom docs separated (put them in INFOPATH)
