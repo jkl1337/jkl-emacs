@@ -6,13 +6,13 @@
      (defconst flymake-ruby-err-line-patterns
        '(("^\\(?:SyntaxError in \\)?\\(.*\.rb\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)))
 
-     (defvar flymake-ruby-executable "ruby"
+     (defvar flymake-ruby-executable ("ruby")
        "The ruby executable to use for syntax checking.")
 
      ;; Invoke ruby with '-c' to get syntax checking
      (defun flymake-ruby-command (filename)
        "Construct a command that flymake can use to check ruby source."
-       (list flymake-ruby-executable "-w" "-c" filename))
+       (append flymake-ruby-executable (list "-w" "-c" filename)))
 
 ;;;###autoload
      (defun flymake-ruby-load ()
@@ -31,6 +31,8 @@
                   (file-writable-p (file-name-directory buffer-file-name))
                   (file-writable-p buffer-file-name))
          (local-set-key (kbd "C-c d") 'flymake-display-err-menu-for-current-line)
+         (when (string-match "/jruby-" (car rvm--current-ruby-binary-path))
+           (set (make-local-variable 'flymake-ruby-executable) (list "jruby" "--ng")))
          (flymake-ruby-load)))
 
      (provide 'flymake-ruby)
@@ -80,7 +82,7 @@
   "Return a list of all the rake tasks defined in the current
 projects. I know this is a hack to put all the logic in the
 exec-to-string command, but it works and seems fast"
-  (delq nil (mapcar '(lambda(line)
+  (delq nil (mapcar #'(lambda(line)
                        (if (string-match "rake \\([^ ]+\\)" line) (match-string 1 line)))
                     (split-string (shell-command-to-string "rake -T") "[\n]"))))
 
