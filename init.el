@@ -179,14 +179,26 @@
                           "rng-loc"
                         '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml"))))
         (:name "multi-web-mode"
-               :pkgname "fgallina/multi-web-mode")))
+               :pkgname "fgallina/multi-web-mode")
+        (:name flymake-ruby
+               :depends flymake-easy)
+        (:name flymake-easy
+               :type github
+               :description "Helpers for easily building Emacs flymake checkers"
+               :pkgname "purcell/flymake-easy"
+               :website "http://github.com/purcell/flymake-easy")
+        (:name rsense
+               :build ("ant")
+               :compile "etc"
+               :post-init (progn
+                            (setq rsense-home (concat el-get-dir "rsense"))))))
 
 (setq jkl/el-get-packages
  '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
    ido-ubiquitous
    color-theme ac-nrepl
    markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
-   rcodetools rvm rinari rhtml-mode rspec-mode yari
+   rcodetools rvm rinari rhtml-mode rspec-mode yari rsense
    yaml-mode
    emms xcscope git-blame slime yasnippet csharp-mode bbdb jquery-doc
    html5 js2-mode multi-web-mode coffee-mode
