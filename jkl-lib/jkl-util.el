@@ -4,13 +4,18 @@
   "Return PATH if path exists, otherwise nil"
   (when (file-exists-p path) path))
 
-(defun jkl/remove-elc-on-save ()
-  "Hooks the `after-save-hook' to delete elc files."
+(defun jkl/recompile-elc-on-save ()
+  "Hooks the `after-save-hook' to delete elc files.
+If there is an error in the recompile the file will have to be
+manually forced recompiles."
   (add-hook 'after-save-hook
             (lambda ()
-              (if (file-exists-p (concat buffer-file-name "c"))
-                  (delete-file (concat buffer-file-name "c"))))
-            nil t))
+	      (let ((elc-file (concat buffer-file-name "c")))
+		(when (file-exists-p elc-file)
+		  (delete-file elc-file)
+		  (condition-case nil
+		      (byte-compile-file buffer-file-name)
+		       (error (warn "%s failed to byte recompile" buffer-file-name))))))))
 
 (defun jkl/load-path-add-immediate-subdirs (top-dir)
   (let* ((contents (directory-files top-dir))
@@ -121,11 +126,7 @@ CUSTOMIZED-VALUE property"
     (let ((attr-funcs '(set-face-foreground set-face-background))
           (face (car faceelt)))
       (dolist (color (cdr faceelt))
-        (funcall (car attr-funcs) face color)
-        (setq sfunc (cdr attr-funcs))      
-        )
-      )
-    ))
+        (funcall (car attr-funcs) face color)))))
 
 (defun jkl/remove-or-convert-trailing-ctl-M ()
   "Propose to remove or convert trailing ^M from a file."

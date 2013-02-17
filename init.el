@@ -18,7 +18,7 @@
   (file-name-directory (directory-file-name jkl/my-dir)))
 
 (defun jkl/load-script (script &optional noerror)
-  (load (concat jkl/my-dir "jkl-cust/" script) noerror nil t))
+  (load (concat jkl/my-dir "jkl-cust/" script) noerror nil nil))
 
 (defun jkl/load-scripts (&rest files)
   (while files
@@ -27,7 +27,7 @@
       (when (listp file)
         (setq noerror (cadr file))
         (setq file (car file)))
-      (load (concat jkl/my-dir "jkl-cust/" file) noerror nil t))
+      (load (concat jkl/my-dir "jkl-cust/" file) noerror nil nil))
     (setq files (cdr files))))
 
 (defun jkl/script-dir ()
@@ -57,17 +57,10 @@
                                :slant normal :weight normal :height 90 :width normal
                                :foundry "*" :family "Lucida Console")))))
 
-(unless jkl/mswinp
-  (let ((font-param))
-    ;;(setq font-param '("ProggyCleanTT" . 120))
-    (setq font-param (cond
-                      ((boundp 'jkl/font-face) jkl/font-face)
-                      ((eq  'darwin system-type) '("Monaco" . 90))
-                      (t '("Monaco" . 80))))
-    (jkl/set-face 'default `((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
-                                 :overline nil :underline nil :background "black" :foreground "green" 
-                                 :slant normal :weight normal :height ,(cdr font-param) :width normal
-                                 :foundry "*" :family ,(car font-param)))))))
+(let ((font (cond
+             ((not jkl/mswinp) "Monaco-8")
+             ((eq 'darwin system-type) "Monaco-9"))))
+  (when font (set-face-attribute 'default nil :font "Monaco-8")))
 
 (jkl/custom-set 'default-frame-alist
                 '((width . 140)
@@ -299,26 +292,11 @@ try disabling Alt-Tab switching and see how that works")
     ad-do-it))
 
 ;;;; EMMS
-(let ((emms-lisp-dir (concat jkl/my-dir "contrib/emms/lisp")))
-  (when (file-readable-p (concat emms-lisp-dir "/emms-setup.elc"))
-    (add-to-list 'load-path emms-lisp-dir)
-    (require 'emms-setup)
-    (emms-standard)
-    (emms-default-players)
-    ;; (define-emms-simple-player mpg123 '(file url)
-    ;;   (emms-player-simple-regexp "mp3" "mp2")
-    ;;   "mpg123")
-    ;; (jkl/custom-set 'emms-player-list (cons 'emms-player-mpg123 emms-player-list))
-    (add-to-list 'Info-default-directory-list (expand-file-name (concat emms-lisp-dir "/../doc")))))
+;;; FIXME: Reconfigure EMMS
 
 ;;;; BBDB
 
 ;;;; ORG-MODE
-(when (car (jkl/try-add-pkg "org-mode/lisp" "org-mode/contrib/lisp"))
-  (let ((org-info-dir (concat jkl/pkg-path "org-mode/doc")))
-    (when (file-readable-p (concat org-info-dir "/dir"))
-      (add-to-list 'Info-default-directory-list (expand-file-name org-info-dir)))))
-
 (require 'org nil)
 
 (jkl/custom-set 'major-mode 'text-mode)
@@ -353,38 +331,7 @@ try disabling Alt-Tab switching and see how that works")
 ;;(tabkey2-mode)
 
 ;;;; CEDET and ECB
-
-(semantic-mode 1)
-(jkl/custom-set 'semantic-new-buffer-setup-functions
-                '((emacs-lisp-mode . semantic-default-elisp-setup)
-                  (html-mode . semantic-default-html-setup)
-                  (jde-mode . wisent-java-default-setup)
-                  (java-mode . wisent-java-default-setup)
-                  ;;(python-mode . wisent-python-default-setup)
-                  (scheme-mode . semantic-default-scheme-setup)
-                  (srecode-template-mode . srecode-template-setup-parser)
-                  (texinfo-mode . semantic-default-texi-setup)
-                  (makefile-automake-mode . semantic-default-make-setup)
-                  (makefile-gmake-mode . semantic-default-make-setup)
-                  (makefile-makepp-mode . semantic-default-make-setup)
-                  (makefile-bsdmake-mode . semantic-default-make-setup)
-                  (makefile-imake-mode . semantic-default-make-setup)
-                  (makefile-mode . semantic-default-make-setup)))
-
-(defun jkl/test-cedet ()
-  (interactive)
-  (jkl/add-to-list 'semantic-new-buffer-setup-functions
-                   '(c++-mode . semantic-default-c-setup))
-  (jkl/add-to-list 'semantic-new-buffer-setup-functions
-                   '(c-mode . semantic-default-c-setup))
-
-  (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-  (require 'semantic/bovine/c)
-  (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("Foundation_API" . ""))
-  (global-ede-mode t)
-  (semantic-load-enable-excessive-code-helpers)
-  (semanticdb-enable-gnu-global-databases 'c-mode)
-  (semanticdb-enable-gnu-global-databases 'c++-mode))
+;;; see cedet-setup.el
 
 ;;; ECB - Code Browser
 
@@ -404,9 +351,9 @@ try disabling Alt-Tab switching and see how that works")
     (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources))))
 ;;(add-hook 'objc-mode-hook 'jkl/ac-objc-mode-setup)
 
-;; javascript mode - nxhtml is a pain in my ass
+;; javascript mode - inhibit nxhtml
 (setq auto-mode-alist
-      (delq (car (member '("\\.js\\'" . javascript-mode) auto-mode-alist)) auto-mode-alist))
+      (remove '("\\.js\\'" . javascript-mode) auto-mode-alist))
 
 ;;;; JDEE
 
@@ -466,8 +413,6 @@ try disabling Alt-Tab switching and see how that works")
 
 (add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
 
-(global-set-key (kbd "M-w") 'copy-region-as-kill)
-
 (ido-mode 1)
 (ido-ubiquitous-mode 1)
 (ido-ubiquitous-disable-in execute-extended-command)
@@ -482,7 +427,6 @@ try disabling Alt-Tab switching and see how that works")
       ido-max-prospects 10)
 
 (show-paren-mode 1)
-;;(transient-mark-mode -1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 
 (display-time-mode)
@@ -504,7 +448,7 @@ try disabling Alt-Tab switching and see how that works")
              (define-key emacs-lisp-mode-map (kbd "C-c C-r") 'eval-region)
              (define-key emacs-lisp-mode-map (kbd "C-c <f5>") 'eval-buffer)))
 
-(add-hook 'emacs-lisp-mode-hook 'jkl/remove-elc-on-save)
+(add-hook 'emacs-lisp-mode-hook 'jkl/recompile-elc-on-save)
 
 ;;;; PERFORCE
 ;; Adding this backend causes indefinite wait in all non-rev controlled directories
@@ -518,15 +462,15 @@ try disabling Alt-Tab switching and see how that works")
 ;;   (add-hook 'find-file-hook 'jkl/remove-or-convert-trailing-ctl-M))
 
 (jkl/load-scripts 
- "org-setup.el"
- ;;"cedet-setup.el"
- "ruby-setup.el"
- "doc-setup.el"
- "py-setup.el"
- "prog-setup.el"
- "clisp-setup.el"
- "clojure-setup.el"
- "web-setup.el"
+ "org-setup"
+ "cedet-setup"
+ "ruby-setup"
+ "doc-setup"
+ "py-setup"
+ "prog-setup"
+ "clisp-setup"
+ "clojure-setup"
+ "web-setup"
  )
 
 (setq custom-file (concat jkl/my-dir "custom.el"))
