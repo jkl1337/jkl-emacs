@@ -92,12 +92,12 @@ exec-to-string command, but it works and seems fast"
 
 (eval-after-load 'ruby-mode
   '(progn
-     (require 'rsense)
-     ;; the rsense "launcher" can only run with MRI ruby, because it has to fork
-     ;; the proper config is handled by .rsense anyway
-     (set (make-local-variable 'ruby-program) "/usr/bin/ruby")
+     (setq ruby-program "/usr/bin/ruby")
 
      (defun jkl/ruby-setup ()
+       (require 'rsense)
+       ;; the rsense "launcher" can only run with MRI ruby, because it has to fork
+       ;; the proper config is handled by .rsense anyway
        (setq ac-sources
              (cons ac-source-rsense ac-sources)))
      ;; flymake-ruby-mode
