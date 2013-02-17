@@ -431,12 +431,13 @@ try disabling Alt-Tab switching and see how that works")
 (jkl/add-to-list 'tramp-default-proxies-alist '((regexp-quote (system-name)) nil nil))
 
 ;;; GLOBAL settings
-(global-set-key "\C-cd" (lambda ()
-                          (interactive)
-                          (let ((cur-window (selected-window)))
-                            (other-window 1)
-                            (quit-window)
-                            (select-window cur-window))))
+(define-key 'help-command "\C-f" 'find-function-at-point)
+(global-set-key "\C-c\C-d" (lambda ()
+                              (interactive)
+                              (let ((cur-window (selected-window)))
+                                (other-window 1)
+                                (quit-window)
+                                (select-window cur-window))))
 
 (global-set-key "\M-/" 'hippie-expand)
 
