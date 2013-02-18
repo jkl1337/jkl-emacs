@@ -51,24 +51,18 @@
 			 ".el") t)
 
 ;; BEGIN APPEARANCE / BASIC FACES - with fallback when color-theme is not installed
-(when jkl/mswinp
-  (jkl/set-face 'default '((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil
-                               :overline nil :underline nil :background "black" :foreground "green" 
-                               :slant normal :weight normal :height 90 :width normal
-                               :foundry "*" :family "Lucida Console")))))
-
 (let ((font (cond
-             ((not jkl/mswinp) "Monaco-8")
-             ((eq 'darwin system-type) "Monaco-9"))))
-  (when font (set-face-attribute 'default nil :font "Monaco-8")))
+             (jkl/mswinp "Lucida Console-9")
+             ((eq 'darwin system-type) "Monaco-9")
+             (t "Monaco-8"))))
+  (when font (set-face-attribute 'default nil :font font)))
 
 (jkl/custom-set 'default-frame-alist
                 '((width . 140)
                   (height . 50)
                   (foreground-color . "green")
                   (background-color . "black")
-                  (cursor-color . "white")
-                  ))
+                  (cursor-color . "white")))
 
 (jkl/set-face-colors
  '((font-lock-type-face "yellow")
