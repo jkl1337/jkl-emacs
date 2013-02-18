@@ -6,7 +6,7 @@
      (defconst flymake-ruby-err-line-patterns
        '(("^\\(?:SyntaxError in \\)?\\(.*\.rb\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)))
 
-     (defvar flymake-ruby-executable ("ruby")
+     (defvar flymake-ruby-executable (list "ruby")
        "The ruby executable to use for syntax checking.")
 
      ;; Invoke ruby with '-c' to get syntax checking
