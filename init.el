@@ -212,6 +212,9 @@
   (el-get 'sync jkl/el-get-packages))
 
 (byte-recompile-directory (jkl/script-dir) 0)
+(condition-case nil
+    (byte-recompile-directory (concat jkl/my-dir "contrib/") 0)
+  (error (warn "Failed to byte-compile some contrib files")))
 
 (jkl/load-script "themes")
 (condition-case nil
@@ -219,17 +222,8 @@
     (error nil))
 
 ;; Request to merge custom info.
-;; Consider setting additional-path with default list in order to
-;; have custom docs separated (put them in INFOPATH)
 ;; (add-to-list 'Info-default-directory-list 
 ;;              (expand-file-name jkl/info-path))
-
-;;;; ELPA
-;; package.el is carried in the contrib directory for now
-;; (require 'package)
-;; (add-to-list 'package-archives
-;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
-;; (package-initialize) 
 
 ;;;; CUSTOM KEY BINDINGS
 (define-key jkl/func-map "c" 'recompile)
@@ -248,7 +242,6 @@
       (jkl/custom-set 'explicit-bash-args '("--login" "--noediting" "-i"))
       (jkl/custom-set
        'shell-mode-hook '(lambda ()
-                           (tabkey2-mode nil)
                            (ansi-color-for-comint-mode-on)
                            ;;(setq comint-scroll-show-maximum-output 'this)
                            (make-variable-buffer-local 'comint-completion-addsuffix)
@@ -289,6 +282,7 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; BBDB
 
 ;;;; ORG-MODE
+;;; FIXME: See about lazy
 (require 'org nil)
 
 (jkl/custom-set 'major-mode 'text-mode)
@@ -314,18 +308,11 @@ try disabling Alt-Tab switching and see how that works")
 (autoload 'gtags-mode "gtags" "" t)
 
 ;;;; YASNIPPET
-;; (require 'yasnippet)
 (add-to-list 'yas-snippet-dirs (concat jkl/my-dir "yasnippet"))
 (yas-global-mode)
 
 ;;;; NXHTML
 (jkl/custom-set 'mumamo-chunk-coloring 10)
-;;(tabkey2-mode)
-
-;;;; CEDET and ECB
-;;; see cedet-setup.el
-
-;;; ECB - Code Browser
 
 ;;;; AUTO-COMPLETE
 (jkl/custom-set 'ac-quick-help-delay 1.0)
@@ -450,11 +437,6 @@ try disabling Alt-Tab switching and see how that works")
 (jkl/custom-set 'vc-p4-require-p4config t)
 ;; Damn, it's not working well
 ;; (jkl/add-to-list 'vc-handled-backends 'P4) 
-
-;;; A find-file-hook that is interactive is arguably completely evil
-;;; but perhaps I will assign this to a keybinding, later
-;; (unless jkl/mswinp
-;;   (add-hook 'find-file-hook 'jkl/remove-or-convert-trailing-ctl-M))
 
 (jkl/load-scripts 
  "org-setup"
