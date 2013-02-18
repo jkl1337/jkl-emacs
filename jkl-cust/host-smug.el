@@ -9,5 +9,5 @@
 (eval-after-load "jde"
   '(progn
      (jkl/custom-set 'jde-jdk-registry
-                     '(("1.6.0" . "/opt/java")))))
+                     '(("1.7.0" . "/opt/java")))))
 
