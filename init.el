@@ -195,6 +195,7 @@
         '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
                  pkgbuild-mode
                  flymake ; wow, the emacs one is a POS
+                 flymake-coffee flymake-haml flymake-shell
                  ido-ubiquitous
                  color-theme
                  bbdb bbdb-vcard org-mode
@@ -229,8 +230,18 @@
 (define-key jkl/func-map "c" 'recompile)
 
 ;; Flymake error nav
-(global-set-key [f10] 'flymake-goto-prev-error)
-(global-set-key [f11] 'flymake-goto-next-error)
+(defun jkl/flymake-show-next ()
+  (interactive)
+  (flymake-goto-next-error)
+  (flymake-display-err-menu-for-current-line))
+
+(defun jkl/flymake-show-prev ()
+  (interactive)
+  (flymake-goto-next-error)
+  (flymake-display-err-menu-for-current-line))
+
+(define-key jkl/func-map "5" 'jkl/flymake-show-next)
+(define-key jkl/func-map "6" 'jkl/flymake-show-prev)
 
 ;;;; Command/environment customizations
 ;; Windows msys shell

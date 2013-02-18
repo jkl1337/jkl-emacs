@@ -30,7 +30,6 @@
        (when (and buffer-file-name
                   (file-writable-p (file-name-directory buffer-file-name))
                   (file-writable-p buffer-file-name))
-         (local-set-key (kbd "C-c d") 'flymake-display-err-menu-for-current-line)
          (when (string-match "/jruby-" (car rvm--current-ruby-binary-path))
            (set (make-local-variable 'flymake-ruby-executable) (list "jruby" "--ng")))
          (flymake-ruby-load)))

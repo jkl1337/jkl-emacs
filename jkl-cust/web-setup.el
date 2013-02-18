@@ -1,3 +1,5 @@
+(add-hook 'css-mode-hook 'flymake-mode-on)
+
 (eval-after-load "coffee-mode"
   '(progn
      (let ((map coffee-mode-map))
