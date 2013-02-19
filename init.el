@@ -219,7 +219,7 @@
 
 (jkl/load-script "themes")
 (condition-case nil
-    (color-theme-tangotango)
+    (color-theme-cool-dark)
   (error nil))
 
 ;; Request to merge custom info.
