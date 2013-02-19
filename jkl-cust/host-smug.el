@@ -11,8 +11,6 @@
      (jkl/custom-set 'jde-jdk-registry
                      '(("1.7.0" . "/opt/java")))))
 
-(set-default emms-player-mpd-connect-function 'jkl/mpd-local-connect)
-
 (eval-after-load "emms"
   '(progn
      (require 'emms-player-mpd)
