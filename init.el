@@ -188,6 +188,9 @@
                :url "https://github.com/jkl1337/emacs-dbgr")
         (:name pkgbuild-mode
                :lazy t)
+        (:name org-mode
+               :shallow nil
+               :checkout "614a80490ff3c7d1c118e5d6623753666e8089ee")
         ))
 
 (progn
