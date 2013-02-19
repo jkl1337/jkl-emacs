@@ -1,0 +1,306 @@
+# This is the Document Type Definition for font configuration files
+
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+fontconfig =
+  element fontconfig {
+    attlist.fontconfig,
+    (dir
+     | cache
+     | cachedir
+     | \include
+     | config
+     | selectfont
+     | match
+     | alias)*
+  }
+attlist.fontconfig &= empty
+# Add a directory that provides fonts
+dir = element dir { attlist.dir, text }
+attlist.dir &=
+  [ a:defaultValue = "default" ] attribute prefix { text }?,
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+# Define the per-user file that holds cache font information.
+# 
+# If the filename begins with '~', it is replaced with the users
+# home directory path.
+cache = element cache { attlist.cache, text }
+attlist.cache &=
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+# Add a directory that is searched for font cache files.
+# These hold per-directory cache data and are searched in
+# order for each directory. When writing cache files, the first
+# directory which allows the cache file to be created is used.
+# 
+# A leading '~' in a directory name is replaced with the users
+# home directory path.
+cachedir = element cachedir { attlist.cachedir, text }
+attlist.cachedir &=
+  [ a:defaultValue = "default" ] attribute prefix { text }?,
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+# Reference another configuration file; note that this
+# is another complete font configuration file and not
+# just a file included by the XML parser.
+# 
+# Set 'ignore_missing' to 'yes' if errors are to be ignored.
+# 
+# If the filename begins with '~', it is replaced with the users
+# home directory path.
+\include = element include { attlist.include, text }
+attlist.include &=
+  [ a:defaultValue = "no" ] attribute ignore_missing { "no" | "yes" }?,
+  [ a:defaultValue = "default" ] attribute prefix { text }?,
+  [ a:defaultValue = "no" ] attribute deprecated { "yes" | "no" }?,
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+# Global library configuration data
+config = element config { attlist.config, (blank | rescan)* }
+attlist.config &= empty
+# Specify the set of Unicode encoding values which
+# represent glyphs that are allowed to contain no
+# data.  With this list, fontconfig can examine
+# fonts for broken glyphs and eliminate them from
+# the set of valid Unicode chars.  This idea
+# was borrowed from Mozilla
+blank = element blank { attlist.blank, (int | range)* }
+attlist.blank &= empty
+# Aliases are just a special case for multiple match elements
+# 
+# They are syntactically equivalent to:
+# 
+# <match>
+#     <test name="family">
+#	<string value=[family]/>
+#     </test>
+#     <edit name="family" mode="prepend">
+#	<string value=[prefer]/>
+#	...
+#     </edit>
+#     <edit name="family" mode="append">
+#	<string value=[accept]/>
+#	...
+#     </edit>
+#     <edit name="family" mode="append_last">
+#	<string value=[default]/>
+#	...
+#     </edit>
+# </match>
+
+# Periodically rescan the font configuration and
+# directories to synch internal state with filesystem
+rescan = element rescan { attlist.rescan, int }
+attlist.rescan &= empty
+# Edit list of available fonts at startup/reload time
+selectfont =
+  element selectfont { attlist.selectfont, (rejectfont | acceptfont)* }
+attlist.selectfont &= empty
+rejectfont =
+  element rejectfont { attlist.rejectfont, (glob | pattern)* }
+attlist.rejectfont &= empty
+acceptfont =
+  element acceptfont { attlist.acceptfont, (glob | pattern)* }
+attlist.acceptfont &= empty
+glob = element glob { attlist.glob, text }
+attlist.glob &= empty
+pattern = element pattern { attlist.pattern, patelt* }
+attlist.pattern &= empty
+constant =
+  int | double | \string | matrix | bool | charset | langset | const
+patelt = element patelt { attlist.patelt, constant* }
+attlist.patelt &= attribute name { text }
+alias =
+  element alias {
+    attlist.alias, test?, family*, prefer?, accept?, \default?
+  }
+attlist.alias &=
+  [ a:defaultValue = "weak" ]
+  attribute binding { "weak" | "strong" | "same" }?
+prefer = element prefer { attlist.prefer, family* }
+attlist.prefer &= empty
+accept = element accept { attlist.accept, family* }
+attlist.accept &= empty
+\default = element default { attlist.default, family* }
+attlist.default &= empty
+family = element family { attlist.family, text }
+attlist.family &=
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+expr =
+  int
+  | double
+  | \string
+  | matrix
+  | bool
+  | charset
+  | langset
+  | name
+  | const
+  | or
+  | and
+  | eq
+  | not_eq
+  | less
+  | less_eq
+  | more
+  | more_eq
+  | contains
+  | not_contains
+  | plus
+  | minus
+  | times
+  | divide
+  | not
+  | if
+  | floor
+  | ceil
+  | round
+  | trunc
+# Match and edit patterns.
+# 
+# If 'target' is 'pattern', execute the match before selecting a font.
+# if 'target' is 'font', execute the match on the result of a font
+# selection.
+match = element match { attlist.match, test*, edit* }
+attlist.match &=
+  [ a:defaultValue = "pattern" ]
+  attribute target { "pattern" | "font" | "scan" }?
+# Match a field in a pattern
+# 
+# if 'qual' is 'any', then the match succeeds if any value in the field matches.
+# if 'qual' is 'all', then the match succeeds only if all values match.
+# if 'qual' is 'first', then the match succeeds only if the first value matches.
+# if 'qual' is 'not_first', then the match succeeds only if any value other than
+#     the first matches.
+# For match elements with target=font, if test 'target' is 'pattern',
+# then the test is applied to the pattern used in matching rather than
+# to the resulting font.
+# 
+# Match elements with target=scan are applied as fonts are scanned.
+# They edit the pattern generated from the scanned font and affect
+# what the fontconfig database contains.
+test = element test { attlist.test, expr* }
+attlist.test &=
+  [ a:defaultValue = "any" ]
+  attribute qual { "any" | "all" | "first" | "not_first" }?,
+  attribute name { text },
+  [ a:defaultValue = "default" ]
+  attribute target { "pattern" | "font" | "default" }?,
+  [ a:defaultValue = "false" ]
+  attribute ignore-blanks { "true" | "false" }?,
+  [ a:defaultValue = "eq" ]
+  attribute compare {
+    "eq"
+    | "not_eq"
+    | "less"
+    | "less_eq"
+    | "more"
+    | "more_eq"
+    | "contains"
+    | "not_contains"
+  }?
+# Edit a field in a pattern
+# 
+# The enclosed values are used together to edit the list of values
+# associated with 'name'.
+# 
+# If 'name' matches one of those used in a test element for this match element:
+#     if 'mode' is 'assign', replace the matched value.
+#     if 'mode' is 'assign_replace', replace all of the values
+#     if 'mode' is 'prepend', insert before the matched value
+#     if 'mode' is 'append', insert after the matched value
+#     if 'mode' is 'prepend_first', insert before all of the values
+#     if 'mode' is 'append_last', insert after all of the values
+# If 'name' doesn't match any of those used in a test element:
+#     if 'mode' is 'assign' or 'assign_replace, replace all of the values
+#     if 'mode' is 'prepend' or 'prepend_first', insert before all of the values
+#     if 'mode' is 'append' or 'append_last', insert after all of the values
+edit = element edit { attlist.edit, expr* }
+attlist.edit &=
+  attribute name { text },
+  [ a:defaultValue = "assign" ]
+  attribute mode {
+    "assign"
+    | "assign_replace"
+    | "prepend"
+    | "append"
+    | "prepend_first"
+    | "append_last"
+  }?,
+  [ a:defaultValue = "weak" ]
+  attribute binding { "weak" | "strong" | "same" }?
+# Elements of expressions follow
+int = element int { attlist.int, text }
+attlist.int &=
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+double = element double { attlist.double, text }
+attlist.double &=
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+\string = element string { attlist.string, text }
+attlist.string &=
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+matrix =
+  element matrix { attlist.matrix, double, double, double, double }
+attlist.matrix &= empty
+bool = element bool { attlist.bool, text }
+attlist.bool &= empty
+charset = element charset { attlist.charset, (int | range)* }
+attlist.charset &= empty
+range = element range { attlist.range, int, int }
+attlist.range &= empty
+langset = element langset { attlist.langset, \string* }
+attlist.langset &= empty
+name = element name { attlist.name, text }
+attlist.name &=
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+const = element const { attlist.const, text }
+attlist.const &=
+  [ a:defaultValue = "preserve" ]
+  attribute xml:space { "default" | "preserve" }?
+or = element or { attlist.or, expr* }
+attlist.or &= empty
+and = element and { attlist.and, expr* }
+attlist.and &= empty
+eq = element eq { attlist.eq, expr, expr }
+attlist.eq &= empty
+not_eq = element not_eq { attlist.not_eq, expr, expr }
+attlist.not_eq &= empty
+less = element less { attlist.less, expr, expr }
+attlist.less &= empty
+less_eq = element less_eq { attlist.less_eq, expr, expr }
+attlist.less_eq &= empty
+more = element more { attlist.more, expr, expr }
+attlist.more &= empty
+more_eq = element more_eq { attlist.more_eq, expr, expr }
+attlist.more_eq &= empty
+contains = element contains { attlist.contains, expr, expr }
+attlist.contains &= empty
+not_contains = element not_contains { attlist.not_contains, expr, expr }
+attlist.not_contains &= empty
+plus = element plus { attlist.plus, expr* }
+attlist.plus &= empty
+minus = element minus { attlist.minus, expr* }
+attlist.minus &= empty
+times = element times { attlist.times, expr* }
+attlist.times &= empty
+divide = element divide { attlist.divide, expr* }
+attlist.divide &= empty
+not = element not { attlist.not, expr }
+attlist.not &= empty
+if = element if { attlist.if, expr, expr, expr }
+attlist.if &= empty
+floor = element floor { attlist.floor, expr }
+attlist.floor &= empty
+ceil = element ceil { attlist.ceil, expr }
+attlist.ceil &= empty
+round = element round { attlist.round, expr }
+attlist.round &= empty
+trunc = element trunc { attlist.trunc, expr }
+attlist.trunc &= empty
+start = fontconfig
