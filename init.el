@@ -227,6 +227,7 @@
 ;;              (expand-file-name jkl/info-path))
 
 ;;;; CUSTOM KEY BINDINGS
+(defalias 'qrr 'query-replace-regexp)
 (define-key jkl/func-map "c" 'recompile)
 
 ;; Flymake error nav
@@ -289,6 +290,9 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; EMMS
 ;;; FIXME: Reconfigure EMMS
+
+;;;; GIT-BLAME
+(jkl/custom-set 'git--timer-sec 5.0)
 
 ;;;; BBDB
 
@@ -362,6 +366,8 @@ try disabling Alt-Tab switching and see how that works")
     (setenv "LUAI" "luajit")))
 
 ;;;; BEGIN CUSTOMIZATION
+
+(blink-cursor-mode 0)
 
 ;;; TRAMP administer root files on remote hosts
 (jkl/add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:luebsj@%h:"))
