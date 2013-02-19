@@ -57,12 +57,12 @@
              (t "Monaco-8"))))
   (when font (set-face-attribute 'default nil :font font)))
 
-(jkl/custom-set 'default-frame-alist
-                '((width . 140)
-                  (height . 50)
-                  (foreground-color . "green")
-                  (background-color . "black")
-                  (cursor-color . "white")))
+;; (jkl/custom-set 'default-frame-alist
+;;                 '((width . 140)
+;;                   (height . 50)
+;;                   (foreground-color . "green")
+;;                   (background-color . "black")
+;;                   (cursor-color . "white")))
 
 (jkl/set-face-colors
  '((font-lock-type-face "yellow")
@@ -197,7 +197,7 @@
                  flymake ; wow, the emacs one is a POS
                  flymake-coffee flymake-haml flymake-shell
                  ido-ubiquitous
-                 color-theme
+                 color-theme color-theme-tangotango
                  bbdb bbdb-vcard org-mode
                  rainbow-mode rainbow-delimiters
                  markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
@@ -219,8 +219,8 @@
 
 (jkl/load-script "themes")
 (condition-case nil
-    (color-theme-cool-dark)
-    (error nil))
+    (color-theme-tangotango)
+  (error nil))
 
 ;; Request to merge custom info.
 ;; (add-to-list 'Info-default-directory-list 
