@@ -15,7 +15,8 @@ manually forced recompiles."
 		  (delete-file elc-file)
 		  (condition-case nil
 		      (byte-compile-file buffer-file-name)
-		       (error (warn "%s failed to byte recompile" buffer-file-name))))))))
+		       (error (warn "%s failed to byte recompile" buffer-file-name))))))
+            nil t))
 
 (defun jkl/load-path-add-immediate-subdirs (top-dir)
   (let* ((contents (directory-files top-dir))
