@@ -190,7 +190,7 @@
                :lazy t)
         (:name org-mode
                :shallow nil
-               :checkout "614a80490ff3c7d1c118e5d6623753666e8089ee")
+               :checkout "7.9.3e")
         ))
 
 (progn
@@ -301,7 +301,6 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; ORG-MODE
 ;;; FIXME: See about lazy
-(require 'org nil)
 
 (jkl/custom-set 'major-mode 'text-mode)
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
