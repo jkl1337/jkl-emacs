@@ -185,14 +185,13 @@
 
         (:name dbgr
                :depends (test-simple load-relative loc-changes)
-               :features (loc-changes load-relative test-simple)
-               :url "https://github.com/jkl1337/emacs-dbgr")
+               :features (loc-changes load-relative test-simple))
         (:name pkgbuild-mode
                :lazy t)
         (:name org-mode
+               :url "https://github.com/jkl1337/org-mode"
                :shallow nil
-               :checkout "b4f41f7d4233a2b3fa4a0c60690168068ef2e328")
-               ;; :checkout "7.9.3e")
+               :checkout "flyspell")
       ))
 
 (progn
@@ -423,7 +422,6 @@ try disabling Alt-Tab switching and see how that works")
 
 (global-set-key (kbd "C-x \\") 'align-regexp)
 (global-set-key (kbd "C-x ^") 'join-line)
-(global-set-key (kbd "C-x p") 'proced)
 (global-set-key (kbd "C-x m") 'eshell)
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 (global-set-key (kbd "C-x M-m") 'shell)
