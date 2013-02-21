@@ -1,6 +1,7 @@
 ;; TODO: change paren mode highlight faces
 ;; see face-user-default-spec in faces.el TODO
 ;; TODO: Change the require predicates to use fboundp and support lazy loading
+;; FIXME: have a separate savefile directory
 
 (defconst jkl/mswinp
   (eq system-type 'windows-nt))
@@ -190,12 +191,14 @@
                :lazy t)
         (:name org-mode
                :shallow nil
-               :checkout "7.9.3e")
-        ))
+               :checkout "b4f41f7d4233a2b3fa4a0c60690168068ef2e328")
+               ;; :checkout "7.9.3e")
+      ))
 
 (progn
   (setq jkl/el-get-packages
-        '(el-get git-emacs fuzzy popup cedet escreen jdee auto-complete
+        '(el-get fuzzy popup cedet escreen jdee auto-complete
+                 helm projectile undo-tree
                  pkgbuild-mode
                  flymake ; wow, the emacs one is a POS
                  flymake-coffee flymake-haml flymake-shell
@@ -207,9 +210,9 @@
                  flymake-easy
                  rcodetools rvm rdebug rinari rhtml-mode rspec-mode yari rsense ruby-block
                  yaml-mode haml-mode
-                 emms xcscope git-blame slime yasnippet csharp-mode jquery-doc
+                 emms xcscope slime yasnippet csharp-mode jquery-doc
                  html5 js2-mode multi-web-mode coffee-mode
-                 sass-mode
+                 sass-mode scss-mode
                  magit
                  clojure-mode nrepl ac-nrepl paredit))
 
@@ -278,6 +281,18 @@ try disabling Alt-Tab switching and see how that works")
       (define-key function-key-map [(control tab)] [?\M-\t])
     (w32-register-hot-key [M-tab])))
 
+;;;; IELM
+(defun ielm-auto-complete ()
+  "Enables `auto-complete' support in \\[ielm]."
+  (setq ac-sources '(ac-source-functions
+                     ac-source-variables
+                     ac-source-features
+                     ac-source-symbols
+                     ac-source-words-in-same-mode-buffers))
+  (add-to-list 'ac-modes 'inferior-emacs-lisp-mode)
+  (auto-complete-mode 1))
+(add-hook 'ielm-mode-hook 'ielm-auto-complete)
+
 ;;;; MARKDOWN-MODE
 (autoload 'markdown-mode "markdown-mode")
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
@@ -328,6 +343,27 @@ try disabling Alt-Tab switching and see how that works")
 (add-to-list 'yas-snippet-dirs (concat jkl/my-dir "yasnippet"))
 (yas-global-mode)
 
+;;;; PROJECTILE (ELPA)
+;; TODO: save file location
+(projectile-global-mode)
+
+(require 'helm-projectile)
+
+(defun jkl/helm ()
+  "Configure helm"
+  (interactive)
+  (condition-case nil
+      (if (projectile-project-root)
+          (helm-other-buffer '(helm-c-source-projectile-files-list
+                               helm-c-source-projectile-buffers-list
+                               helm-c-source-buffers-list
+                               helm-c-source-recentf
+                               helm-c-source-buffer-not-found)
+                             "*helm prelude*")
+        ;; fallback to helm-mini
+        (helm-mini))
+    (error (helm-mini))))
+
 ;;;; NXHTML
 (jkl/custom-set 'mumamo-chunk-coloring 10)
 
@@ -369,6 +405,11 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; BEGIN CUSTOMIZATION
 
+(jkl/cs 'backup-directory-alist
+        `((".*" . ,temporary-file-directory))
+	'auto-save-file-name-transforms
+        `((".*" ,temporary-file-directory t)))
+
 (blink-cursor-mode 0)
 
 ;;; TRAMP administer root files on remote hosts
@@ -380,6 +421,20 @@ try disabling Alt-Tab switching and see how that works")
 (define-key 'help-command "\C-f" 'find-function)
 (define-key 'help-command "\C-v" 'find-variable)
 
+(global-set-key (kbd "C-x \\") 'align-regexp)
+(global-set-key (kbd "C-x ^") 'join-line)
+(global-set-key (kbd "C-x p") 'proced)
+(global-set-key (kbd "C-x m") 'eshell)
+(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+(global-set-key (kbd "C-x M-m") 'shell)
+
+(global-set-key "\C-xg" 'magit-status)
+(global-set-key "\C-x\C-b" 'ibuffer)
+
+(global-set-key (kbd "C-x O") (lambda ()
+                                (interactive)
+                                (other-window -1)))
+
 (global-set-key "\C-c\C-d" (lambda ()
                               (interactive)
                               (let ((cur-window (selected-window)))
@@ -389,12 +444,92 @@ try disabling Alt-Tab switching and see how that works")
 
 (global-set-key "\M-/" 'hippie-expand)
 
+(jkl/cs 'hippie-expand-try-functions-list '(try-expand-dabbrev
+                                            try-expand-dabbrev-all-buffers
+                                            try-expand-dabbrev-from-kill
+                                            try-complete-file-name-partially
+                                            try-complete-file-name
+                                            try-expand-all-abbrevs
+                                            try-expand-list
+                                            try-expand-line
+                                            try-complete-lisp-symbol-partially
+                                            try-complete-lisp-symbol))
+
+(ido-mode 1)
+(jkl/cs 'ido-enable-prefix nil
+        'ido-enable-flex-matching t
+        'ido-create-new-buffer 'always
+        'ido-use-filename-at-point 'guess
+        'ido-max-prospects 10
+        'ido-default-file-method 'selected-window)
+
+(electric-pair-mode 1)
+
+;; unique buffer names
+(require 'uniquify)
+(jkl/cs 'uniquify-buffer-name-style 'forward
+        'uniquify-separator "/"
+        'uniquify-after-kill-buffer-p t
+        'uniquify-ignore-buffers-re "^\\*")
+
+;; savehist
+(jkl/cs 'savehist-additional-variables '(search ring regexp-search-ring)
+        'savehist-autosave-interval 60)
+;;        'savehist-file
+(savehist-mode 1)
+
+(jkl/cs 'recentf-max-saved-items 200
+        'recentf-max-menu-items 15)
+(recentf-mode 1)
+
 (jkl/custom-set 'fill-column 72)
 ;; going to go ahead and default to no tabs globally
 (jkl/custom-set 'indent-tabs-mode nil)
 
 ;;; show-trailing-whitespace
 (jkl/custom-set 'show-trailing-whitespace t)
+
+(show-paren-mode 1)
+(global-hl-line-mode 1)
+
+(mapc #'(lambda (s) (put s 'disabled nil))
+      '(narrow-to-region narrow-to-page narrow-to-defun
+                         upcase-region downcase-region))
+
+;; cleanup old buffers
+(require 'midnight)
+
+(global-undo-tree-mode)
+
+(winner-mode 1)
+
+(display-time-mode)
+
+(jkl/custom-set 'display-time-24hr-format t)
+
+(jkl/custom-set 'inhibit-startup-screen t
+                'initial-scratch-message nil
+                'auto-save-interval 3000
+                'auto-save-timeout 300
+                'make-backup-files nil)
+
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+
+;;;; UI
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(line-number-mode 1)
+(column-number-mode 1)
+(size-indication-mode 1)
+
+(jkl/cs 'scroll-margin 0
+        'scroll-conservatively 100000
+        'scroll-preserve-screen-position 1)
+
+(jkl/cs 'frame-title-format
+        '(" Emacs - " (:eval (if (buffer-file-name)
+                                 (abbreviate-file-name (buffer-file-name))
+                               "%b"))))
 
 (add-to-list 'interpreter-mode-alist '("dash" . sh-mode))
 
@@ -414,30 +549,11 @@ try disabling Alt-Tab switching and see how that works")
 
 (add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
 
-(ido-mode 1)
-(ido-ubiquitous-mode 1)
-(ido-ubiquitous-disable-in execute-extended-command)
+;;;; DIRED
+(put 'dired-find-alternate-file 'disabled nil)
 
-(setq ido-enable-prefix nil
-      ido-enable-flex-matching t
-      ido-auto-merge-work-directories-length nil
-      ido-create-new-buffer 'always
-      ido-use-filename-at-point 'guess
-      ido-use-virtual-buffers t
-      ido-handle-duplicate-virtual-buffers 2
-      ido-max-prospects 10)
-
-(show-paren-mode 1)
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-
-(display-time-mode)
-(jkl/custom-set 'display-time-24hr-format t)
-
-(jkl/custom-set 'inhibit-startup-screen t
-                'initial-scratch-message nil
-                'auto-save-interval 3000
-                'auto-save-timeout 300
-                'make-backup-files nil)
+;;;; EDIFF
+(jkl/cs 'ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;;; ELISP customization
 
