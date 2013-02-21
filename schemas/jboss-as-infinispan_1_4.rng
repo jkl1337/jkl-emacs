@@ -1,0 +1,814 @@
+<?xml version="1.0"?>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2011, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+<rng:grammar xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:tns="urn:jboss:domain:infinispan:1.4" ns="urn:jboss:domain:infinispan:1.4" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+    <rng:start combine="choice"><rng:ref name="starting_subsystem"/></rng:start><rng:define name="starting_subsystem"><rng:element name="subsystem"><rng:ref name="subsystem"/>
+        <a:documentation>
+            Enumerates the cache containers available to the registry.
+        </a:documentation>
+    </rng:element></rng:define>
+
+    <rng:define name="subsystem">
+        <rng:oneOrMore><rng:choice>
+            <rng:element name="cache-container"><rng:ref name="cache-container"/>
+                <a:documentation>
+                    Defines an embedded cache container.
+                </a:documentation>
+            </rng:element>
+        </rng:choice></rng:oneOrMore>
+    </rng:define>
+
+    <rng:define name="cache-container">
+        
+            <rng:optional><rng:element name="transport"><rng:ref name="transport"/>
+                <a:documentation>
+                    Overrides the transport characteristics for this cache container.
+                </a:documentation>
+            </rng:element></rng:optional>
+            <rng:oneOrMore><rng:choice>
+                <rng:element name="local-cache"><rng:ref name="local-cache"/>
+                    <a:documentation>
+                        Defines a LOCAL mode cache.
+                    </a:documentation>
+                </rng:element>
+                <rng:element name="replicated-cache"><rng:ref name="replicated-cache"/>
+                    <a:documentation>
+                        Defines a REPL_* mode cache.
+                    </a:documentation>
+                </rng:element>
+                <rng:element name="invalidation-cache"><rng:ref name="invalidation-cache"/>
+                    <a:documentation>
+                        Defines an INVALIDATION_* mode cache.
+                    </a:documentation>
+                </rng:element>
+                <rng:element name="distributed-cache"><rng:ref name="distributed-cache"/>
+                    <a:documentation>
+                        Defines a DIST_* mode cache.
+                    </a:documentation>
+                </rng:element>
+            </rng:choice></rng:oneOrMore>
+        
+        <rng:attribute name="name"><rng:data type="string"><a:documentation>
+                Uniquely identifies this cache container.
+            </a:documentation></rng:data></rng:attribute>
+        <rng:optional><rng:attribute name="aliases"><rng:ref name="aliases"/>
+            <a:documentation>
+                A set of aliases by which this cache container may also be referenced.
+            </a:documentation>
+        </rng:attribute></rng:optional>
+        <rng:optional><rng:attribute name="jndi-name"><rng:data type="string"><a:documentation>
+                
+                    The jndi name to which to bind this cache container.
+                    If undefined, the cache will be bound to: java:jboss/infinispan/container/container-name
+                
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute name="default-cache"><rng:data type="string"><a:documentation>
+                Indicates the default cache for this cache container.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="start" ns_1:defaultValue="LAZY"><rng:ref name="controller-mode"/>
+            <a:documentation>
+                Should this cache container be started on server startup, or lazily when requested by a service or deployment.
+            </a:documentation>
+        </rng:attribute></rng:optional>
+        <rng:optional><rng:attribute name="listener-executor"><rng:data type="string"><a:documentation>
+                Defines the executor used for asynchronous cache listener notifications.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute name="eviction-executor"><rng:data type="string"><a:documentation>
+                Defines the scheduled executor used for evictions.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute name="replication-queue-executor"><rng:data type="string"><a:documentation>
+                Defines the scheduled executor used by the asynchronous replication queue.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="module" ns_1:defaultValue="org.jboss.as.clustering.infinispan"><rng:data type="string"><a:documentation>
+                Defines the module whose class loader should be used when building this cache container.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="transport">
+        <rng:optional><rng:attribute name="stack"><rng:data type="string"><a:documentation>
+                Defines the jgroups stack used by the transport.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute name="cluster"><rng:data type="string"><a:documentation>
+                Defines the name for the underlying group communication cluster.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute name="executor"><rng:data type="string"><a:documentation>
+                Defines the executor used for asynchronous transport communication.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="lock-timeout" ns_1:defaultValue="240000"><rng:data type="long"><a:documentation>
+                
+                    Infinispan uses a distributed lock to maintain a coherent transaction log during state transfer or rehashing, which means that only one cache can be doing state transfer or rehashing at the same time.
+                    This constraint is in place because more than one cache could be involved in a transaction.
+                    This timeout controls the time to wait to acquire acquire a lock on the distributed lock.
+                
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="cache">
+        
+            <rng:optional><rng:element name="locking"><rng:ref name="locking"/>
+                <a:documentation>
+                    The locking configuration of the cache.
+                </a:documentation>
+            </rng:element></rng:optional>
+            <rng:optional><rng:element name="transaction"><rng:ref name="transaction"/>
+                <a:documentation>
+                    The cache transaction configuration.
+                </a:documentation>
+            </rng:element></rng:optional>
+            <rng:optional><rng:element name="eviction"><rng:ref name="eviction"/>
+                <a:documentation>
+                    The cache eviction configuration.
+                </a:documentation>
+            </rng:element></rng:optional>
+            <rng:optional><rng:element name="expiration"><rng:ref name="expiration"/>
+                <a:documentation>
+                    The cache expiration configuration.
+                </a:documentation>
+            </rng:element></rng:optional>
+            <rng:optional><rng:choice>
+                <rng:element name="store"><rng:ref name="custom-store"/>
+                    <a:documentation>
+                        Defines a custom cache store.
+                    </a:documentation>
+                </rng:element>
+                <rng:element name="file-store"><rng:ref name="file-store"/>
+                    <a:documentation>
+                        Defines a file-based cache store.
+                    </a:documentation>
+                </rng:element>
+                <rng:optional><rng:choice>
+                    <rng:element name="string-keyed-jdbc-store"><rng:ref name="string-keyed-jdbc-store"/>
+                        <a:documentation>
+                            Defines a database cache store accessed via JDBC using string-based keys.
+                        </a:documentation>
+                    </rng:element>
+                    <rng:element name="binary-keyed-jdbc-store"><rng:ref name="binary-keyed-jdbc-store"/>
+                        <a:documentation>
+                            Defines a database cache store accessed via JDBC using binary-based keys.
+                        </a:documentation>
+                    </rng:element>
+                    <rng:element name="mixed-keyed-jdbc-store"><rng:ref name="mixed-keyed-jdbc-store"/>
+                        <a:documentation>
+                            Defines a database cache store accessed via JDBC using mixed string and binary-based keys.
+                        </a:documentation>
+                    </rng:element>
+                </rng:choice></rng:optional>
+                <rng:element name="remote-store"><rng:ref name="remote-store"/>
+                    <a:documentation>
+                        
+                            Defines a remote cache store accessed via HotRod.
+                            Nested properties will be treated as HotRod client properties.
+                        
+                    </a:documentation>
+                </rng:element>
+            </rng:choice></rng:optional>
+            <rng:optional><rng:element name="indexing">
+                <a:documentation>
+                    
+                        defined indexing options for cache
+                    
+                </a:documentation>
+                
+                    
+                        <rng:zeroOrMore><rng:element name="property"><rng:ref name="property"/>
+                            <a:documentation>
+                                
+                            </a:documentation>
+                        </rng:element></rng:zeroOrMore>
+                    
+                    <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="index" ns_1:defaultValue="NONE"><rng:ref name="indexing"/>
+                        <a:documentation>
+                            
+                        </a:documentation>
+                    </rng:attribute></rng:optional>
+                
+            </rng:element></rng:optional>
+        
+        <rng:attribute name="name"><rng:data type="string"><a:documentation>
+                Uniquely identifies this cache within its cache container.
+            </a:documentation></rng:data></rng:attribute>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="start" ns_1:defaultValue="LAZY"><rng:ref name="controller-mode"/>
+            <a:documentation>
+                Should this cache be started on server startup, or lazily when requested by a service or deployment.
+            </a:documentation>
+        </rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="batching" ns_1:defaultValue="false"><rng:data type="boolean"><a:documentation>
+                
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="indexing" ns_1:defaultValue="NONE"><rng:ref name="indexing"/>
+            <a:documentation>
+                
+            </a:documentation>
+        </rng:attribute></rng:optional>
+        <rng:optional><rng:attribute name="jndi-name"><rng:data type="string"><a:documentation>
+                
+                    The jndi name to which to bind this cache.
+                    If undefined, the cache will be bound to: java:jboss/infinispan/cache/container-name/cache-name
+                
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute name="module"><rng:data type="string"><a:documentation>
+                
+                    Defines the module whose class loader should be used when building this cache, if different from the enclosing cache container.
+                
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="local-cache">
+        
+            <rng:ref name="cache"/>
+        
+    </rng:define>
+
+    <rng:define name="locking">
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="isolation" ns_1:defaultValue="REPEATABLE_READ"><rng:ref name="isolation"/>
+            <a:documentation>
+                Sets the cache locking isolation level.
+            </a:documentation>
+        </rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="striping" ns_1:defaultValue="false"><rng:data type="boolean"><a:documentation>
+                If true, a pool of shared locks is maintained for all entries that need to be locked. Otherwise, a lock is created per entry in the cache. Lock striping helps control memory footprint but may reduce concurrency in the system.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="acquire-timeout" ns_1:defaultValue="15000"><rng:data type="long"><a:documentation>
+                Maximum time to attempt a particular lock acquisition.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="concurrency-level" ns_1:defaultValue="1000"><rng:data type="int"><a:documentation>
+                Concurrency level for lock containers. Adjust this value according to the number of concurrent threads interacting with Infinispan.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="transaction">
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="mode" ns_1:defaultValue="NONE"><rng:ref name="transaction-mode"/>
+            <a:documentation>
+                Sets the cache transaction mode to one of NONE, NON_XA, NON_DURABLE_XA, FULL_XA.
+            </a:documentation>
+        </rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="stop-timeout" ns_1:defaultValue="30000"><rng:data type="long"><a:documentation>
+                If there are any ongoing transactions when a cache is stopped, Infinispan waits for ongoing remote and local transactions to finish. The amount of time to wait for is defined by the cache stop timeout.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="locking" ns_1:defaultValue="OPTIMISTIC"><rng:ref name="locking-mode"/>
+            <a:documentation>
+                The locking mode for this cache, one of OPTIMISTIC or PESSIMISTIC.
+            </a:documentation>
+        </rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="eviction">
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="strategy" ns_1:defaultValue="NONE"><rng:ref name="eviction-strategy"/>
+            <a:documentation>
+                Sets the cache eviction strategy. Available options are 'UNORDERED', 'FIFO', 'LRU', 'LIRS' and 'NONE' (to disable eviction).
+            </a:documentation>
+        </rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="max-entries" ns_1:defaultValue="10000"><rng:data type="int"><a:documentation>
+                Maximum number of entries in a cache instance. If selected value is not a power of two the actual value will default to the least power of two larger than selected value. -1 means no limit.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="expiration">
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="max-idle" ns_1:defaultValue="-1"><rng:data type="long"><a:documentation>
+                Maximum idle time a cache entry will be maintained in the cache, in milliseconds. If the idle time is exceeded, the entry will be expired cluster-wide. -1 means the entries never expire.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="lifespan" ns_1:defaultValue="-1"><rng:data type="long"><a:documentation>
+                Maximum lifespan of a cache entry, after which the entry is expired cluster-wide, in milliseconds. -1 means the entries never expire.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="interval" ns_1:defaultValue="5000"><rng:data type="long"><a:documentation>
+                Interval (in milliseconds) between subsequent runs to purge expired entries from memory and any cache stores. If you wish to disable the periodic eviction process altogether, set wakeupInterval to -1.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="clustered-cache">
+        
+            <rng:ref name="cache"/>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="async-marshalling" ns_1:defaultValue="false"><rng:data type="boolean"><a:documentation>
+                        
+                           Enables the use of asynchronous marshalling
+                        
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+                <rng:attribute name="mode"><rng:ref name="mode"/>
+                    <a:documentation>
+                        Sets the clustered cache mode, ASYNC for asynchronous operation, or SYNC for synchronous operation.
+                    </a:documentation>
+                </rng:attribute>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="queue-size" ns_1:defaultValue="0"><rng:data type="int"><a:documentation>
+                        In ASYNC mode, this attribute can be used to trigger flushing of the queue when it reaches a specific threshold.
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="queue-flush-interval" ns_1:defaultValue="10"><rng:data type="long"><a:documentation>
+                        In ASYNC mode, this attribute controls how often the asynchronous thread used to flush the replication queue runs. This should be a positive integer which represents thread wakeup time in milliseconds.
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="remote-timeout" ns_1:defaultValue="17500"><rng:data type="long"><a:documentation>
+                        In SYNC mode, the timeout (in ms) used to wait for an acknowledgment when making a remote call, after which the call is aborted and an exception is thrown.
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+            
+        
+    </rng:define>
+
+    <rng:define name="invalidation-cache">
+        
+            <rng:ref name="clustered-cache"/>
+            
+        
+    </rng:define>
+
+    <rng:define name="replicated-cache">
+        
+            <rng:ref name="clustered-cache"/>
+                
+                    <rng:optional><rng:element name="state-transfer"><rng:ref name="state-transfer"/>
+                        <a:documentation>
+                            The state transfer configuration for distribution and replicated caches.
+                        </a:documentation>
+                    </rng:element></rng:optional>
+                
+            
+        
+    </rng:define>
+
+    <rng:define name="distributed-cache">
+        
+            <rng:ref name="clustered-cache"/>
+                
+                    <rng:optional><rng:element name="state-transfer"><rng:ref name="state-transfer"/>
+                        <a:documentation>
+                            The state transfer configuration for distribution and replicated caches.
+                        </a:documentation>
+                    </rng:element></rng:optional>
+                
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="owners" ns_1:defaultValue="2"><rng:data type="int"><a:documentation>
+                        Number of cluster-wide replicas for each cache entry.
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="segments" ns_1:defaultValue="80"><rng:data type="int"><a:documentation>
+                        Number of hash space segments (per cluster). The recommended value is 10 * cluster size.
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="l1-lifespan" ns_1:defaultValue="600000"><rng:data type="long"><a:documentation>
+                        
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+            
+        
+    </rng:define>
+
+    <rng:define name="store">
+        
+            <rng:optional><rng:element name="write-behind"><rng:ref name="write-behind"/>
+                <a:documentation>
+                    Configures a cache store as write-behind instead of write-through.
+                </a:documentation>
+            </rng:element></rng:optional>
+            <rng:zeroOrMore><rng:element name="property"><rng:ref name="property"/>
+                <a:documentation>
+                    A cache store property with name and value.
+                </a:documentation>
+            </rng:element></rng:zeroOrMore>
+        
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="shared" ns_1:defaultValue="false"><rng:data type="boolean"><a:documentation>
+                This setting should be set to true when multiple cache instances share the same cache store (e.g., multiple nodes in a cluster using a JDBC-based CacheStore pointing to the same, shared database.) Setting this to true avoids multiple cache instances writing the same modification multiple times. If enabled, only the node where the modification originated will write to the cache store. If disabled, each individual cache reacts to a potential remote update by storing the data to the cache store.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="preload" ns_1:defaultValue="false"><rng:data type="boolean"><a:documentation>
+                If true, when the cache starts, data stored in the cache store will be pre-loaded into memory. This is particularly useful when data in the cache store will be needed immediately after startup and you want to avoid cache operations being delayed as a result of loading this data lazily. Can be used to provide a 'warm-cache' on startup, however there is a performance penalty as startup time is affected by this process.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="passivation" ns_1:defaultValue="true"><rng:data type="boolean"><a:documentation>
+                If true, data is only written to the cache store when it is evicted from memory, a phenomenon known as 'passivation'. Next time the data is requested, it will be 'activated' which means that data will be brought back to memory and removed from the persistent store. f false, the cache store contains a copy of the contents in memory, so writes to cache result in cache store writes. This essentially gives you a 'write-through' configuration.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="fetch-state" ns_1:defaultValue="true"><rng:data type="boolean"><a:documentation>
+                If true, fetch persistent state when joining a cluster. If multiple cache stores are chained, only one of them can have this property enabled.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="purge" ns_1:defaultValue="true"><rng:data type="boolean"><a:documentation>
+                If true, purges this cache store when it starts up.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="singleton" ns_1:defaultValue="false"><rng:data type="boolean"><a:documentation>
+                If true, the singleton store cache store is enabled. SingletonStore is a delegating cache store used for situations when only one instance in a cluster should interact with the underlying store.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="write-behind">
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="flush-lock-timeout" ns_1:defaultValue="1"><rng:data type="int"><a:documentation>
+                
+                    Timeout to acquire the lock which guards the state to be flushed to the cache store periodically.
+                
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="modification-queue-size" ns_1:defaultValue="1024"><rng:data type="int"><a:documentation>
+                
+                    Maximum number of entries in the asynchronous queue. When the queue is full, the store becomes write-through.
+                    until it can accept new entries
+                
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="shutdown-timeout" ns_1:defaultValue="25000"><rng:data type="int"><a:documentation>
+                
+                    Timeout in milliseconds to stop the cache store.
+                
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="thread-pool-size" ns_1:defaultValue="1"><rng:data type="int"><a:documentation>
+                
+                    Size of the thread pool whose threads are responsible for applying the modifications to the cache store.
+                
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="custom-store">
+        
+            <rng:ref name="store"/>
+                <rng:attribute name="class"><rng:data type="string"><a:documentation>
+                        The class name of the cache store implementation.
+                    </a:documentation></rng:data></rng:attribute>
+            
+        
+    </rng:define>
+
+    <rng:define name="file-store">
+        
+            <rng:ref name="store"/>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="relative-to" ns_1:defaultValue="jboss.server.data.dir"><rng:data type="string"><a:documentation>
+                        The base directory in which to store the cache state.
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+                <rng:optional><rng:attribute name="path"><rng:data type="string"><a:documentation>
+                        
+                            The path within "relative-to" in which to store the cache state.
+                            If undefined, the path defaults to the cache container name.
+                        
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+            
+        
+    </rng:define>
+
+    <rng:define name="remote-store">
+        
+            <rng:ref name="store"/>
+                
+                    <rng:oneOrMore><rng:element name="remote-server"><rng:ref name="remote-server"/></rng:element></rng:oneOrMore>
+                
+                <rng:optional><rng:attribute name="cache"><rng:data type="string"><a:documentation>
+                        The name of the remote cache.  If undefined, the default cache will be used.
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="socket-timeout" ns_1:defaultValue="60000"><rng:data type="long"><a:documentation>
+                        
+                            Enable/disable SO_TIMEOUT on socket connections to remote Hot Rod servers with the specified timeout, in milliseconds.
+                            A timeout of zero is interpreted as an infinite timeout.
+                        
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="tcp-no-delay" ns_1:defaultValue="true"><rng:data type="boolean"><a:documentation>
+                        
+                            Enable/disable TCP_NODELAY on socket connections to remote Hot Rod servers.
+                        
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+            
+        
+    </rng:define>
+
+    <rng:define name="remote-server">
+        <rng:attribute name="outbound-socket-binding"><rng:data type="string"><a:documentation>
+                An outbound socket binding for a remote server.
+            </a:documentation></rng:data></rng:attribute>
+    </rng:define>
+
+    <rng:define name="string-keyed-jdbc-store">
+        
+            <rng:ref name="store"/>
+                
+                    <rng:optional><rng:element name="string-keyed-table"><rng:ref name="string-keyed-table"/>
+                        <a:documentation>
+                            
+                                Defines the table used to store cache entries.
+                            
+                        </a:documentation>
+                    </rng:element></rng:optional>
+                
+                <rng:attribute name="datasource"><rng:data type="string"><a:documentation>
+                        Defines the jndi name of the datasource.
+                    </a:documentation></rng:data></rng:attribute>
+            
+        
+    </rng:define>
+
+    <rng:define name="binary-keyed-jdbc-store">
+        
+            <rng:ref name="store"/>
+                
+                    <rng:optional><rng:element name="binary-keyed-table"><rng:ref name="binary-keyed-table"/>
+                        <a:documentation>
+                            
+                                Defines the table used to store cache buckets.
+                            
+                        </a:documentation>
+                    </rng:element></rng:optional>
+                
+                <rng:attribute name="datasource"><rng:data type="string"><a:documentation>
+                        Defines the jndi name of the datasource.
+                    </a:documentation></rng:data></rng:attribute>
+            
+        
+    </rng:define>
+
+    <rng:define name="mixed-keyed-jdbc-store">
+        
+            <rng:ref name="store"/>
+                
+                    <rng:optional><rng:element name="binary-keyed-table"><rng:ref name="binary-keyed-table"/>
+                        <a:documentation>
+                            
+                                Defines the table used to store cache buckets.
+                            
+                        </a:documentation>
+                    </rng:element></rng:optional>
+                    <rng:optional><rng:element name="string-keyed-table"><rng:ref name="string-keyed-table"/>
+                        <a:documentation>
+                            
+                                Defines the table used to store cache entries.
+                            
+                        </a:documentation>
+                    </rng:element></rng:optional>
+                
+                <rng:attribute name="datasource"><rng:data type="string"><a:documentation>
+                        Defines the jndi name of the datasource.
+                    </a:documentation></rng:data></rng:attribute>
+            
+        
+    </rng:define>
+
+    <rng:define name="string-keyed-table">
+        
+            <rng:ref name="table"/>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="prefix" ns_1:defaultValue="ispn_entry"><rng:data type="string"><a:documentation>
+                        Defines the prefix prepended to the cache name used when composing the name of the cache entry table.
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+            
+        
+    </rng:define>
+
+    <rng:define name="binary-keyed-table">
+        
+            <rng:ref name="table"/>
+                <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="prefix" ns_1:defaultValue="ispn_bucket"><rng:data type="string"><a:documentation>
+                        Defines the prefix prepended to the cache name used when composing the name of the cache bucket table.
+                    </a:documentation></rng:data></rng:attribute></rng:optional>
+            
+        
+    </rng:define>
+
+    <rng:define name="table">
+        
+            <rng:optional><rng:element name="id-column"><rng:ref name="id-column"/>
+                <a:documentation>
+                    Defines the column in which to store the cache key or bucket id.
+                </a:documentation>
+            </rng:element></rng:optional>
+            <rng:optional><rng:element name="data-column"><rng:ref name="data-column"/>
+                <a:documentation>
+                    Defines the column in which to store the cache entry or bucket.
+                </a:documentation>
+            </rng:element></rng:optional>
+            <rng:optional><rng:element name="timestamp-column"><rng:ref name="timestamp-column"/>
+                <a:documentation>
+                    Defines the column in which to store the timestamp of the cache entry or bucket.
+                </a:documentation>
+            </rng:element></rng:optional>
+        
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="fetch-size" ns_1:defaultValue="100"><rng:data type="int"><a:documentation>
+                The fetch size used when querying from this table.  Used to avoid heap memory exhaustion when query is large.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="batch-size" ns_1:defaultValue="100"><rng:data type="int"><a:documentation>
+                The statement batch size used when modifying this table.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="id-column">
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="name" ns_1:defaultValue="id"><rng:data type="string"><a:documentation>
+                The name of the column used to store the cache key or bucket id.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="type" ns_1:defaultValue="VARCHAR"><rng:data type="string"><a:documentation>
+                The type of the column used to store the cache key or bucket id.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="data-column">
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="name" ns_1:defaultValue="datum"><rng:data type="string"><a:documentation>
+                The name of the column used to store the cache entry or bucket.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="type" ns_1:defaultValue="BINARY"><rng:data type="string"><a:documentation>
+                The type of the column used to store the cache entry or bucket.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="timestamp-column">
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="name" ns_1:defaultValue="version"><rng:data type="string"><a:documentation>
+                The name of the column used to store the cache entry or bucket timestamp.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+        <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="type" ns_1:defaultValue="BIGINT"><rng:data type="string"><a:documentation>
+                The type of the column used to store the cache entry or bucket timestamp.
+            </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="state-transfer">
+      <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="enabled" ns_1:defaultValue="true"><rng:data type="boolean"><a:documentation>
+        If enabled, this will cause the cache to ask neighboring caches for state when it starts up, so the cache starts 'warm', although it will impact startup time.
+      </a:documentation></rng:data></rng:attribute></rng:optional>
+      <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="timeout" ns_1:defaultValue="60000"><rng:data type="long"><a:documentation>
+        The maximum amount of time (ms) to wait for state from neighboring caches, before throwing an exception and aborting startup.
+      </a:documentation></rng:data></rng:attribute></rng:optional>
+      <rng:optional><rng:attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0" name="chunk-size" ns_1:defaultValue="10000"><rng:data type="integer"><a:documentation>
+        The size, in bytes, in which to batch the transfer of cache entries.
+      </a:documentation></rng:data></rng:attribute></rng:optional>
+    </rng:define>
+
+    <rng:define name="property">
+ 
+        <rng:attribute name="name"><rng:data type="string"><a:documentation>
+          Defines the name of a property.
+        </a:documentation></rng:data></rng:attribute>
+      
+    </rng:define>
+
+    <rng:define name="isolation">
+        <rng:choice>
+            <rng:value>NONE</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>READ_UNCOMMITTED</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>READ_COMMITTED</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>REPEATABLE_READ</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>SERIALIZABLE</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+        </rng:choice>
+    </rng:define>
+
+    <rng:define name="transaction-mode">
+        <rng:choice>
+            <rng:value>NONE</rng:value>
+                <a:documentation>
+                    Cache will not enlist within transactions.
+                </a:documentation>
+            
+            <rng:value>NON_XA</rng:value>
+                <a:documentation>
+                    Cache will enlist within transactions as a javax.transaction.Synchronization
+                </a:documentation>
+            
+            <rng:value>NON_DURABLE_XA</rng:value>
+                <a:documentation>
+                    Cache will enlist within transactions as a javax.transaction.xa.XAResource, without recovery.
+                </a:documentation>
+            
+            <rng:value>FULL_XA</rng:value>
+                <a:documentation>
+                    Cache will enlist within transactions as a javax.transaction.xa.XAResource, with recovery.
+                </a:documentation>
+            
+        </rng:choice>
+    </rng:define>
+
+    <rng:define name="eager-locking">
+        <rng:choice>
+            <rng:value>NONE</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>SINGLE</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>ALL</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+        </rng:choice>
+    </rng:define>
+
+    <rng:define name="indexing">
+        <rng:choice>
+            <rng:value>NONE</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>LOCAL</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>ALL</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+        </rng:choice>
+    </rng:define>
+
+    <rng:define name="eviction-strategy">
+        <rng:choice>
+            <rng:value>NONE</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>UNORDERED</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>FIFO</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>LRU</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>LIRS</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+        </rng:choice>
+    </rng:define>
+
+    <rng:define name="mode">
+        <rng:choice>
+            <rng:value>ASYNC</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>SYNC</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+        </rng:choice>
+    </rng:define>
+
+    <rng:define name="locking-mode">
+        <rng:choice>
+            <rng:value>OPTIMISTIC</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>PESSIMISTIC</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+        </rng:choice>
+    </rng:define>
+
+    <rng:define name="controller-mode">
+        <rng:choice>
+            <rng:value>EAGER</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+            <rng:value>LAZY</rng:value>
+                <a:documentation>
+                    
+                </a:documentation>
+            
+        </rng:choice>
+    </rng:define>
+
+    <rng:define name="aliases">
+        <a:documentation>
+            A list of aliases.
+        </a:documentation>
+        <rng:list><rng:data type="string"/></rng:list>
+    </rng:define>
+</rng:grammar>

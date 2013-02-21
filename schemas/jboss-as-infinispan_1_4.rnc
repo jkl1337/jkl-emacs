@@ -1,0 +1,1074 @@
+# ~ JBoss, Home of Professional Open Source.
+# ~ Copyright 2011, Red Hat, Inc., and individual contributors
+# ~ as indicated by the @author tags. See the copyright.txt file in the
+# ~ distribution for a full listing of individual contributors.
+# ~
+# ~ This is free software; you can redistribute it and/or modify it
+# ~ under the terms of the GNU Lesser General Public License as
+# ~ published by the Free Software Foundation; either version 2.1 of
+# ~ the License, or (at your option) any later version.
+# ~
+# ~ This software is distributed in the hope that it will be useful,
+# ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+# ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# ~ Lesser General Public License for more details.
+# ~
+# ~ You should have received a copy of the GNU Lesser General Public
+# ~ License along with this software; if not, write to the Free
+# ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace ns_1 = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace rng = "http://relaxng.org/ns/structure/1.0"
+default namespace tns = "urn:jboss:domain:infinispan:1.4"
+
+start |= starting_subsystem
+starting_subsystem =
+  element subsystem {
+    subsystem
+    >> a:documentation [
+         "\x{a}" ~
+         "            Enumerates the cache containers available to the registry.\x{a}" ~
+         "        "
+       ]
+  }
+subsystem =
+  (element cache-container {
+     cache-container
+     >> a:documentation [
+          "\x{a}" ~
+          "                    Defines an embedded cache container.\x{a}" ~
+          "                "
+        ]
+   })+
+cache-container =
+  element transport {
+    transport
+    >> a:documentation [
+         "\x{a}" ~
+         "                    Overrides the transport characteristics for this cache container.\x{a}" ~
+         "                "
+       ]
+  }?,
+  (element local-cache {
+     local-cache
+     >> a:documentation [
+          "\x{a}" ~
+          "                        Defines a LOCAL mode cache.\x{a}" ~
+          "                    "
+        ]
+   }
+   | element replicated-cache {
+       replicated-cache
+       >> a:documentation [
+            "\x{a}" ~
+            "                        Defines a REPL_* mode cache.\x{a}" ~
+            "                    "
+          ]
+     }
+   | element invalidation-cache {
+       invalidation-cache
+       >> a:documentation [
+            "\x{a}" ~
+            "                        Defines an INVALIDATION_* mode cache.\x{a}" ~
+            "                    "
+          ]
+     }
+   | element distributed-cache {
+       distributed-cache
+       >> a:documentation [
+            "\x{a}" ~
+            "                        Defines a DIST_* mode cache.\x{a}" ~
+            "                    "
+          ]
+     })+,
+  attribute name {
+    
+    ## 
+    ##                 Uniquely identifies this cache container.
+    ##             
+    xsd:string
+  },
+  attribute aliases {
+    aliases
+    >> a:documentation [
+         "\x{a}" ~
+         "                A set of aliases by which this cache container may also be referenced.\x{a}" ~
+         "            "
+       ]
+  }?,
+  attribute jndi-name {
+    
+    ## 
+    ##                 
+    ##                     The jndi name to which to bind this cache container.
+    ##                     If undefined, the cache will be bound to: java:jboss/infinispan/container/container-name
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute default-cache {
+    
+    ## 
+    ##                 Indicates the default cache for this cache container.
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "LAZY" ]
+  attribute start {
+    controller-mode
+    >> a:documentation [
+         "\x{a}" ~
+         "                Should this cache container be started on server startup, or lazily when requested by a service or deployment.\x{a}" ~
+         "            "
+       ]
+  }?,
+  attribute listener-executor {
+    
+    ## 
+    ##                 Defines the executor used for asynchronous cache listener notifications.
+    ##             
+    xsd:string
+  }?,
+  attribute eviction-executor {
+    
+    ## 
+    ##                 Defines the scheduled executor used for evictions.
+    ##             
+    xsd:string
+  }?,
+  attribute replication-queue-executor {
+    
+    ## 
+    ##                 Defines the scheduled executor used by the asynchronous replication queue.
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "org.jboss.as.clustering.infinispan" ]
+  attribute module {
+    
+    ## 
+    ##                 Defines the module whose class loader should be used when building this cache container.
+    ##             
+    xsd:string
+  }?
+transport =
+  attribute stack {
+    
+    ## 
+    ##                 Defines the jgroups stack used by the transport.
+    ##             
+    xsd:string
+  }?,
+  attribute cluster {
+    
+    ## 
+    ##                 Defines the name for the underlying group communication cluster.
+    ##             
+    xsd:string
+  }?,
+  attribute executor {
+    
+    ## 
+    ##                 Defines the executor used for asynchronous transport communication.
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "240000" ]
+  attribute lock-timeout {
+    
+    ## 
+    ##                 
+    ##                     Infinispan uses a distributed lock to maintain a coherent transaction log during state transfer or rehashing, which means that only one cache can be doing state transfer or rehashing at the same time.
+    ##                     This constraint is in place because more than one cache could be involved in a transaction.
+    ##                     This timeout controls the time to wait to acquire acquire a lock on the distributed lock.
+    ##                 
+    ##             
+    xsd:long
+  }?
+cache =
+  element locking {
+    locking
+    >> a:documentation [
+         "\x{a}" ~
+         "                    The locking configuration of the cache.\x{a}" ~
+         "                "
+       ]
+  }?,
+  element transaction {
+    transaction
+    >> a:documentation [
+         "\x{a}" ~
+         "                    The cache transaction configuration.\x{a}" ~
+         "                "
+       ]
+  }?,
+  element eviction {
+    eviction
+    >> a:documentation [
+         "\x{a}" ~
+         "                    The cache eviction configuration.\x{a}" ~
+         "                "
+       ]
+  }?,
+  element expiration {
+    expiration
+    >> a:documentation [
+         "\x{a}" ~
+         "                    The cache expiration configuration.\x{a}" ~
+         "                "
+       ]
+  }?,
+  (element store {
+     custom-store
+     >> a:documentation [
+          "\x{a}" ~
+          "                        Defines a custom cache store.\x{a}" ~
+          "                    "
+        ]
+   }
+   | element file-store {
+       file-store
+       >> a:documentation [
+            "\x{a}" ~
+            "                        Defines a file-based cache store.\x{a}" ~
+            "                    "
+          ]
+     }
+   | (element string-keyed-jdbc-store {
+        string-keyed-jdbc-store
+        >> a:documentation [
+             "\x{a}" ~
+             "                            Defines a database cache store accessed via JDBC using string-based keys.\x{a}" ~
+             "                        "
+           ]
+      }
+      | element binary-keyed-jdbc-store {
+          binary-keyed-jdbc-store
+          >> a:documentation [
+               "\x{a}" ~
+               "                            Defines a database cache store accessed via JDBC using binary-based keys.\x{a}" ~
+               "                        "
+             ]
+        }
+      | element mixed-keyed-jdbc-store {
+          mixed-keyed-jdbc-store
+          >> a:documentation [
+               "\x{a}" ~
+               "                            Defines a database cache store accessed via JDBC using mixed string and binary-based keys.\x{a}" ~
+               "                        "
+             ]
+        })?
+   | element remote-store {
+       remote-store
+       >> a:documentation [
+            "\x{a}" ~
+            "                        \x{a}" ~
+            "                            Defines a remote cache store accessed via HotRod.\x{a}" ~
+            "                            Nested properties will be treated as HotRod client properties.\x{a}" ~
+            "                        \x{a}" ~
+            "                    "
+          ]
+     })?,
+  
+  ## 
+  ##                     
+  ##                         defined indexing options for cache
+  ##                     
+  ##                 
+  element indexing {
+    element property {
+      property
+      >> a:documentation [
+           "\x{a}" ~
+           "                                \x{a}" ~
+           "                            "
+         ]
+    }*,
+    [ ns_1:defaultValue = "NONE" ]
+    attribute index {
+      indexing
+      >> a:documentation [
+           "\x{a}" ~
+           "                            \x{a}" ~
+           "                        "
+         ]
+    }?
+  }?,
+  attribute name {
+    
+    ## 
+    ##                 Uniquely identifies this cache within its cache container.
+    ##             
+    xsd:string
+  },
+  [ ns_1:defaultValue = "LAZY" ]
+  attribute start {
+    controller-mode
+    >> a:documentation [
+         "\x{a}" ~
+         "                Should this cache be started on server startup, or lazily when requested by a service or deployment.\x{a}" ~
+         "            "
+       ]
+  }?,
+  [ ns_1:defaultValue = "false" ]
+  attribute batching {
+    
+    ## 
+    ##                 
+    ##             
+    xsd:boolean
+  }?,
+  [ ns_1:defaultValue = "NONE" ]
+  attribute indexing {
+    indexing
+    >> a:documentation [
+         "\x{a}" ~
+         "                \x{a}" ~
+         "            "
+       ]
+  }?,
+  attribute jndi-name {
+    
+    ## 
+    ##                 
+    ##                     The jndi name to which to bind this cache.
+    ##                     If undefined, the cache will be bound to: java:jboss/infinispan/cache/container-name/cache-name
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute module {
+    
+    ## 
+    ##                 
+    ##                     Defines the module whose class loader should be used when building this cache, if different from the enclosing cache container.
+    ##                 
+    ##             
+    xsd:string
+  }?
+local-cache = cache
+locking =
+  [ ns_1:defaultValue = "REPEATABLE_READ" ]
+  attribute isolation {
+    isolation
+    >> a:documentation [
+         "\x{a}" ~
+         "                Sets the cache locking isolation level.\x{a}" ~
+         "            "
+       ]
+  }?,
+  [ ns_1:defaultValue = "false" ]
+  attribute striping {
+    
+    ## 
+    ##                 If true, a pool of shared locks is maintained for all entries that need to be locked. Otherwise, a lock is created per entry in the cache. Lock striping helps control memory footprint but may reduce concurrency in the system.
+    ##             
+    xsd:boolean
+  }?,
+  [ ns_1:defaultValue = "15000" ]
+  attribute acquire-timeout {
+    
+    ## 
+    ##                 Maximum time to attempt a particular lock acquisition.
+    ##             
+    xsd:long
+  }?,
+  [ ns_1:defaultValue = "1000" ]
+  attribute concurrency-level {
+    
+    ## 
+    ##                 Concurrency level for lock containers. Adjust this value according to the number of concurrent threads interacting with Infinispan.
+    ##             
+    xsd:int
+  }?
+transaction =
+  [ ns_1:defaultValue = "NONE" ]
+  attribute mode {
+    transaction-mode
+    >> a:documentation [
+         "\x{a}" ~
+         "                Sets the cache transaction mode to one of NONE, NON_XA, NON_DURABLE_XA, FULL_XA.\x{a}" ~
+         "            "
+       ]
+  }?,
+  [ ns_1:defaultValue = "30000" ]
+  attribute stop-timeout {
+    
+    ## 
+    ##                 If there are any ongoing transactions when a cache is stopped, Infinispan waits for ongoing remote and local transactions to finish. The amount of time to wait for is defined by the cache stop timeout.
+    ##             
+    xsd:long
+  }?,
+  [ ns_1:defaultValue = "OPTIMISTIC" ]
+  attribute locking {
+    locking-mode
+    >> a:documentation [
+         "\x{a}" ~
+         "                The locking mode for this cache, one of OPTIMISTIC or PESSIMISTIC.\x{a}" ~
+         "            "
+       ]
+  }?
+eviction =
+  [ ns_1:defaultValue = "NONE" ]
+  attribute strategy {
+    eviction-strategy
+    >> a:documentation [
+         "\x{a}" ~
+         "                Sets the cache eviction strategy. Available options are 'UNORDERED', 'FIFO', 'LRU', 'LIRS' and 'NONE' (to disable eviction).\x{a}" ~
+         "            "
+       ]
+  }?,
+  [ ns_1:defaultValue = "10000" ]
+  attribute max-entries {
+    
+    ## 
+    ##                 Maximum number of entries in a cache instance. If selected value is not a power of two the actual value will default to the least power of two larger than selected value. -1 means no limit.
+    ##             
+    xsd:int
+  }?
+expiration =
+  [ ns_1:defaultValue = "-1" ]
+  attribute max-idle {
+    
+    ## 
+    ##                 Maximum idle time a cache entry will be maintained in the cache, in milliseconds. If the idle time is exceeded, the entry will be expired cluster-wide. -1 means the entries never expire.
+    ##             
+    xsd:long
+  }?,
+  [ ns_1:defaultValue = "-1" ]
+  attribute lifespan {
+    
+    ## 
+    ##                 Maximum lifespan of a cache entry, after which the entry is expired cluster-wide, in milliseconds. -1 means the entries never expire.
+    ##             
+    xsd:long
+  }?,
+  [ ns_1:defaultValue = "5000" ]
+  attribute interval {
+    
+    ## 
+    ##                 Interval (in milliseconds) between subsequent runs to purge expired entries from memory and any cache stores. If you wish to disable the periodic eviction process altogether, set wakeupInterval to -1.
+    ##             
+    xsd:long
+  }?
+clustered-cache =
+  cache,
+  [ ns_1:defaultValue = "false" ]
+  attribute async-marshalling {
+    
+    ## 
+    ##                         
+    ##                            Enables the use of asynchronous marshalling
+    ##                         
+    ##                     
+    xsd:boolean
+  }?,
+  attribute mode {
+    mode
+    >> a:documentation [
+         "\x{a}" ~
+         "                        Sets the clustered cache mode, ASYNC for asynchronous operation, or SYNC for synchronous operation.\x{a}" ~
+         "                    "
+       ]
+  },
+  [ ns_1:defaultValue = "0" ]
+  attribute queue-size {
+    
+    ## 
+    ##                         In ASYNC mode, this attribute can be used to trigger flushing of the queue when it reaches a specific threshold.
+    ##                     
+    xsd:int
+  }?,
+  [ ns_1:defaultValue = "10" ]
+  attribute queue-flush-interval {
+    
+    ## 
+    ##                         In ASYNC mode, this attribute controls how often the asynchronous thread used to flush the replication queue runs. This should be a positive integer which represents thread wakeup time in milliseconds.
+    ##                     
+    xsd:long
+  }?,
+  [ ns_1:defaultValue = "17500" ]
+  attribute remote-timeout {
+    
+    ## 
+    ##                         In SYNC mode, the timeout (in ms) used to wait for an acknowledgment when making a remote call, after which the call is aborted and an exception is thrown.
+    ##                     
+    xsd:long
+  }?
+invalidation-cache = clustered-cache
+replicated-cache =
+  clustered-cache,
+  element state-transfer {
+    state-transfer
+    >> a:documentation [
+         "\x{a}" ~
+         "                            The state transfer configuration for distribution and replicated caches.\x{a}" ~
+         "                        "
+       ]
+  }?
+distributed-cache =
+  clustered-cache,
+  element state-transfer {
+    state-transfer
+    >> a:documentation [
+         "\x{a}" ~
+         "                            The state transfer configuration for distribution and replicated caches.\x{a}" ~
+         "                        "
+       ]
+  }?,
+  [ ns_1:defaultValue = "2" ]
+  attribute owners {
+    
+    ## 
+    ##                         Number of cluster-wide replicas for each cache entry.
+    ##                     
+    xsd:int
+  }?,
+  [ ns_1:defaultValue = "80" ]
+  attribute segments {
+    
+    ## 
+    ##                         Number of hash space segments (per cluster). The recommended value is 10 * cluster size.
+    ##                     
+    xsd:int
+  }?,
+  [ ns_1:defaultValue = "600000" ]
+  attribute l1-lifespan {
+    
+    ## 
+    ##                         
+    ##                     
+    xsd:long
+  }?
+store =
+  element write-behind {
+    write-behind
+    >> a:documentation [
+         "\x{a}" ~
+         "                    Configures a cache store as write-behind instead of write-through.\x{a}" ~
+         "                "
+       ]
+  }?,
+  element property {
+    property
+    >> a:documentation [
+         "\x{a}" ~
+         "                    A cache store property with name and value.\x{a}" ~
+         "                "
+       ]
+  }*,
+  [ ns_1:defaultValue = "false" ]
+  attribute shared {
+    
+    ## 
+    ##                 This setting should be set to true when multiple cache instances share the same cache store (e.g., multiple nodes in a cluster using a JDBC-based CacheStore pointing to the same, shared database.) Setting this to true avoids multiple cache instances writing the same modification multiple times. If enabled, only the node where the modification originated will write to the cache store. If disabled, each individual cache reacts to a potential remote update by storing the data to the cache store.
+    ##             
+    xsd:boolean
+  }?,
+  [ ns_1:defaultValue = "false" ]
+  attribute preload {
+    
+    ## 
+    ##                 If true, when the cache starts, data stored in the cache store will be pre-loaded into memory. This is particularly useful when data in the cache store will be needed immediately after startup and you want to avoid cache operations being delayed as a result of loading this data lazily. Can be used to provide a 'warm-cache' on startup, however there is a performance penalty as startup time is affected by this process.
+    ##             
+    xsd:boolean
+  }?,
+  [ ns_1:defaultValue = "true" ]
+  attribute passivation {
+    
+    ## 
+    ##                 If true, data is only written to the cache store when it is evicted from memory, a phenomenon known as 'passivation'. Next time the data is requested, it will be 'activated' which means that data will be brought back to memory and removed from the persistent store. f false, the cache store contains a copy of the contents in memory, so writes to cache result in cache store writes. This essentially gives you a 'write-through' configuration.
+    ##             
+    xsd:boolean
+  }?,
+  [ ns_1:defaultValue = "true" ]
+  attribute fetch-state {
+    
+    ## 
+    ##                 If true, fetch persistent state when joining a cluster. If multiple cache stores are chained, only one of them can have this property enabled.
+    ##             
+    xsd:boolean
+  }?,
+  [ ns_1:defaultValue = "true" ]
+  attribute purge {
+    
+    ## 
+    ##                 If true, purges this cache store when it starts up.
+    ##             
+    xsd:boolean
+  }?,
+  [ ns_1:defaultValue = "false" ]
+  attribute singleton {
+    
+    ## 
+    ##                 If true, the singleton store cache store is enabled. SingletonStore is a delegating cache store used for situations when only one instance in a cluster should interact with the underlying store.
+    ##             
+    xsd:boolean
+  }?
+write-behind =
+  [ ns_1:defaultValue = "1" ]
+  attribute flush-lock-timeout {
+    
+    ## 
+    ##                 
+    ##                     Timeout to acquire the lock which guards the state to be flushed to the cache store periodically.
+    ##                 
+    ##             
+    xsd:int
+  }?,
+  [ ns_1:defaultValue = "1024" ]
+  attribute modification-queue-size {
+    
+    ## 
+    ##                 
+    ##                     Maximum number of entries in the asynchronous queue. When the queue is full, the store becomes write-through.
+    ##                     until it can accept new entries
+    ##                 
+    ##             
+    xsd:int
+  }?,
+  [ ns_1:defaultValue = "25000" ]
+  attribute shutdown-timeout {
+    
+    ## 
+    ##                 
+    ##                     Timeout in milliseconds to stop the cache store.
+    ##                 
+    ##             
+    xsd:int
+  }?,
+  [ ns_1:defaultValue = "1" ]
+  attribute thread-pool-size {
+    
+    ## 
+    ##                 
+    ##                     Size of the thread pool whose threads are responsible for applying the modifications to the cache store.
+    ##                 
+    ##             
+    xsd:int
+  }?
+custom-store =
+  store,
+  attribute class {
+    
+    ## 
+    ##                         The class name of the cache store implementation.
+    ##                     
+    xsd:string
+  }
+file-store =
+  store,
+  [ ns_1:defaultValue = "jboss.server.data.dir" ]
+  attribute relative-to {
+    
+    ## 
+    ##                         The base directory in which to store the cache state.
+    ##                     
+    xsd:string
+  }?,
+  attribute path {
+    
+    ## 
+    ##                         
+    ##                             The path within "relative-to" in which to store the cache state.
+    ##                             If undefined, the path defaults to the cache container name.
+    ##                         
+    ##                     
+    xsd:string
+  }?
+remote-store =
+  store,
+  element remote-server { remote-server }+,
+  attribute cache {
+    
+    ## 
+    ##                         The name of the remote cache.  If undefined, the default cache will be used.
+    ##                     
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "60000" ]
+  attribute socket-timeout {
+    
+    ## 
+    ##                         
+    ##                             Enable/disable SO_TIMEOUT on socket connections to remote Hot Rod servers with the specified timeout, in milliseconds.
+    ##                             A timeout of zero is interpreted as an infinite timeout.
+    ##                         
+    ##                     
+    xsd:long
+  }?,
+  [ ns_1:defaultValue = "true" ]
+  attribute tcp-no-delay {
+    
+    ## 
+    ##                         
+    ##                             Enable/disable TCP_NODELAY on socket connections to remote Hot Rod servers.
+    ##                         
+    ##                     
+    xsd:boolean
+  }?
+remote-server =
+  attribute outbound-socket-binding {
+    
+    ## 
+    ##                 An outbound socket binding for a remote server.
+    ##             
+    xsd:string
+  }
+string-keyed-jdbc-store =
+  store,
+  element string-keyed-table {
+    string-keyed-table
+    >> a:documentation [
+         "\x{a}" ~
+         "                            \x{a}" ~
+         "                                Defines the table used to store cache entries.\x{a}" ~
+         "                            \x{a}" ~
+         "                        "
+       ]
+  }?,
+  attribute datasource {
+    
+    ## 
+    ##                         Defines the jndi name of the datasource.
+    ##                     
+    xsd:string
+  }
+binary-keyed-jdbc-store =
+  store,
+  element binary-keyed-table {
+    binary-keyed-table
+    >> a:documentation [
+         "\x{a}" ~
+         "                            \x{a}" ~
+         "                                Defines the table used to store cache buckets.\x{a}" ~
+         "                            \x{a}" ~
+         "                        "
+       ]
+  }?,
+  attribute datasource {
+    
+    ## 
+    ##                         Defines the jndi name of the datasource.
+    ##                     
+    xsd:string
+  }
+mixed-keyed-jdbc-store =
+  store,
+  element binary-keyed-table {
+    binary-keyed-table
+    >> a:documentation [
+         "\x{a}" ~
+         "                            \x{a}" ~
+         "                                Defines the table used to store cache buckets.\x{a}" ~
+         "                            \x{a}" ~
+         "                        "
+       ]
+  }?,
+  element string-keyed-table {
+    string-keyed-table
+    >> a:documentation [
+         "\x{a}" ~
+         "                            \x{a}" ~
+         "                                Defines the table used to store cache entries.\x{a}" ~
+         "                            \x{a}" ~
+         "                        "
+       ]
+  }?,
+  attribute datasource {
+    
+    ## 
+    ##                         Defines the jndi name of the datasource.
+    ##                     
+    xsd:string
+  }
+string-keyed-table =
+  table,
+  [ ns_1:defaultValue = "ispn_entry" ]
+  attribute prefix {
+    
+    ## 
+    ##                         Defines the prefix prepended to the cache name used when composing the name of the cache entry table.
+    ##                     
+    xsd:string
+  }?
+binary-keyed-table =
+  table,
+  [ ns_1:defaultValue = "ispn_bucket" ]
+  attribute prefix {
+    
+    ## 
+    ##                         Defines the prefix prepended to the cache name used when composing the name of the cache bucket table.
+    ##                     
+    xsd:string
+  }?
+table =
+  element id-column {
+    id-column
+    >> a:documentation [
+         "\x{a}" ~
+         "                    Defines the column in which to store the cache key or bucket id.\x{a}" ~
+         "                "
+       ]
+  }?,
+  element data-column {
+    data-column
+    >> a:documentation [
+         "\x{a}" ~
+         "                    Defines the column in which to store the cache entry or bucket.\x{a}" ~
+         "                "
+       ]
+  }?,
+  element timestamp-column {
+    timestamp-column
+    >> a:documentation [
+         "\x{a}" ~
+         "                    Defines the column in which to store the timestamp of the cache entry or bucket.\x{a}" ~
+         "                "
+       ]
+  }?,
+  [ ns_1:defaultValue = "100" ]
+  attribute fetch-size {
+    
+    ## 
+    ##                 The fetch size used when querying from this table.  Used to avoid heap memory exhaustion when query is large.
+    ##             
+    xsd:int
+  }?,
+  [ ns_1:defaultValue = "100" ]
+  attribute batch-size {
+    
+    ## 
+    ##                 The statement batch size used when modifying this table.
+    ##             
+    xsd:int
+  }?
+id-column =
+  [ ns_1:defaultValue = "id" ]
+  attribute name {
+    
+    ## 
+    ##                 The name of the column used to store the cache key or bucket id.
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "VARCHAR" ]
+  attribute type {
+    
+    ## 
+    ##                 The type of the column used to store the cache key or bucket id.
+    ##             
+    xsd:string
+  }?
+data-column =
+  [ ns_1:defaultValue = "datum" ]
+  attribute name {
+    
+    ## 
+    ##                 The name of the column used to store the cache entry or bucket.
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "BINARY" ]
+  attribute type {
+    
+    ## 
+    ##                 The type of the column used to store the cache entry or bucket.
+    ##             
+    xsd:string
+  }?
+timestamp-column =
+  [ ns_1:defaultValue = "version" ]
+  attribute name {
+    
+    ## 
+    ##                 The name of the column used to store the cache entry or bucket timestamp.
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "BIGINT" ]
+  attribute type {
+    
+    ## 
+    ##                 The type of the column used to store the cache entry or bucket timestamp.
+    ##             
+    xsd:string
+  }?
+state-transfer =
+  [ ns_1:defaultValue = "true" ]
+  attribute enabled {
+    
+    ## 
+    ##         If enabled, this will cause the cache to ask neighboring caches for state when it starts up, so the cache starts 'warm', although it will impact startup time.
+    ##       
+    xsd:boolean
+  }?,
+  [ ns_1:defaultValue = "60000" ]
+  attribute timeout {
+    
+    ## 
+    ##         The maximum amount of time (ms) to wait for state from neighboring caches, before throwing an exception and aborting startup.
+    ##       
+    xsd:long
+  }?,
+  [ ns_1:defaultValue = "10000" ]
+  attribute chunk-size {
+    
+    ## 
+    ##         The size, in bytes, in which to batch the transfer of cache entries.
+    ##       
+    xsd:integer
+  }?
+property =
+  attribute name {
+    
+    ## 
+    ##           Defines the name of a property.
+    ##         
+    xsd:string
+  }
+isolation =
+  
+  ## 
+  ##                     
+  ##                 
+  "NONE"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "READ_UNCOMMITTED"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "READ_COMMITTED"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "REPEATABLE_READ"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "SERIALIZABLE"
+transaction-mode =
+  
+  ## 
+  ##                     Cache will not enlist within transactions.
+  ##                 
+  "NONE"
+  | 
+    ## 
+    ##                     Cache will enlist within transactions as a javax.transaction.Synchronization
+    ##                 
+    "NON_XA"
+  | 
+    ## 
+    ##                     Cache will enlist within transactions as a javax.transaction.xa.XAResource, without recovery.
+    ##                 
+    "NON_DURABLE_XA"
+  | 
+    ## 
+    ##                     Cache will enlist within transactions as a javax.transaction.xa.XAResource, with recovery.
+    ##                 
+    "FULL_XA"
+eager-locking =
+  
+  ## 
+  ##                     
+  ##                 
+  "NONE"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "SINGLE"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "ALL"
+indexing =
+  
+  ## 
+  ##                     
+  ##                 
+  "NONE"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "LOCAL"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "ALL"
+eviction-strategy =
+  
+  ## 
+  ##                     
+  ##                 
+  "NONE"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "UNORDERED"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "FIFO"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "LRU"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "LIRS"
+mode =
+  
+  ## 
+  ##                     
+  ##                 
+  "ASYNC"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "SYNC"
+locking-mode =
+  
+  ## 
+  ##                     
+  ##                 
+  "OPTIMISTIC"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "PESSIMISTIC"
+controller-mode =
+  
+  ## 
+  ##                     
+  ##                 
+  "EAGER"
+  | 
+    ## 
+    ##                     
+    ##                 
+    "LAZY"
+
+## 
+##             A list of aliases.
+##         
+aliases = list { xsd:string }

@@ -1,0 +1,2179 @@
+# ~ JBoss, Home of Professional Open Source.
+# ~ Copyright 2012, Red Hat, Inc., and individual contributors
+# ~ as indicated by the @author tags. See the copyright.txt file in the
+# ~ distribution for a full listing of individual contributors.
+# ~
+# ~ This is free software; you can redistribute it and/or modify it
+# ~ under the terms of the GNU Lesser General Public License as
+# ~ published by the Free Software Foundation; either version 2.1 of
+# ~ the License, or (at your option) any later version.
+# ~
+# ~ This software is distributed in the hope that it will be useful,
+# ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+# ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# ~ Lesser General Public License for more details.
+# ~
+# ~ You should have received a copy of the GNU Lesser General Public
+# ~ License along with this software; if not, write to the Free
+# ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+default namespace = "urn:jboss:domain:1.4"
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace ns_1 = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace rng = "http://relaxng.org/ns/structure/1.0"
+
+start |= starting_domain
+starting_domain =
+  
+  ## 
+  ##             
+  ##                 Root element for the master document specifying the core configuration
+  ##                 for the servers in a domain. There should be one such master
+  ##                 document per domain, available to the host controller that
+  ##                 is configured to act as the domain controller.
+  ##             
+  ##         
+  element domain {
+    element extensions { extensionsType }?,
+    element system-properties { properties-with-boottime }?,
+    element paths { named-pathsType }?,
+    element profiles { profilesType }?,
+    element interfaces { named-interfacesType }?,
+    element socket-binding-groups { socket-binding-groupsType }?,
+    element deployments { domain-deploymentsType }?,
+    element deployment-overlays { domain-deployment-overlaysType }?,
+    element server-groups { server-groupsType }?,
+    element management-client-content {
+      management-client-contentType
+    }?,
+    [ ns_1:defaultValue = "Unnamed Domain" ]
+    attribute name {
+      
+      ## 
+      ##                   
+      ##                      The name to use for the domain controller. Useful for administrators who need to work with multiple domains.
+      ##                   
+      ##                
+      xsd:string
+    }?
+  }
+start |= starting_host
+starting_host =
+  
+  ## 
+  ##             
+  ##                 Root element for a document configuring a host controller and
+  ##                 the group of servers under the control of that host controller.
+  ##                 The standard usage would be for a domain to have one such host controller
+  ##                 on each physical (or virtual) host machine. Emphasis in this
+  ##                 document is on enumerating the servers, configuring items that
+  ##                 are specific to the host environment (e.g. IP addresses), and
+  ##                 on any server-specific configuration settings.
+  ##             
+  ##         
+  element host {
+    element system-properties { properties-with-boottime }?,
+    element paths { specified-pathsType }?,
+    element vault { vaultType }?,
+    element management { host-managementType },
+    element domain-controller { domain-controllerType },
+    element interfaces { specified-interfacesType }?,
+    element jvms { jvmsType }?,
+    element servers { serversType }?,
+    attribute name {
+      
+      ## 
+      ##                     
+      ##                         The name to use for this host's host controller. Must be unique across the domain.
+      ##                         If not set, defaults to the runtime value "HOSTNAME" or "COMPUTERNAME" environment variables,
+      ##                         or, if neither environment variable is present, to the value of InetAddress.getLocalHost().getHostName().
+      ## 
+      ##                         If the special value "jboss.domain.uuid" is used, a java.util.UUID will be created
+      ##                         and used, based on the value of InetAddress.getLocalHost().
+      ##                     
+      ##                 
+      xsd:string
+    }?
+  }
+start |= starting_server
+starting_server =
+  
+  ## 
+  ##             
+  ##                 Root element for a document specifying the configuration
+  ##                 of a single "standalone" server that does not operate
+  ##                 as part of a domain.
+  ## 
+  ##                 Note that this element is distinct from the 'serverType'
+  ##                 specified in this schema. The latter type forms part of the
+  ##                 configuration of a server that operates as part of a domain.
+  ##             
+  ##         
+  element server {
+    element extensions { extensionsType }?,
+    element system-properties { properties }?,
+    element paths { specified-pathsType }?,
+    element vault { vaultType }?,
+    element management { server-managementType }?,
+    element profile { standalone-profileType }?,
+    element interfaces { specified-interfacesType }?,
+    element socket-binding-group {
+      standalone-socket-binding-groupType
+    }?,
+    element deployments { server-deploymentsType }?,
+    element deployment-overlays { standalone-deployment-overlaysType }?,
+    attribute name {
+      
+      ## 
+      ##                     
+      ##                         The name to use for this server.
+      ##                         If not set, defaults to the runtime value "HOSTNAME" or "COMPUTERNAME" environment variables,
+      ##                         or, if neither environment variable is present, to the value of InetAddress.getLocalHost().getHostName().
+      ## 
+      ##                         If the special value "jboss.domain.uuid" is used, a java.util.UUID will be created
+      ##                         and used, based on the value of InetAddress.getLocalHost().
+      ##                     
+      ##                 
+      xsd:string
+    }?
+  }
+
+## 
+##             
+##                 Domain-wide default configuration settings for the management of standalone servers and a Host Controller.
+##             
+##         
+domain-managementType =
+  element security-realms {
+    element security-realm { security-realmType }+
+  }?,
+  element outbound-connections {
+    element ldap { ldapType }
+    # TODO minOccurs only while ldap is only supported connection.
+    
+  }?
+
+## 
+##             
+##                 The centralized configuration for the management of a Host Controller.
+##             
+##         
+host-managementType =
+  domain-managementType,
+  element management-interfaces { host-management-interfacesType }
+
+## 
+##             
+##                 The centralized configuration for the management of standalone server.
+##             
+##         
+server-managementType =
+  domain-managementType,
+  element management-interfaces { server-management-interfacesType }?
+
+## 
+##             
+##                 The LDAP connection definition.
+##             
+##         
+ldapType =
+  attribute name {
+    
+    ## 
+    ##                 
+    ##                     The name of this connection.
+    ##                 
+    ##             
+    xsd:string
+  },
+  attribute url {
+    
+    ## 
+    ##                 
+    ##                     The URL to connect to ldap.
+    ##                 
+    ##             
+    xsd:string
+  },
+  attribute search-dn {
+    
+    ## 
+    ##                 
+    ##                     The distinguished name to use when connecting to LDAP to perform searches.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute search-credential {
+    
+    ## 
+    ##                 
+    ##                     The credential to use when connecting to perform a search.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute security-realm {
+    
+    ## 
+    ##                 
+    ##                     A reference to a security realm to obtain an initialised SSLContext to use when establishing a
+    ##                     connection to the LDAP server.
+    ## 
+    ##                     The realm referenced here MUST NOT be a realm that is also configured to use this connection.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "com.sun.jndi.ldap.LdapCtxFactory" ]
+  attribute initial-context-factory {
+    
+    ## 
+    ##                 
+    ##                     The initial context factory to establish the LdapContext.
+    ##                 
+    ##             
+    xsd:string
+  }?
+
+## 
+##             
+##                 Configuration of a security realm for securing access to the management interfaces.
+##             
+##         
+security-realmType =
+  element plug-ins { plug-insType }?,
+  element server-identities { server-identitiesType }?,
+  element authentication { authenticationType }?,
+  element authorization { authorizationType }?,
+  attribute name {
+    
+    ## 
+    ##                 
+    ##                     The name of this security-realm, each security-realm must be assigned a unique name.
+    ##                 
+    ##             
+    xsd:string
+  }
+
+## 
+##             
+##                 List of modules to be searched for supported security realm plug-ins.
+##             
+##         
+plug-insType = element plug-in { plug-inType }
+plug-inType =
+  attribute module {
+    
+    ## 
+    ##                 The name of the module.
+    ##             
+    xsd:string
+  }
+
+## 
+##             
+##                 This type defines which plug in will be used to handle either the loading of the
+##                 authentication data or authorization data during the authentication process.
+##             
+##         
+plug-inAuthType =
+  element properties {
+    properties
+    >> a:documentation [
+         "\x{a}" ~
+         "                    \x{a}" ~
+         "                        The properties to be made available to the plug-in.\x{a}" ~
+         "                    \x{a}" ~
+         "                "
+       ]
+  }?,
+  attribute name {
+    
+    ## 
+    ##                 
+    ##                     The short name of the plug-in as already dynamically registered by being referenced
+    ##                     in the plug-ins element.
+    ##                 
+    ##             
+    xsd:string
+  },
+  
+  ## 
+  ##               
+  ##                    By default plug-ins will be assumed to be used with the DIGEST authentication mechanism,
+  ##                    this attribute can override the plug-in for use with the PLAIN mechanism.
+  ##               
+  ##            
+  [ ns_1:defaultValue = "DIGEST" ]
+  attribute mechanism { "DIGEST" | "PLAIN" }?
+
+## 
+##             
+##                 Configuration defining how to load the authorization information for the authenticated user.
+## 
+##                 After a user has been authenticated additional information such as roles can be loaded and
+##                 associated with the user for subsequent authorization checks, this type is used to define
+##                 how the roles are loaded.
+##             
+##         
+authorizationType =
+  element properties { propertiesFileType }?
+  | element plug-in { plug-inAuthType }?
+
+## 
+##             
+##                 Configuration of the identities that represent the server.
+##             
+##         
+server-identitiesType =
+  element ssl { sslType }?,
+  element secret { secretType }?
+
+## 
+##             
+##                 Configuration of the secret/password-based identity of this server.
+##             
+##         
+secretType =
+  attribute value {
+    
+    ## 
+    ##                 
+    ##                     The secret / password - Base64 Encoded
+    ##                 
+    ##             
+    xsd:string
+  }
+
+## 
+##             
+##                 Configuration of the SSL identity of this server.
+##             
+##         
+sslType =
+  element keystore { extendedKeyStoreType },
+  [ ns_1:defaultValue = "TLS" ]
+  attribute protocol {
+    
+    ## 
+    ##                 
+    ##                     The protocol to use when creating the SSLContext.
+    ##                 
+    ##             
+    xsd:string
+  }?
+
+## 
+##             
+##                 The keystore configuration for the server.
+##             
+##         
+keyStoreType =
+  attribute path {
+    
+    ## 
+    ##                 
+    ##                     The path of the keystore.
+    ##                 
+    ##             
+    xsd:string
+  },
+  attribute relative-to {
+    
+    ## 
+    ##                 
+    ##                     The name of another previously named path, or of one of the
+    ##                     standard paths provided by the system. If 'relative-to' is
+    ##                     provided, the value of the 'path' attribute is treated as
+    ##                     relative to the path specified by this attribute.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute keystore-password {
+    
+    ## 
+    ##                 
+    ##                     The password to open the keystore.
+    ##                 
+    ##             
+    xsd:string
+  }
+
+## 
+##             
+##                 This is a more complex keystore definition which also allows for an alias
+##                 and key password to be specified.
+##             
+##         
+extendedKeyStoreType =
+  keyStoreType,
+  attribute alias {
+    
+    ## 
+    ##                         
+    ##                             The alias of the entry to use from the keystore, if specified all remaining
+    ##                             entries in the keystore will be ignored.
+    ##                         
+    ##                     
+    xsd:string
+  }?,
+  attribute key-password {
+    
+    ## 
+    ##                         
+    ##                             The password to use when loading keys from the keystore.
+    ##                         
+    ##                     
+    xsd:string
+  }?
+
+## 
+##             
+##                 This type definition is used to control the local authentication mechanism.
+##             
+##         
+localType =
+  attribute default-user {
+    
+    ## 
+    ##                 
+    ##                     When using the local mechanism it is optional for the client side to send an
+    ##                     authentication user name - this attribute specifies the user name to be assumed
+    ##                     if the remote client does not send one.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute allowed-users {
+    
+    ## 
+    ##                 
+    ##                     A comma separated list of users that can be specified by the client when connecting
+    ##                     using the local authentication mechanism.
+    ## 
+    ##                     If a default user has been specified then that user is automatically added to the
+    ##                     allowed list.  If both default-user and allowed-users are ommitted despite the mechanism
+    ##                     being enabled no incomming connection attemps using the mechanism will succeed.
+    ## 
+    ##                     If any user name should be accepted the value should be set to "*".
+    ##                 
+    ##             
+    xsd:string
+  }?
+
+## 
+##             
+##                 Configuration of the server side authentication mechanisms.
+## 
+##                 Optionally one truststore can be defined and one username/password based store can be defined.
+##                 Authentication will first attempt to use the truststore and if this is not available will fall back
+##                 to the username/password authentication.
+## 
+##                 If none of these are specified the only available mechanism will be the local mechanism for the
+##                 Native interface and the HTTP interface will not be accessible.
+##             
+##         
+authenticationType =
+  element truststore {
+    keyStoreType
+    >> a:documentation [
+         "\x{a}" ~
+         "                    \x{a}" ~
+         "                        Configuration of a keystore to use to create a trust manager to verify clients.\x{a}" ~
+         "                    \x{a}" ~
+         "                "
+       ]
+  }?,
+  element local {
+    localType
+    >> a:documentation [
+         "\x{a}" ~
+         "                    \x{a}" ~
+         "                        Configuration to enable the local authentication mechanism, if this element\x{a}" ~
+         "                        is ommitted then local authentication will be disabled.\x{a}" ~
+         "                    \x{a}" ~
+         "                "
+       ]
+  }?,
+  (element jaas { jaasAuthenticationType }?
+   | element ldap { ldapAuthenticationType }?
+   | element properties { propertiesAuthenticationType }?
+   | element users { usersAuthenticationType }?
+   | element plug-in { plug-inAuthType }?)?
+
+## 
+##             
+##                 Definition to use a JAAS based configuration for authentication.
+##             
+##         
+jaasAuthenticationType =
+  attribute name {
+    
+    ## 
+    ##                 
+    ##                     The name identifying the jaas configuration of LoginModules.
+    ##                 
+    ##             
+    xsd:string
+  }
+
+## 
+##             
+##                 Definition to use LDAP as the user repository.
+##             
+##         
+ldapAuthenticationType =
+  (element username-filter {
+     attribute attribute {
+       
+       ## 
+       ##                             
+       ##                                 The name of the attribute to search for the user, this filter will then perform
+       ##                                 a simple search where the username entered by the user matches the attribute
+       ##                                 specified here.
+       ##                             
+       ##                         
+       xsd:string
+     }
+   }
+   | element advanced-filter {
+       attribute filter {
+         
+         ## 
+         ##                             
+         ##                                 The fully defined filter to be used to search for the user based on their entered
+         ##                                 user ID. The filter should contain a variable in the form {0} - this will be
+         ##                                 replaced with the username supplied by the user.
+         ##                             
+         ##                         
+         xsd:string
+       }
+     }),
+  attribute connection {
+    
+    ## 
+    ##                 
+    ##                     The name of the connection to use to connect to LDAP.
+    ##                 
+    ##             
+    xsd:string
+  },
+  attribute base-dn {
+    
+    ## 
+    ##                 
+    ##                     The base distinguished name to commence the search for the user.
+    ##                 
+    ##             
+    xsd:string
+  },
+  [ ns_1:defaultValue = "false" ]
+  attribute recursive {
+    
+    ## 
+    ##                 
+    ##                     Should the search be recursive.
+    ##                 
+    ##             
+    xsd:boolean
+  }?,
+  [ ns_1:defaultValue = "dn" ]
+  attribute user-dn {
+    
+    ## 
+    ##                 
+    ##                     The name of the attribute which is the users distinguished name.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "false" ]
+  attribute allow-empty-passwords {
+    
+    ## 
+    ##                 
+    ##                     Should users be allowed to supply an empty password?  Some LDAP servers will
+    ##                     allow an anonymous bind so an empty password could appear as a successful authentication
+    ##                     even though no password was sent to verify.
+    ##                 
+    ##             
+    xsd:boolean
+  }?
+
+## 
+##             
+##                 A set of users
+##             
+##         
+usersAuthenticationType = element user { userType }+
+
+## 
+##             
+##                 A single user.
+##             
+##         
+userType =
+  (element password { xsd:string }),
+  attribute username {
+    
+    ## 
+    ##                 
+    ##                     The users username.
+    ##                 
+    ##             
+    xsd:string
+  }
+
+## 
+##             
+##                 Declaration of a location of a properties file.
+##             
+##         
+propertiesFileType =
+  attribute relative-to {
+    
+    ## 
+    ##                 
+    ##                     The name of another previously named path, or of one of the
+    ##                     standard paths provided by the system. If 'relative-to' is
+    ##                     provided, the value of the 'path' attribute is treated as
+    ##                     relative to the path specified by this attribute.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute path {
+    
+    ## 
+    ##                 
+    ##                     The path of the properties file.
+    ##                 
+    ##             
+    xsd:string
+  }
+
+## 
+##             
+##                 Declaration of users stored within properties files.
+## 
+##                 The entries within the properties file are username={credentials} with each user
+##                 being specified on it's own line.
+##             
+##         
+propertiesAuthenticationType =
+  propertiesFileType,
+  [ ns_1:defaultValue = "false" ]
+  attribute plain-text {
+    
+    ## 
+    ##                         
+    ##                             Are the credentials within the properties file stored in plain text, if not
+    ##                             the {credential} is expected to be the hex encoded Digest hash
+    ##                             of 'username : realm : password'.
+    ##                         
+    ##                     
+    xsd:boolean
+  }?
+host-management-interfacesType =
+  element native-interface { host-native-management-interfaceType },
+  element http-interface { host-http-management-interfaceType }?
+management-interfaceType =
+  attribute security-realm {
+    
+    ## 
+    ##                 
+    ##                     The security realm to use for this management interface, the capabilities
+    ##                     of the security realm will be queried to identify the authentication mechanism(s) to
+    ##                     offer.
+    ##                 
+    ##             
+    xsd:string
+  }?
+
+## 
+##             
+##                 Configuration of a host's exposed native management interface.
+##             
+##         
+host-native-management-interfaceType =
+  management-interfaceType,
+  element socket { native-management-socketType }
+
+## 
+##             
+##                 Configuration of the socket used by host or standalone server's exposed management interface.
+##             
+##         
+management-socketType =
+  attribute interface {
+    
+    ## 
+    ##                 
+    ##                     Network interface on which the host's socket for
+    ##                     management communication should be opened.
+    ##                 
+    ##             
+    xsd:string
+  }
+
+## 
+##             
+##                 Configuration of the socket used by host or standalone server's exposed HTTP management interface.
+##             
+##         
+native-management-socketType =
+  management-socketType,
+  attribute port {
+    
+    ## 
+    ##                         
+    ##                             Port on which the host's socket for native
+    ##                             management communication should be opened.
+    ##                         
+    ##                     
+    xsd:int
+  }
+
+## 
+##             
+##                 Configuration of a host's exposed HTTP management interface.
+##             
+##         
+host-http-management-interfaceType =
+  management-interfaceType,
+  element socket { http-management-socketType },
+  [ ns_1:defaultValue = "true" ]
+  attribute console-enabled { xsd:boolean }?
+
+## 
+##             
+##                 Configuration of the socket used by host or standalone server's exposed HTTP management interface.
+##             
+##         
+http-management-socketType =
+  management-socketType,
+  attribute port {
+    
+    ## 
+    ##                         
+    ##                             Port on which the host's socket for
+    ##                             management communication should be opened.
+    ## 
+    ##                             If not specified the port will not be opened.
+    ##                         
+    ##                     
+    xsd:int
+  }?,
+  attribute secure-port {
+    
+    ## 
+    ##                         
+    ##                             Port on which the host's socket for HTTPS
+    ##                             management communication should be opened.
+    ## 
+    ##                             If not specified the port will not be opened.
+    ## 
+    ##                             If specified the security-realm will be required to obtain
+    ##                             the SSL configuration.
+    ##                         
+    ##                     
+    xsd:int
+  }?
+server-management-interfacesType =
+  element native-remoting-interface {
+    management-remoting-interfaceType
+  }?,
+  element native-interface { server-native-management-interfaceType }?,
+  element http-interface { server-http-management-interfaceType }?
+
+## 
+##             
+##                 Configuration of the socket used by host or standalone server's exposed HTTP management interface.
+##             
+##         
+server-native-management-interfaceType =
+  management-interfaceType
+  >> a:documentation [
+       "\x{a}" ~
+       "                    \x{a}" ~
+       "                        Configuration of the socket to use for the native management interface is a choice\x{a}" ~
+       "                        between a direct configuration of the address and port, or a reference to a socket-binding\x{a}" ~
+       "                        configuration in the server's socket-binding-group element. The latter is the recommended\x{a}" ~
+       "                        approach is it makes it easier to avoid port conflicts by taking advantage of the\x{a}" ~
+       "                        socket-binding-group's port-offset configuration. Direct configuration of the address and\x{a}" ~
+       "                        ports is provided to preserve backward compatibility.\x{a}" ~
+       "                    \x{a}" ~
+       "                "
+     ],
+  (element socket { native-management-socketType }
+   | element socket-binding {
+       native-management-socket-binding-refType
+     })
+
+## 
+##             
+##                 Reference to the configuration of the socket to be used by a standalone server's exposed native management interface.
+##             
+##         
+native-management-socket-binding-refType =
+  attribute native {
+    
+    ## 
+    ##                 
+    ##                     Name of a socket-binding configuration declared in the server's socket-binding-group.
+    ##                 
+    ##             
+    xsd:string
+  }
+
+## 
+##             
+##                 Configuration of a standalone server's exposed HTTP/HTTPS management interface.
+##             
+##         
+server-http-management-interfaceType =
+  management-interfaceType
+  >> a:documentation [
+       "\x{a}" ~
+       "                    \x{a}" ~
+       "                        Configuration of the socket to use for the HTTP/HTTPS management interface is a choice\x{a}" ~
+       "                        between a direct configuration of the address and ports, or a reference to socket-binding\x{a}" ~
+       "                        configurations in the server's socket-binding-group element. The latter is the recommended\x{a}" ~
+       "                        approach is it makes it easier to avoid port conflicts by taking advantage of the\x{a}" ~
+       "                        socket-binding-group's port-offset configuration. Direct configuration of the address and\x{a}" ~
+       "                        ports is provided to preserve backward compatibility.\x{a}" ~
+       "                    \x{a}" ~
+       "                "
+     ],
+  (element socket { http-management-socketType }
+   | element socket-binding { http-management-socket-binding-refType }),
+  [ ns_1:defaultValue = "true" ]
+  attribute console-enabled { xsd:boolean }?
+
+## 
+##             
+##                 Reference to the configurations of the sockets to be used by a standalone server's exposed HTTP and HTTPS management interface.
+##             
+##         
+http-management-socket-binding-refType =
+  attribute http {
+    
+    ## 
+    ##                 
+    ##                     Name of a socket-binding configuration declared in the server's socket-binding-group to use for a HTTP socket.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute https {
+    
+    ## 
+    ##                 
+    ##                     Name of a socket-binding configuration declared in the server's socket-binding-group to use for a HTTPS socket.
+    ##                 
+    ##             
+    xsd:string
+  }?
+management-remoting-interfaceType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Makes the native management interface available via the connectors set up in the remoting subsystem,\x{a}" ~
+       "                using the remoting subsystem's endpoint. This should only be used for a server not for a HC/DC.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+domain-controllerType =
+  element local { domain-controller-localType }
+  | element remote { domain-controller-remoteType }
+domain-controller-localType = empty
+domain-controller-remoteType =
+  element ignored-resources { ignored-resourcesType }*,
+  attribute host { xsd:string },
+  attribute port { xsd:integer },
+  attribute security-realm { xsd:string }?,
+  attribute username { xsd:string }?
+
+## 
+##             
+##                 Provides names of direct child resources of the domain root resource requests for which the
+##                 Host Controller should ignore. Only relevant on a slave Host Controller. Configuring such
+##                 "ignored resources" may help allow a Host Controller from an earlier release to function as a
+##                 slave to a master Host Controller running a later release, by letting the slave ignore portions
+##                 of the configuration its version of the software cannot understand. This strategy can only be
+##                 successful if the servers managed by the slave Host Controller do not reference any of the
+##                 ignored configuration.
+## 
+##                 Supports the following attributes:
+## 
+##                 type -- the type of resource (e.g. 'profile' or 'socket-binding-group') certain instances of which
+##                         should be ignored. The value corresponds to the 'key' portion of the first element in the
+##                         resource's address (e.g. 'profile' in the address /profile=ha/subsystem=web)
+## 
+##                 wildcard -- if 'true', all resources of the given type should be ignored.
+## 
+##                 Child elements list the names of specific instances of the given type of resource
+##                 that should be ignored. Each element in the list corresponds to the 'value' portion of
+##                 the first element in the resource's address (e.g. 'ha' in the address /profile=ha/subsystem=web.)
+##             
+##         
+ignored-resourcesType =
+  element instance { ignored-resource-instanceType }*,
+  attribute type { xsd:string },
+  [ ns_1:defaultValue = "false" ] attribute wildcard { xsd:boolean }?,
+  attribute names { xsd:string }?
+
+## 
+##             
+##                 The name of a specific instances of a particular type of resource that should be ignored.
+##                 The 'name' attribute corresponds to the 'value' portion of the first element in the resource's address
+##                 (e.g. 'ha' in the address /profile=ha/subsystem=web.)
+##             
+##         
+ignored-resource-instanceType = attribute name { xsd:string }
+serversType =
+  element server { serverType }*,
+  [ ns_1:defaultValue = "by-server" ]
+  attribute directory-grouping {
+    
+    ## 
+    ##                             
+    ##                                 Indicates each server's writable directories should be grouped under the server's name
+    ##                                 in the domain/servers directory. This is the default option.
+    ##                             
+    ##                         
+    "by-server"
+    | 
+      ## 
+      ##                             
+      ##                                 Indicates each server's writable directories should be grouped based on their "type"
+      ##                                 (i.e. "data", "log", "tmp") with directories of a given type for all servers appearing
+      ##                                 in the domain level directory for that type, e.g. domain/data/servers/server-name.
+      ##                             
+      ##                         
+      "by-type"
+  }?
+serverType =
+  (element paths { specified-pathsType }??
+   & element interfaces { specified-interfacesType }??
+   & element socket-bindings { server-socket-bindingsType }??
+   & element system-properties { properties-with-boottime }??
+   & element jvm { serverJvmType }??),
+  attribute name { xsd:string },
+  attribute group { xsd:string },
+  [ ns_1:defaultValue = "true" ] attribute auto-start { xsd:boolean }?
+
+## 
+##             
+##             
+##                 Server-specific overrides to the default socket binding configuration inherited from the server group.
+##             
+##             
+##         
+server-socket-bindingsType =
+  attribute socket-binding-group {
+    
+    ## 
+    ##                 
+    ##                 
+    ##                     The socket binding group to use for the server. If undefined, the socket binding group
+    ##                     specified for the server group is used.
+    ##                 
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "0" ]
+  attribute port-offset {
+    
+    ## 
+    ##                 
+    ##                 
+    ##                     Increment to apply to the base port values defined in the
+    ##                     referenced socket binding group to derive the values to use on this
+    ##                     server.
+    ##                 
+    ##                 
+    ##             
+    xsd:int
+  }?
+
+## 
+##             Contains a list of extension modules.
+##         
+extensionsType = element extension { extensionType }+
+
+## 
+##             
+##                 A module that extends the standard capabilities of a domain
+##                 or a standalone server.
+##             
+##         
+extensionType =
+  attribute module {
+    
+    ## 
+    ##                 The name of the module
+    ##             
+    xsd:string
+  }
+server-groupsType = element server-group { server-groupType }*
+server-groupType =
+  element jvm { namedJvmType }?,
+  element socket-binding-group { socket-binding-group-refType },
+  element deployments { server-groupDeploymentsType }?,
+  element deployment-overlays { server-group-deployment-overlaysType }?,
+  element system-properties { properties-with-boottime }?,
+  attribute name {
+    
+    ## 
+    ##                 
+    ##                     The name of the server group
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute profile {
+    
+    ## 
+    ##                 
+    ##                     The name of the profile this server is running.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "false" ]
+  attribute management-subsystem-endpoint {
+    
+    ## 
+    ##                 
+    ##                     Set to true to have servers belonging to the server group connect back to the host controller using the
+    ##                     endpoint from their remoting subsystem. The subsystem must be preset for this to
+    ##                     work.
+    ##                 
+    ##             
+    xsd:boolean
+  }?
+
+## 
+##             Contains a list of deployments that have been mapped to a server-group.
+##         
+server-groupDeploymentsType =
+  element deployment { base-deploymentType }+
+
+## 
+##             A deployment that has been mapped to a server group.
+##         
+server-groupDeploymentType =
+  base-deploymentType,
+  # TODO clarify what a value of 'false' means
+  [ ns_1:defaultValue = "true" ]
+  attribute enabled {
+    
+    ## 
+    ##                         Whether the deployment deploy automatically when the server starts up.
+    ##                         
+    ##                     
+    xsd:boolean
+  }?
+base-deploymentType =
+  
+  ## 
+  ##                 Unique identifier of the deployment. Must be unique across all deployments.
+  ##                 
+  ##             
+  attribute name { text },
+  
+  ## 
+  ##                 Name by which the deployment will be known within a running server.of the deployment.
+  ##                     Does not need to be unique across all deployments in the domain, although it must be unique within
+  ##                     an individual server. For example, two different deployments running on different servers in
+  ##                     the domain could both have a 'runtime-name' of 'example.war', with one having a 'name'
+  ##                     of 'example.war_v1' and another with an 'name' of 'example.war_v2'.
+  ##                 
+  ##             
+  attribute runtime-name { text }
+
+## 
+##             Contains a list of deployments that have been mapped to a server.
+##         
+server-deploymentsType = element deployment { server-deploymentType }+
+
+## 
+##             A deployment that has been mapped to a server.
+##         
+server-deploymentType =
+  base-deploymentType,
+  # TODO: maxOccurs should be unbounded once overlays are in place
+  (element content { contentType }
+   | element fs-archive { fs-archiveType }
+   | element fs-exploded { fs-explodedType }),
+  # TODO clarify what a value of 'false' means
+  [ ns_1:defaultValue = "true" ]
+  attribute enabled {
+    
+    ## 
+    ##                         Whether the deployment deploy automatically when the server starts up.
+    ##                         
+    ##                     
+    xsd:boolean
+  }?
+contentType =
+  
+  ## 
+  ##                 The checksum of the content
+  ##             
+  attribute sha1 { text }
+
+## 
+##             Archived content found on the filesystem
+##         
+fs-archiveType = fs-baseType
+fs-baseType =
+  pathType
+  # TODO: make path required
+  # <xs:complexContent>
+  #     <xs:restriction base="pathType">
+  #         <xs:attribute name="path" use="required"/>
+  #     </xs:restriction>
+  # </xs:complexContent>
+  
+
+## 
+##             Exploded content found on the filesystem
+##         
+fs-explodedType = fs-baseType
+
+## 
+##             Contains a list of domain-level deployments
+##         
+domain-deploymentsType = element deployment { domain-deploymentType }+
+
+## 
+##             Deployment represents anything that can be deployed (e.g. an application such as EJB-JAR,
+##                 WAR, EAR,
+##                 any kind of standard archive such as RAR or JBoss-specific deployment),
+##                 which can be enabled or disabled on a domain level.
+##             
+##         
+domain-deploymentType =
+  base-deploymentType,
+  # TODO: maxOccurs should be unbounded once overlays are in place
+  (element content { contentType }
+   | element fs-archive { fs-archiveType }
+   | element fs-exploded { fs-explodedType })
+# TODO this is not used anywhere yet
+clustersType =
+  server-groupType,
+  element partition-name { xsd:string },
+  element state-transfer-timeout { xsd:integer },
+  element method-call-timeout { xsd:integer },
+  attribute category { xsd:string }
+# domain-configuration related definitions
+
+## 
+##             The domain controller/server bootstrap configuration
+##         
+domain-configurationType = bootstrapURI
+start |= starting_bootstrapURI
+starting_bootstrapURI =
+  element bootstrapURI {
+    
+    ## 
+    ##             The URI for bootstrapping a domain server
+    ##         
+    xsd:string
+  }
+
+## 
+##             Contains a list of profiles available for use in the domain
+##         
+profilesType = element profile { domain-profileType }+
+
+## 
+##             Contains a list of subsystems
+##         
+domain-profileType =
+  element * { text }*,
+  attribute name {
+    
+    ## 
+    ##                 Name of the profile
+    ##             
+    xsd:string
+  }
+
+## 
+##             Contains a list of subsystems
+##         
+standalone-profileType = (element * { text })+
+# general socket definition
+
+## 
+##             Contains a list of socket binding groups
+##         
+socket-binding-groupsType =
+  element socket-binding-group { socket-binding-groupType }+
+
+## 
+##             Contains a list of socket configurations
+##         
+socket-binding-groupType =
+  element socket-binding { socket-bindingType }+,
+  element outbound-socket-binding { outbound-socket-bindingType }*,
+  attribute name { xsd:string },
+  attribute default-interface {
+    
+    ## 
+    ##                 
+    ##                     Name of an interface that should be used as the interface for
+    ##                     any sockets that do not explicitly declare one.
+    ##                 
+    ##             
+    xsd:string
+  }
+
+## 
+##             Contains a list of socket configurations
+##         
+standalone-socket-binding-groupType =
+  element socket-binding { socket-bindingType }+,
+  element outbound-socket-binding { outbound-socket-bindingType }*,
+  attribute name { xsd:string },
+  attribute default-interface {
+    
+    ## 
+    ##                 
+    ##                     Name of an interface that should be used as the interface for
+    ##                     any sockets that do not explicitly declare one.
+    ##                 
+    ##             
+    xsd:string
+  },
+  [ ns_1:defaultValue = "0" ]
+  attribute port-offset {
+    
+    ## 
+    ##                 
+    ##	                    Increment to apply to the base port values defined in the
+    ##	                    socket group to derive the values to use on this
+    ##	                    server.
+    ##	            
+    ##	        
+    xsd:int
+  }?
+
+## 
+##             Configuration information for a socket.
+##         
+socket-bindingType =
+  (element client-mapping {
+     socket-binding-client-mappingType
+     >> a:documentation [
+          "\x{a}" ~
+          "                    \x{a}" ~
+          "                        Specifies zero or more client mappings for this socket binding.\x{a}" ~
+          "                        A client connecting to this socket should use the destination address\x{a}" ~
+          "                        specified in the mapping that matches its desired outbound interface.\x{a}" ~
+          "                        This allows for advanced network topologies that use either network\x{a}" ~
+          "                        address translation, or have bindings on multiple network interfaces\x{a}" ~
+          "                        to function.\x{a}" ~
+          "\x{a}" ~
+          "                        Each mapping should be evaluated in declared order, with the first successful\x{a}" ~
+          "                        match used to determine the destination.\x{a}" ~
+          "                    \x{a}" ~
+          "                "
+        ]
+   }*),
+  attribute name { xsd:string },
+  attribute interface {
+    
+    ## 
+    ##                 
+    ##                     Name of the interface to which the socket should be bound, or, for multicast
+    ##                     sockets, the interface on which it should listen. This should
+    ##                     be one of the declared interfaces.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "0" ]
+  attribute port {
+    
+    ## 
+    ##                 
+    ##                     Number of the port to which the socket should be bound.
+    ##                 
+    ##             
+    xsd:unsignedShort
+  }?,
+  [ ns_1:defaultValue = "false" ]
+  attribute fixed-port {
+    
+    ## 
+    ##                 
+    ##                     Whether the port value should remain fixed even if numerically offsets
+    ##                     are applied to the other sockets in the socket group..
+    ##                 
+    ##             
+    xsd:boolean
+  }?,
+  attribute multicast-address {
+    
+    ## 
+    ##                 
+    ##                     Multicast address on which the socket should receive multicast
+    ##                     traffic. If unspecified, the socket will not be configured
+    ##                     to receive multicast.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute multicast-port {
+    
+    ## 
+    ##                 
+    ##                     Port on which the socket should receive multicast
+    ##                     traffic. Must be configured if 'multicast-address' is configured.
+    ##                 
+    ##             
+    xsd:positiveInteger
+  }?
+
+## 
+##                 
+##                     Type definition for a client mapping on a socket binding. A client
+##                     mapping specifies how external clients should connect to this
+##                     socket's port, provided that the client's outbound interface
+##                     match the specified source network value.
+##                 
+##             
+socket-binding-client-mappingType =
+  attribute source-network {
+    
+    ## 
+    ##                 
+    ##                     Source network the client connection binds on. This value is in
+    ##                     the form of ip/netmask. A client should match this value against
+    ##                     the desired client host network interface, and if matched the
+    ##                     client should connect to the corresponding destination values.
+    ## 
+    ##                     If omitted this mapping should match any interface.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute destination-address {
+    
+    ## 
+    ##                 
+    ##                     The destination address that a client should connect to if the
+    ##                     source-network matches. This value can either be a hostname or
+    ##                     an ip address.
+    ##                 
+    ##             
+    xsd:string
+  },
+  attribute destination-port {
+    
+    ## 
+    ##                 
+    ##                     The destination port that a client should connect to if the
+    ##                     source-network matches.
+    ## 
+    ##                     If omitted this mapping will reuse the effective socket binding
+    ##                     port.
+    ##                 
+    ##             
+    xsd:string
+  }?
+
+## 
+##             Configuration information for a outbound socket.
+##         
+outbound-socket-bindingType =
+  (element remote-destination { remote-destinationType }
+   | element local-destination { local-destinationType }),
+  attribute name {
+    
+    ## 
+    ##                 
+    ##                     The name of the outbound socket binding
+    ##                 
+    ##             
+    xsd:string
+  },
+  attribute source-interface {
+    
+    ## 
+    ##                 
+    ##                     The name of the interface that should be used for setting up the source address of the
+    ##                     outbound socket. This should be one of the declared interfaces.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute source-port {
+    
+    ## 
+    ##                 
+    ##                     The port number that will be used for setting the source addresss of the outbound socket. If the
+    ##                     source-interface attribute has been specified and the source-port attribute is absent,
+    ##                     then the system uses a ephemeral port while binding the socket to a source address.
+    ##                 
+    ##             
+    xsd:positiveInteger
+  }?,
+  [ ns_1:defaultValue = "false" ]
+  attribute fixed-source-port {
+    
+    ## 
+    ##                 
+    ##                     Whether the source-port value should remain fixed even if the socket binding group specifies
+    ##                     a port offset
+    ##                 
+    ##             
+    xsd:boolean
+  }?
+remote-destinationType =
+  attribute host {
+    
+    ## 
+    ##                 
+    ##                     The remote server address to which the outbound socket has to be connect.
+    ##                     The address can be either a IP address of the host server of the hostname of the server
+    ##                 
+    ##             
+    xsd:string
+  },
+  attribute port {
+    
+    ## 
+    ##                 
+    ##                     The remote port to which the outbound socket has to connect.
+    ##                 
+    ##             
+    xsd:positiveInteger
+  }
+local-destinationType =
+  attribute socket-binding-ref {
+    
+    ## 
+    ##                 
+    ##                     The reference to a socket binding that has to be used as the destination for the outbound
+    ##                     socket binding. This socket binding name should belong to the same socket binding group
+    ##                     to which this local destination client socket belongs.
+    ##                 
+    ##             
+    xsd:string
+  }
+socket-binding-group-refType =
+  attribute ref {
+    
+    ## 
+    ##                 
+    ##                     The socket group to use for the server group or server.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "0" ]
+  attribute port-offset {
+    
+    ## 
+    ##                 
+    ##                     Increment to apply to the base port values defined in the
+    ##                     referenced socket group to derive the values to use on this
+    ##                     server.
+    ##                 
+    ##             
+    xsd:int
+  }?
+
+## 
+##             
+##                 A list of named network interfaces. The interfaces may or may
+##                 not be fully specified (i.e. include criteria on how to determine
+##                 their IP address.)
+##             
+##         
+named-interfacesType = element interface { named-interfaceType }*
+# TODO make this and specified-interfaceType the same except for interface-criteriaGroup minOccurs
+
+## 
+##             
+##                 A named network interface, but without any criteria
+##                 for determining the IP address to associate with that interface.
+##                 Acts as a placeholder in the model (e.g. at the domain level)
+##                 until a fully specified interface definition is applied at a
+##                 lower level (e.g. at the server level, where available addresses
+##                 are known.)
+##             
+##         
+named-interfaceType =
+  interface-criteriaGroup?,
+  attribute name { xsd:string }
+
+## 
+##             
+##                 A list of fully specified named network interfaces.
+##             
+##         
+specified-interfacesType =
+  element interface { specified-interfaceType }*
+
+## 
+##             
+##                 A named network interface, along with required criteria
+##                 for determining the IP address to associate with that interface.
+##             
+##         
+specified-interfaceType =
+  interface-criteriaGroup,
+  attribute name { xsd:string }
+
+## 
+##             
+##                 A set of criteria that can be used at runtime to determine
+##                 what IP address to use for an interface.
+##             
+##         
+interface-criteriaGroup =
+  element any-address { any-addressType }
+  | element any-ipv6-address { any-ipv6-addressType }
+  | element any-ipv4-address { any-ipv4-addressType }
+  | (element inet-address { inet-addressType }
+     | element loopback { loopbackType }
+     | element loopback-address { loopback-addressType }
+     | element multicast { multicastType }
+     | element point-to-point { point-to-pointType }
+     | element virtual { interface-virtualType }
+     | element up { interface-upType }
+     | element public-address { public-addressType }
+     | element link-local-address { link-local-addressType }
+     | element site-local-address { site-local-addressType }
+     | element nic { nicType }
+     | element nic-match { nic-matchType }
+     | element subnet-match { subnet-matchType }
+     | element not { address-exclusionType }
+     | element any { address-exclusionType })+
+inet-addressType =
+  attribute value {
+    
+    ## 
+    ##                 
+    ##                     Either a IP address in IPv6 or IPv4 dotted decimal notation,
+    ##                     or a hostname that can be resolved to an IP address.
+    ##                 
+    ##             
+    xsd:string
+  }
+nicType =
+  attribute name {
+    
+    ## 
+    ##                 
+    ##                     The name of a network interface (e.g. eth0, eth1, lo).
+    ##                 
+    ##             
+    xsd:string
+  }
+nic-matchType =
+  attribute pattern {
+    
+    ## 
+    ##                 
+    ##                     A regular expression against which the names of the network
+    ##                     interfaces available on the machine can be matched to find
+    ##                     an acceptable interface.
+    ##                 
+    ##             
+    xsd:string
+  }
+subnet-matchType =
+  attribute value {
+    
+    ## 
+    ##                 
+    ##                     A network IP address and the number of bits in the
+    ##                     address' network prefix, written in "slash notation";
+    ##                     e.g. "192.168.0.0/16".
+    ##                 
+    ##             
+    xsd:string
+  }
+address-exclusionType =
+  element inet-address { inet-addressType }*
+  | element loopback { loopbackType }
+  | element loopback-address { loopback-addressType }
+  | element multicast { multicastType }
+  | element point-to-point { point-to-pointType }
+  | element virtual { interface-virtualType }
+  | element up { interface-upType }
+  | element public-address { public-addressType }
+  | element link-local-address { link-local-addressType }
+  | element site-local-address { site-local-addressType }
+  | element nic { nicType }*
+  | element nic-match { nic-matchType }*
+  | element subnet-match { subnet-matchType }*
+loopbackType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that part of the selection criteria\x{a}" ~
+       "                for an interface should be whether or not it is a loopback\x{a}" ~
+       "                interface.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+
+## 
+##             
+##                 A loopback address that may not actually be configured on the machine's loopback interface.
+##                 Differs from inet-addressType in that the given value will be used even if no NIC can
+##                 be found that has the IP address associated with it.
+##             
+##         
+loopback-addressType =
+  attribute value {
+    
+    ## 
+    ##                 
+    ##                     An IP address in IPv6 or IPv4 dotted decimal notation.
+    ##                 
+    ##             
+    xsd:string
+  }
+multicastType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that part of the selection criteria\x{a}" ~
+       "                for an interface should be whether or not it supports\x{a}" ~
+       "                multicast.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+point-to-pointType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that part of the selection criteria\x{a}" ~
+       "                for an interface should be whether or not it is a point-to-point\x{a}" ~
+       "                interface.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+interface-upType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that part of the selection criteria\x{a}" ~
+       "                for an interface should be whether or not it is currently up.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+interface-virtualType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that part of the selection criteria\x{a}" ~
+       "                for an interface should be whether or not it is a virtual\x{a}" ~
+       "                interface.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+public-addressType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that part of the selection criteria\x{a}" ~
+       "                for an interface should be whether or not it has a publicly\x{a}" ~
+       "                routable address.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+site-local-addressType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that part of the selection criteria\x{a}" ~
+       "                for an interface should be whether or not an address associated\x{a}" ~
+       "                with it is site-local.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+link-local-addressType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that part of the selection criteria\x{a}" ~
+       "                for an interface should be whether or not an address associated\x{a}" ~
+       "                with it is link-local.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+any-ipv6-addressType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that sockets using this interface\x{a}" ~
+       "                should be bound to the IPv6 wildcard address (::).\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+any-ipv4-addressType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that sockets using this interface\x{a}" ~
+       "                should be bound to the IPv4 wildcard address (0.0.0.0).\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+any-addressType =
+  empty
+  >> a:documentation [
+       "\x{a}" ~
+       "            \x{a}" ~
+       "                Empty element indicating that sockets using this interface\x{a}" ~
+       "                should be bound to a wildcard address. The IPv6 wildcard\x{a}" ~
+       "                address (::) will be used unless the java.net.preferIpV4Stack\x{a}" ~
+       "                system property is set to true, in which case the IPv4\x{a}" ~
+       "                wildcard address (0.0.0.0) will be used. If a socket is\x{a}" ~
+       "                bound to an IPv6 anylocal address on a dual-stack machine,\x{a}" ~
+       "                it can accept both IPv6 and IPv4 traffic; if it is bound to\x{a}" ~
+       "                an IPv4 (IPv4-mapped) anylocal address, it can only accept\x{a}" ~
+       "                IPv4 traffic.\x{a}" ~
+       "            \x{a}" ~
+       "        "
+     ]
+
+## 
+##             Configuration information for a socket.
+##         
+socketType =
+  attribute name { xsd:string },
+  attribute interface {
+    
+    ## 
+    ##                 
+    ##                     Name of the interface to which the socket should be bound, or, for multicast
+    ##                     sockets, the interface on which it should listen. This should
+    ##                     be one of the declared interfaces.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  [ ns_1:defaultValue = "0" ]
+  attribute port {
+    
+    ## 
+    ##                 
+    ##                     Number of the port to which the socket should be bound.
+    ##                 
+    ##             
+    xsd:unsignedShort
+  }?,
+  [ ns_1:defaultValue = "false" ]
+  attribute fixed-port {
+    
+    ## 
+    ##                 
+    ##                     Whether the port value should remain fixed even if numerically offsets
+    ##                     are applied to the other sockets in the socket group..
+    ##                 
+    ##             
+    xsd:boolean
+  }?,
+  attribute multicast-address {
+    
+    ## 
+    ##                 
+    ##                     Multicast address on which the socket should receive multicast
+    ##                     traffic. If unspecified, the socket will not be configured
+    ##                     to receive multicast.
+    ##                 
+    ##             
+    xsd:string
+  }?,
+  attribute multicast-port {
+    
+    ## 
+    ##                 
+    ##                     Port on which the socket should receive multicast
+    ##                     traffic. If unspecified, the socket will not be configured
+    ##                     to receive multicast.
+    ##                 
+    ##             
+    xsd:positiveInteger
+  }?
+# Path configurations
+
+## 
+##             
+##                 A list of named filesystem paths. The paths may or may
+##                 not be fully specified (i.e. include the actual paths.)
+##             
+##         
+named-pathsType = element path { named-pathType }*
+
+## 
+##             
+##                 A named filesystem path, but without a requirement to specify
+##                 the actual path. If no actual path is specified, acts as a
+##                 as a placeholder in the model (e.g. at the domain level)
+##                 until a fully specified path definition is applied at a
+##                 lower level (e.g. at the host level, where available addresses
+##                 are known.)
+##             
+##         
+named-pathType =
+  pathType,
+  attribute name {
+    
+    ## 
+    ##                         
+    ##                         The name of the path. Cannot be one of the standard fixed paths
+    ##                         provided by the system:
+    ## 
+    ##                         jboss.home.dir - the root directory of the JBoss AS distribution
+    ##                         user.home - user's home directory
+    ##                         user.dir - user's current working directory
+    ##                         java.home - java installation directory
+    ##                         jboss.server.base.dir - root directory for an individual server
+    ##                                                 instance
+    ## 
+    ##                         Note that the system provides other standard paths that can be
+    ##                         overridden by declaring them in the configuration file. See
+    ##                         the 'relative-to' attribute documentation for a complete
+    ##                         list of standard paths.
+    ##                         
+    ##                     
+    xsd:string
+  }
+pathType =
+  
+  ## 
+  ##                 
+  ##                 The actual filesystem path. Treated as an absolute path, unless the
+  ##                 'relative-to' attribute is specified, in which case the value
+  ##                 is treated as relative to that path.
+  ## 
+  ##                 If treated as an absolute path, the actual runtime pathname specified
+  ##                 by the value of this attribute will be determined as follows:
+  ## 
+  ##                 If this value is already absolute, then the value is directly
+  ##                 used.  Otherwise the runtime pathname is resolved in a
+  ##                 system-dependent way.  On UNIX systems, a relative pathname is
+  ##                 made absolute by resolving it against the current user directory.
+  ##                 On Microsoft Windows systems, a relative pathname is made absolute
+  ##                 by resolving it against the current directory of the drive named by the
+  ##                 pathname, if any; if not, it is resolved against the current user
+  ##                 directory.
+  ##                 
+  ##             
+  attribute path {
+    xsd:string { minLength = "1" }
+  }?,
+  attribute relative-to {
+    
+    ## 
+    ##                 
+    ##                 The name of another previously named path, or of one of the
+    ##                 standard paths provided by the system. If 'relative-to' is
+    ##                 provided, the value of the 'path' attribute is treated as
+    ##                 relative to the path specified by this attribute. The standard
+    ##                 paths provided by the system include:
+    ## 
+    ##                 jboss.home.dir - the root directory of the JBoss AS distribution
+    ##                 user.home - user's home directory
+    ##                 user.dir - user's current working directory
+    ##                 java.home - java installation directory
+    ##                 jboss.server.base.dir - root directory for an individual server
+    ##                                         instance
+    ##                 jboss.server.config.dir - directory in which server configuration
+    ##                                           files are stored.
+    ##                 jboss.server.data.dir - directory the server will use for persistent
+    ##                                         data file storage
+    ##                 jboss.server.log.dir - directory the server will use for
+    ##                                        log file storage
+    ##                 jboss.server.temp.dir - directory the server will use for
+    ##                                        temporary file storage
+    ##                 jboss.domain.servers.dir - directory under which a host controller
+    ##                                            will create the working area for
+    ##                                            individual server instances
+    ##                 
+    ##             
+    xsd:string
+  }?
+
+## 
+##             
+##                 A list of named filesystem paths.
+##             
+##         
+specified-pathsType = element path { specified-pathType }*
+
+## 
+##             
+##                 A named filesystem path.
+##             
+##         
+specified-pathType =
+  attribute name {
+    
+    ## 
+    ##                 
+    ##                 The name of the path. Cannot be one of the standard fixed paths
+    ##                 provided by the system:
+    ## 
+    ##                 jboss.home.dir - the root directory of the JBoss AS distribution
+    ##                 user.home - user's home directory
+    ##                 user.dir - user's current working directory
+    ##                 java.home - java installation directory
+    ##                 jboss.server.base.dir - root directory for an individual server
+    ##                                         instance
+    ## 
+    ##                 Note that the system provides other standard paths that can be
+    ##                 overridden by declaring them in the configuration file. See
+    ##                 the 'relative-to' attribute documentation for a complete
+    ##                 list of standard paths.
+    ##                 
+    ##             
+    xsd:string
+  },
+  
+  ## 
+  ##                 
+  ##                 The actual filesystem path. Treated as an absolute path, unless the
+  ##                 'relative-to' attribute is specified, in which case the value
+  ##                 is treated as relative to that path.
+  ## 
+  ##                 If treated as an absolute path, the actual runtime pathname specified
+  ##                 by the value of this attribute will be determined as follows:
+  ## 
+  ##                 If this value is already absolute, then the value is directly
+  ##                 used.  Otherwise the runtime pathname is resolved in a
+  ##                 system-dependent way.  On UNIX systems, a relative pathname is
+  ##                 made absolute by resolving it against the current user directory.
+  ##                 On Microsoft Windows systems, a relative pathname is made absolute
+  ##                 by resolving it against the current directory of the drive named by the
+  ##                 pathname, if any; if not, it is resolved against the current user
+  ##                 directory.
+  ## 
+  ##                 Note relative path declarations have to use '/' as file separator.
+  ##                 
+  ##             
+  attribute path {
+    xsd:string { minLength = "1" }
+  },
+  attribute relative-to {
+    
+    ## 
+    ##                 
+    ##                 The name of another previously named path, or of one of the
+    ##                 standard paths provided by the system. If 'relative-to' is
+    ##                 provided, the value of the 'path' attribute is treated as
+    ##                 relative to the path specified by this attribute. The standard
+    ##                 paths provided by the system include:
+    ## 
+    ##                 jboss.home.dir - the root directory of the JBoss AS distribution
+    ##                 user.home - user's home directory
+    ##                 user.dir - user's current working directory
+    ##                 java.home - java installation directory
+    ##                 jboss.server.base.dir - root directory for an individual server
+    ##                                         instance
+    ##                 jboss.server.config.dir - directory in which server configuration
+    ##                                           files are stored.
+    ##                 jboss.server.data.dir - directory the server will use for persistent
+    ##                                         data file storage
+    ##                 jboss.server.log.dir - directory the server will use for
+    ##                                        log file storage
+    ##                 jboss.server.temp.dir - directory the server will use for
+    ##                                        temporary file storage
+    ##                 jboss.domain.servers.dir - directory under which a host controller
+    ##                                            will create the working area for
+    ##                                            individual server instances
+    ##                 
+    ##             
+    xsd:string
+  }?
+# JVM configurations
+jvmsType = element jvm { namedJvmType }*
+jvmType =
+  (element heap { heapType }??
+   & element permgen { bounded-memory-sizeType }??
+   & element stack { memory-sizeType }??
+   & element agent-lib { jvm-agentLibType }??
+   & element agent-path { jvm-agentPathType }??
+   & element java-agent { jvm-javaagentType }??
+   & element jvm-options { jvm-optionsType }??
+   & element environment-variables { environmentVariablesType }??),
+  attribute java-home { xsd:string }?,
+  [ ns_1:defaultValue = "SUN" ]
+  attribute type {
+    
+    ## 
+    ##			                Allows the full set of JVM options to be set via the jvm schema elements
+    ##			            
+    "SUN"
+    | 
+      ## 
+      ##                             Sets a subset of the JVM options via the jvm schema elements
+      ##                         
+      "IBM"
+  }?,
+  [ ns_1:defaultValue = "true" ]
+  attribute env-classpath-ignored { xsd:boolean }?
+namedJvmType =
+  jvmType,
+  attribute name { xsd:string }?
+serverJvmType =
+  namedJvmType,
+  [ ns_1:defaultValue = "false" ]
+  attribute debug-enabled { xsd:boolean }?,
+  attribute debug-options { xsd:string }?
+heapType =
+  
+  ## 
+  ##                 Initial JVM heap size
+  ##             
+  attribute size { text }?,
+  
+  ## 
+  ##                 Maximum JVM heap size
+  ##             
+  attribute max-size { text }?
+jvm-optionsType = element option { jvm-optionType }*
+jvm-optionType =
+  
+  ## 
+  ##                 JVM option value
+  ##             
+  attribute value { text }
+jvm-agentLibType =
+  
+  ## 
+  ##                 JVM agent lib value 
+  ##             
+  attribute value { text }
+jvm-agentPathType =
+  
+  ## 
+  ##                 JVM agent path value 
+  ##             
+  attribute value { text }
+jvm-javaagentType =
+  
+  ## 
+  ##                 JVM javaagent value 
+  ##             
+  attribute value { text }
+bounded-memory-sizeType =
+  attribute size { xsd:string }?,
+  attribute max-size { xsd:string }?
+memory-sizeType = attribute size { xsd:string }
+properties-with-boottime = element property { boottimePropertyType }+
+properties = element property { propertyType }+
+environmentVariablesType = element variable { propertyType }+
+propertyType =
+  attribute name { text },
+  attribute value { text }?
+boottimePropertyType =
+  propertyType,
+  [ ns_1:defaultValue = "true" ] attribute boot-time { xsd:boolean }?
+
+## 
+##          
+##                
+##                     Vault Configuration.
+##                 
+##          
+##       
+vaultType =
+  element vault-option { propertyType }*,
+  attribute code { xsd:string }?
+
+## 
+##             
+##                 
+##                    Storage information about re-usable chunks of data useful to management clients that are stored
+##                    in the domain content repository.
+##                 
+##             
+##         
+management-client-contentType =
+  element rollout-plans {
+    contentType
+    >> a:documentation [
+         "\x{a}" ~
+         "                    \x{a}" ~
+         "                        \x{a}" ~
+         "                           Storage information about a set of named management update rollout plans useful to management\x{a}" ~
+         "                           clients that are stored in the domain content repository. The management API exposed by the domain\x{a}" ~
+         "                           controller provides access to these plans to management clients, allowing clients to use the plans\x{a}" ~
+         "                           by referencing them by name, avoiding the need to recreate them for each use.\x{a}" ~
+         "                        \x{a}" ~
+         "                    \x{a}" ~
+         "                "
+       ]
+  }?
+
+## 
+##             
+##                 
+##                    Stores information about deployment overlays that can be used to override deployment content.
+##                 
+##             
+##         
+standalone-deployment-overlaysType =
+  element deployment-overlay { standalone-deployment-overlayType }*
+standalone-deployment-overlayType =
+  element content { deployment-overlay-contentType }*,
+  element deployment { deployment-overlay-deploymentType }*,
+  attribute name { xsd:token }
+
+## 
+##             
+##                 
+##                    Stores information about deployment overlays that can be used to override deployment content.
+##                 
+##             
+##         
+domain-deployment-overlaysType =
+  element deployment-overlay { domain-deployment-overlayType }*
+domain-deployment-overlayType =
+  element content { deployment-overlay-contentType }*,
+  attribute name { xsd:token }
+
+## 
+##             
+##                 
+##                    Stores information about deployment overlays that can be used to override deployment content.
+##                 
+##             
+##         
+server-group-deployment-overlaysType =
+  element deployment-overlay { server-group-deployment-overlayType }*
+server-group-deployment-overlayType =
+  element deployment { deployment-overlay-deploymentType }*,
+  attribute name { xsd:token }
+deployment-overlay-contentType =
+  attribute path { xsd:token },
+  attribute content { xsd:token }
+deployment-overlay-deploymentType = attribute name { xsd:string }

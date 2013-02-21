@@ -1,0 +1,36 @@
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+
+  <!-- <namespace ns="http://www.w3.org/1999/XSL/Transform" typeId="XSLT"/> -->
+  <!-- <namespace ns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" typeId="RDF"/> -->
+  <!-- <namespace ns="http://www.w3.org/1999/xhtml" typeId="XHTML"/> -->
+  <!-- <namespace ns="http://relaxng.org/ns/structure/1.0" typeId="RELAX NG"/> -->
+  <!-- <namespace ns="http://thaiopensource.com/ns/locating-rules/1.0" -->
+  <!--            uri="locate.rnc"/> -->
+
+  <documentElement localName="fontconfig" typeId="fonts"/>
+  <!-- <documentElement prefix="xsl" localName="transform" typeId="XSLT"/> -->
+
+  <!-- <documentElement localName="html" typeId="XHTML"/> -->
+
+  <!-- <documentElement localName="grammar" typeId="RELAX NG"/> -->
+
+  <!-- <documentElement prefix="" localName="article" typeId="DocBook"/> -->
+  <!-- <documentElement prefix="" localName="book" typeId="DocBook"/> -->
+  <!-- <documentElement prefix="" localName="chapter" typeId="DocBook"/> -->
+  <!-- <documentElement prefix="" localName="part" typeId="DocBook"/> -->
+  <!-- <documentElement prefix="" localName="refentry" typeId="DocBook"/> -->
+  <!-- <documentElement prefix="" localName="section" typeId="DocBook"/> -->
+
+  <!-- <documentElement localName="RDF" typeId="RDF"/> -->
+  <!-- <documentElement prefix="rdf" typeId="RDF"/> -->
+
+  <!-- <documentElement localName="locatingRules" uri="locate.rnc"/> -->
+
+  <typeId id="jboss-as-config" uri="jboss-as-config_1_4.rnc"/>
+  <typeId id="jboss-as-infinispan" uri="jboss-as-infinispan_1_4.rnc"/>
+
+  <typeId id="XHTML" uri="xhtml.rnc"/>
+  <typeId id="DocBook" uri="docbook.rnc"/>
+  <typeId id="fonts" uri="fonts.rnc"/>
+
+</locatingRules>
