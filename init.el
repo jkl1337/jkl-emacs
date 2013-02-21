@@ -197,13 +197,14 @@
 (progn
   (setq jkl/el-get-packages
         '(el-get fuzzy popup cedet escreen jdee auto-complete
+                 smex
                  helm projectile undo-tree
                  pkgbuild-mode
                  flymake ; wow, the emacs one is a POS
                  flymake-coffee flymake-haml flymake-shell
                  ido-ubiquitous
                  color-theme color-theme-tangotango
-                 bbdb bbdb-vcard org-mode
+                 bbdb org-mode ;; bbdb-vcard
                  rainbow-mode rainbow-delimiters
                  markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
                  flymake-easy
@@ -305,6 +306,8 @@ try disabling Alt-Tab switching and see how that works")
       nil
     ad-do-it))
 
+;;;; nxml
+(add-to-list 'rng-schema-locating-files (concat jkl/my-dir "schemas/schemas.xml")))
 ;;;; EMMS
 ;;; FIXME: Reconfigure EMMS
 
@@ -341,6 +344,10 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; YASNIPPET
 (add-to-list 'yas-snippet-dirs (concat jkl/my-dir "yasnippet"))
 (yas-global-mode)
+(eval-after-load "yasnippet"
+  '(progn
+     (jkl/cs 'yas-prompt-functions '(yas-ido-prompt yas-completing-prompt yas-no-prompt))))
+
 
 ;;;; PROJECTILE (ELPA)
 ;; TODO: save file location
@@ -420,6 +427,12 @@ try disabling Alt-Tab switching and see how that works")
 (define-key 'help-command "\C-f" 'find-function)
 (define-key 'help-command "\C-v" 'find-variable)
 
+;; SMEX!
+
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
 (global-set-key (kbd "C-x \\") 'align-regexp)
 (global-set-key (kbd "C-x ^") 'join-line)
 (global-set-key (kbd "C-x m") 'eshell)
@@ -454,6 +467,8 @@ try disabling Alt-Tab switching and see how that works")
                                             try-complete-lisp-symbol))
 
 (ido-mode 1)
+(ido-ubiquitous-mode 1)
+(ido-ubiquitous-disable-in execute-extended-command)
 (jkl/cs 'ido-enable-prefix nil
         'ido-enable-flex-matching t
         'ido-create-new-buffer 'always
