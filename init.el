@@ -307,7 +307,9 @@ try disabling Alt-Tab switching and see how that works")
     ad-do-it))
 
 ;;;; nxml
-(add-to-list 'rng-schema-locating-files (concat jkl/my-dir "schemas/schemas.xml")))
+(eval-after-load "rng-log"
+  '(add-to-list 'rng-schema-locating-files (concat jkl/my-dir "schemas/schemas.xml")))
+
 ;;;; EMMS
 ;;; FIXME: Reconfigure EMMS
 
@@ -410,6 +412,8 @@ try disabling Alt-Tab switching and see how that works")
     (setenv "LUAI" "luajit")))
 
 ;;;; BEGIN CUSTOMIZATION
+
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 (when (bound-and-true-p jkl/use-hunspell)
   (eval-after-load "pspell"
