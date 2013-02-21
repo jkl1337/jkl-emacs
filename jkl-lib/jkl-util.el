@@ -72,6 +72,7 @@ directory that does not exist."
   (let ((val))
     (while args
       (let ((sym (car args)))
+	(unless (symbolp sym) (error "not symbolp: %s" sym))
         (setq val (cadr args))
         (funcall setter sym val)
         (put sym 'customized-value (list (custom-quote val))))
@@ -94,6 +95,8 @@ with multiple assignments and notify customize."
         (or (get sym 'custom-set) 'custom-set-default)
         sym val))
    args))
+
+(defalias 'jkl/cs 'jkl/custom-set)
 
 (defun jkl/cust-vars (&rest args)
   "Set quoted value of variables using the same method setup for
