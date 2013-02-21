@@ -307,7 +307,7 @@ try disabling Alt-Tab switching and see how that works")
     ad-do-it))
 
 ;;;; nxml
-(eval-after-load "rng-log"
+(eval-after-load "rng-loc"
   '(add-to-list 'rng-schema-locating-files (concat jkl/my-dir "schemas/schemas.xml")))
 
 ;;;; EMMS
