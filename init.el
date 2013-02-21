@@ -411,11 +411,14 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; BEGIN CUSTOMIZATION
 
-(jkl/cs 'backup-directory-alist
-        `((".*" . ,temporary-file-directory))
-	'auto-save-file-name-transforms
-        `((".*" ,temporary-file-directory t)))
-
+(when (bound-and-true-p jkl/use-hunspell)
+  (eval-after-load "pspell"
+    (progn
+      (let ((hunspell-program (executable-find "hunspell")))
+        (when hunspell-program
+          (jkl/custom-set 'ispell-extra-args '("-a" "-i" "utf-8")
+                          'ispell-silently-savep t
+                          'ispell-program-name hunspell-program))))))
 (blink-cursor-mode 0)
 
 ;;; TRAMP administer root files on remote hosts
@@ -520,11 +523,15 @@ try disabling Alt-Tab switching and see how that works")
 
 (jkl/custom-set 'display-time-24hr-format t)
 
-(jkl/custom-set 'inhibit-startup-screen t
-                'initial-scratch-message nil
-                'auto-save-interval 3000
-                'auto-save-timeout 300
-                'make-backup-files nil)
+(jkl/cs 'backup-directory-alist
+        `((".*" . ,temporary-file-directory))
+	'auto-save-file-name-transforms
+        `((".*" ,temporary-file-directory t)))
+
+(jkl/cs 'inhibit-startup-screen t
+        'initial-scratch-message nil
+        'auto-save-interval 3000
+        'auto-save-timeout 300)
 
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
