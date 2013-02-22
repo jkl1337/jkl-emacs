@@ -119,20 +119,6 @@
 	       :build/darwin `("touch `find . -name Makefile`"
 			       ,(concat "make EMACS=" el-get-emacs))
                :load-path nil)
-	(:name jdee
-               :website "http://jdee.sourceforge.net/"
-               :description "The JDEE is an add-on software package that turns Emacs into a comprehensive system for creating, editing, debugging, and documenting Java applications."
-               :type git
-               :depends cedet
-               :url "http://github.com/jkl1337/jdee.git"
-               :build `(,(concat
-			  "CLASSPATH="
-			  (let ((cp "/usr/share/java/apache-ant/lib/ant-contrib-1.0b3.jar"))
-			    (when (file-exists-p cp) cp))
-			  " ant bindist -Dbuild.bin.emacs=" el-get-emacs " -Delib.dir= -Dcedet.dir=" el-get-dir "cedet -Ddist.dir=dist"))
-               ;; :build ("touch `find . -name Makefile`" "make")
-               :branch "bzr-cedet"
-               :load-path ("dist/lisp"))
         (:name pymacs
                :build `(,(concat "make"
                                  (if (file-executable-p "/usr/bin/python2")
@@ -196,7 +182,7 @@
 
 (progn
   (setq jkl/el-get-packages
-        '(el-get fuzzy popup cedet escreen jdee auto-complete
+        '(el-get fuzzy popup cedet escreen auto-complete
                  smex
                  helm projectile undo-tree
                  pkgbuild-mode
