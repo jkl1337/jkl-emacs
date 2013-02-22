@@ -41,6 +41,14 @@
 
 (global-rinari-mode 1)
 
+(eval-after-load 'rinari
+  '(progn
+     (defadvice rinari-minor-mode (after rinari-on-enter activate)
+       "Activate rails mode for yasnippet expansion"
+       (when (or (and (integerp ad-return-value) (> ad-return-value 0))
+                 ad-return-value)
+         (add-to-list (make-local-variable 'yas-extra-modes) 'rails-mode)))))
+
 (eval-after-load 'ruby-mode
   '(progn
      (setq ruby-use-encoding-map nil)
