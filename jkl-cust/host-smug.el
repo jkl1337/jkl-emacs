@@ -2,6 +2,7 @@
 (setq user-emacs-directory "/home/luebsj/emacs/")
 (setq jkl/pkg-path (concat user-emacs-directory "pkg/"))
 (setq jkl/info-path (concat user-emacs-directory "info/"))
+(setq jkl/prefer-rope-completion t)
 
 (eval-after-load "slime"
   '(jkl/custom-set 'inferior-lisp-program "sbcl"))

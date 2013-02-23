@@ -28,7 +28,8 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 (jkl/custom-set 'py-complete-function 'py-complete-completion-at-point)
 
 (require 'python-mode)
-(when (fboundp 'py-load-pycomplete)
+(when (and (fboundp 'py-load-pycomplete)
+           (not (bound-and-true-p jkl/prefer-rope-completion)))
   (py-load-pycomplete))
 
 (when (file-executable-p "/usr/bin/python2")
@@ -52,17 +53,22 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
          (require 'pysmell)
          (pysmell-get-all-completions)))))
 
+(defun ac-jropemacs-document (symbol)
+  (let* ((full-prefix (py-complete-enhanced-symbol-before-point))
+        (full-symbol (concat (substring full-prefix 0 (- (length ac-prefix))) symbol)))
+    (py-complete-docstring-for-symbol full-symbol)))
+
+
 (ac-define-source jropemacs-dot
-  '((init . (lambda ()
-              (setq ac-jropemacs-completions-cache
+  '((candidates . (lambda ()
                     (mapcar
                      (lambda (completion)
                        (concat ac-prefix completion))
-                     (ignore-errors (rope-completions))))))
-    (candidates . ac-ropemacs-completions-cache)
+                     (ignore-errors (rope-completions)))))
     (symbol . "p")
     (prefix . c-dot)
-    (requires . 1)))
+    (requires . 0)
+    (cache)))
 
 ;; Slow as hell on OSX
 (defun ac-jropemacs-setup ()
