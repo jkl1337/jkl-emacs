@@ -362,8 +362,11 @@ try disabling Alt-Tab switching and see how that works")
 (jkl/custom-set 'mumamo-chunk-coloring 10)
 
 ;;;; AUTO-COMPLETE
-(eval-after-load "auto-complete-config"
-  (setq ac-source-yasnippet (cons '(requires . 0) ac-source-yasnippet)))
+(eval-after-load "auto-complete"
+  '(progn
+     (define-key ac-completing-map [C-tab] 'ac-expand)
+     (define-key ac-completing-map "\t" nil)
+     (define-key ac-completing-map [tab] nil)))
 
 (jkl/cs 'helm-c-yas-display-key-on-candidate t
         'helm-c-yas-space-match-any-greedy t)
