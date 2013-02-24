@@ -362,10 +362,18 @@ try disabling Alt-Tab switching and see how that works")
 (jkl/custom-set 'mumamo-chunk-coloring 10)
 
 ;;;; AUTO-COMPLETE
-(jkl/custom-set 'ac-quick-help-delay 1.0)
+(eval-after-load "auto-complete-config"
+  (setq ac-source-yasnippet (cons '(requires . 0) ac-source-yasnippet)))
 
-(define-key ac-complete-mode-map "\M-n" 'ac-next)
-(define-key ac-complete-mode-map "\M-p" 'ac-previous)
+(jkl/cs 'helm-c-yas-display-key-on-candidate t
+        'helm-c-yas-space-match-any-greedy t)
+
+(autoload 'helm-c-yas-complete "helm-c-yasnippet"
+    "List of yasnippet snippets using `helm' interface."
+    (interactive))
+(global-set-key (kbd "C-c y") 'helm-c-yas-complete)
+
+(jkl/custom-set 'ac-quick-help-delay 1.0)
 
 ;;(ac-set-trigger-key "\s-\t")
 (defun ac-js2-mode-setup ()
