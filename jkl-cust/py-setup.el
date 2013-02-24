@@ -25,7 +25,8 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 (jkl/custom-set 'py-load-pymacs-p t)
 (jkl/custom-set 'py-install-directory (concat el-get-dir "python-mode"))
-(jkl/custom-set 'py-complete-function 'py-complete-completion-at-point)
+;;(jkl/custom-set 'py-complete-function 'py-complete-completion-at-point)
+(jkl/custom-set 'py-complete-function 'auto-complete)
 
 (require 'python-mode)
 (when (and (fboundp 'py-load-pycomplete)
