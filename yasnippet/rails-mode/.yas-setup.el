@@ -183,6 +183,19 @@
  (and (yas-rails-root)
       (string-match "db/migrate/" default-directory)))
 
+(yas-define-condition-cache
+ yas-rails-routes-p
+"Non-nil if the current buffer is a rails routes file."
+ (and (yas-rails-root)
+      (or (string-match "config/routes.rb$" (buffer-file-name))
+          (string-match "config/routes/$" default-directory))))
+
+(yas-define-condition-cache
+ yas-rails-functional-test-p
+"Non-nil if the current buffer is a functional test file."
+ (and (yas-rails-root)
+      (string-match "test/functional/$" default-directory)))
+
 (defun yas-rails-activate-maybe ()
   (when (and yas-minor-mode
              (yas-rails-root))
@@ -397,7 +410,7 @@ are recognized. Stolen from `rinari-mode' more or`' less."
 ;; meta.rails.migration - meta.rails.migration.create_table - meta.rails.migration.change_table                                                                                               =yyas> (yas-rails-intelligent-migration-snippet-condition-p)
 ;; meta.rails.migration.create_table, meta.rails.migration.change_table                                                                                                                       =yyas> (or (yas-rails-in-create-table-p) (yas-rails-in-change-table-p))
 ;; meta.rails.controller, meta.rails.mailer, source.js, source.css                                                                                                                            =yyas> (yas-unknown)
-;; meta.rails.migration.create_table                                                                                                                                                          =yyas> (yas-rails-create-table-p)
+;; meta.rails.migration.create_table                                                                                                                                                          =yyas> (yas-rails-in-create-table-p)
 ;; meta.rails.functional_test                                                                                                                                                                 =yyas> (yas-rails-functional-test-p)
 ;; text.html.ruby, text.haml                                                                                                                                                                  =yyas> (yas-rails-view-p)
 ;; meta.rails.controller                                                                                                                                                                      =yyas> (yas-rails-controller-p)
