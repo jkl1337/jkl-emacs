@@ -19,18 +19,18 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 ;; This probably doesn't help much. ropemacs is still terribly slow on Darwin.
 (when (eq system-type 'darwin)
-  (defadvice pymacs-start-services (around activate)
+  (defadvice pymacs-start-services (around pymacs-start-services-connection activate)
     (let ((process-connection-type nil))
       ad-do-it)))
 
 (jkl/custom-set 'py-load-pymacs-p t)
 (jkl/custom-set 'py-install-directory (concat el-get-dir "python-mode"))
 ;;(jkl/custom-set 'py-complete-function 'py-complete-completion-at-point)
-(jkl/custom-set 'py-complete-function 'auto-complete)
 
+(jkl/custom-set 'py-complete-function 'auto-complete) ;; FRAGILE; python-mode is a POS and will load py-load-pycomplete
 (require 'python-mode)
 (when (and (fboundp 'py-load-pycomplete)
-           (not (bound-and-true-p jkl/prefer-rope-completion)))
+           (eq system-type 'darwin))
   (py-load-pycomplete))
 
 (when (file-executable-p "/usr/bin/python2")
@@ -40,80 +40,55 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
   (jkl/custom-set 'py-default-interpreter "python2"))
 
 ;; Auto-complete with rope
+(defun ac-ropemacs-document (item)
+  (car item))
+
 (defun ac-ropemacs-candidates ()
-  (mapcar (lambda (completion)
-            (concat ac-prefix completion))
-          (rope-completions)))
-
-(defvar ac-jropemacs-completions-cache nil)
-(make-variable-buffer-local 'ac-jropemacs-completions-cache)
-
-(ac-define-source pysmell
-  '((candidates
-     . (lambda ()
-         (require 'pysmell)
-         (pysmell-get-all-completions)))))
-
-(defun ac-jropemacs-document (symbol)
-  (let* ((full-prefix (py-complete-enhanced-symbol-before-point))
-        (full-symbol (concat (substring full-prefix 0 (- (length ac-prefix))) symbol)))
-    (py-complete-docstring-for-symbol full-symbol)))
-
+  (save-match-data
+    (loop for (name doc type) in (ignore-errors (rope-extended-completions))
+          unless (string-match ":" name)
+          collect (list (concat ac-prefix name) doc))))
 
 (ac-define-source jropemacs-dot
-  '((candidates . (lambda ()
-                    (mapcar
-                     (lambda (completion)
-                       (concat ac-prefix completion))
-                     (ignore-errors (rope-completions)))))
+  '((candidates . ac-ropemacs-candidates)
+    (document . ac-ropemacs-document)
     (symbol . "p")
     (prefix . c-dot)
     (requires . 0)
     (cache)))
 
-;; Slow as hell on OSX
-(defun ac-jropemacs-setup ()
-  (interactive)
-  (setq ac-sources '(ac-source-yasnippet ac-source-jropemacs-dot ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers)))
-
 ;; (set 'ac-sources (cons 'ac-source-jropemacs-dot (remq 'ac-source-pycomplete ac-sources))))
-;;  (setq ac-sources (append '(ac-source-jropemacs-dot) ac-sources)))
-
-(defun ac-pysmell-setup ()
-  (interactive)
-  (setq ac-sources (append ac-sources '(ac-source-pysmell))))
 
 (defun ac-python-mode-setup ()
-  (add-to-list 'ac-sources 'ac-source-yasnippet))
+  (setq ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
+  (unless (or (eq system-type 'darwin)
+              (bound-and-true-p jkl/prefer-rope-completion))
+    (setq ac-sources (cons 'ac-source-jropemacs-dot ac-sources)))
+  (setq ac-sources (cons 'ac-source-yasnippet ac-sources)))
 
 (add-hook 'python-mode-hook 'ac-python-mode-setup)
 
-(when (not (or (featurep 'pycomplete)
-	       (eq system-type 'darwin)))
-  (add-hook 'python-mode-hook 'ac-jropemacs-setup))
+;; Automatically open rope project if it exists
+(defun jkl-setup-rope ()
+  (cond ((file-exists-p ".ropeproject")
+         (rope-open-project default-directory))
+        ((file-exists-p "../.ropeproject")
+         (rope-open-project (concat default-directory "..")))))
+
+(add-hook 'python-mode-hook 'jkl-setup-rope)
 
 ;; CEDET causes this to load, and it really fouls shit up for me with python-mode
 ;; Leave out for now
 (remove-hook 'python-mode-hook 'wisent-python-default-setup)
 
-(add-hook 'python-mode-hook
-          (lambda ()
-            (define-key python-mode-map "\C-ci" 'rope-auto-import)
-            (define-key python-mode-map "\C-c\C-d" 'rope-show-calltip)))
-
-;; Automatically open rope project if it exists
-(add-hook 'python-mode-hook
-          (lambda ()
-            (cond ((file-exists-p ".ropeproject")
-                   (rope-open-project default-directory))
-                  ((file-exists-p "../.ropeproject")
-                   (rope-open-project (concat default-directory "..")))
-                  )))
+(define-key python-mode-map "\C-ci" 'rope-auto-import)
+(define-key python-mode-map "\C-c\C-d" 'rope-show-calltip)
 
 (pymacs-load "ropemacs" "rope-")
-(jkl/custom-set 'ropemacs-codeassist-maxfixes 3)
-(jkl/custom-set 'ropemacs-enable-autoimport t)
-(jkl/custom-set 'ropemacs-autoimport-modules '("os" "shutil" "sys" "logging"))
+(jkl/cs 'ropemacs-guess-project t
+        'ropemacs-codeassist-maxfixes 3
+        'ropemacs-enable-autoimport t
+        'ropemacs-autoimport-modules '("os" "shutil" "sys" "logging"))
 
 ;; cython
 (require 'cython-mode)
