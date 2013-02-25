@@ -178,6 +178,9 @@
                :url "https://github.com/jkl1337/org-mode"
                :shallow nil
                :checkout "flyspell")
+        (:name yasnippet
+               :url "https://github.com/jkl1337/yasnippet"
+               :checkout "textmate")
       ))
 
 (progn
@@ -213,10 +216,6 @@
 (condition-case nil
     (color-theme-cool-dark)
   (error nil))
-
-;; Request to merge custom info.
-;; (add-to-list 'Info-default-directory-list 
-;;              (expand-file-name jkl/info-path))
 
 ;;;; CUSTOM KEY BINDINGS
 (defalias 'qrr 'query-replace-regexp)
@@ -336,7 +335,6 @@ try disabling Alt-Tab switching and see how that works")
   '(progn
      (jkl/cs 'yas-prompt-functions '(yas-dropdown-prompt
                                      yas-ido-prompt yas-completing-prompt yas-no-prompt))))
-
 
 ;;;; PROJECTILE (ELPA)
 ;; TODO: save file location
