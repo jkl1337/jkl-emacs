@@ -334,7 +334,8 @@ try disabling Alt-Tab switching and see how that works")
 (yas-global-mode)
 (eval-after-load "yasnippet"
   '(progn
-     (jkl/cs 'yas-prompt-functions '(yas-ido-prompt yas-completing-prompt yas-no-prompt))))
+     (jkl/cs 'yas-prompt-functions '(yas-dropdown-prompt
+                                     yas-ido-prompt yas-completing-prompt yas-no-prompt))))
 
 
 ;;;; PROJECTILE (ELPA)
