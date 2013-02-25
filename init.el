@@ -52,6 +52,8 @@
 			 ".el") t)
 
 ;; BEGIN APPEARANCE / BASIC FACES - with fallback when color-theme is not installed
+(jkl/cs 'use-file-dialog nil)
+
 (let ((font (cond
              (jkl/mswinp "Lucida Console-9")
              ((eq 'darwin system-type) "Monaco-9")
@@ -361,11 +363,23 @@ try disabling Alt-Tab switching and see how that works")
 (jkl/custom-set 'mumamo-chunk-coloring 10)
 
 ;;;; AUTO-COMPLETE
+
 (eval-after-load "auto-complete"
   '(progn
-     (define-key ac-completing-map [C-tab] 'ac-expand)
-     (define-key ac-completing-map "\t" nil)
-     (define-key ac-completing-map [tab] nil)))
+     ;; HACK! This is for ropemacs when the project is not already created
+     ;; without this the keymap will not allow one to do anything
+     (defadvice read-directory-name (before read-directory-cancel-ac-timer activate)
+       (ac-cancel-timer))
+
+     (define-key ac-completing-map "\C-n" 'ac-next)
+     (define-key ac-completing-map "\C-p" 'ac-previous)
+     (define-key ac-completing-map "\M-n" nil)
+     (define-key ac-completing-map "\M-p" nil)))
+
+(eval-after-load "auto-complete-config"
+  '(progn
+     (defadvice ac-yasnippet-candidates (around ac-yasnippet-reverse activate compile)
+       (nreverse ad-do-it))))
 
 (jkl/cs 'helm-c-yas-display-key-on-candidate t
         'helm-c-yas-space-match-any-greedy t)
