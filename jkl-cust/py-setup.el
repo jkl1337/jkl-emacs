@@ -74,7 +74,7 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 ;; Slow as hell on OSX
 (defun ac-jropemacs-setup ()
   (interactive)
-  (setq ac-sources '(ac-source-jropemacs-dot ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers)))
+  (setq ac-sources '(ac-source-yasnippet ac-source-jropemacs-dot ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers)))
 
 ;; (set 'ac-sources (cons 'ac-source-jropemacs-dot (remq 'ac-source-pycomplete ac-sources))))
 ;;  (setq ac-sources (append '(ac-source-jropemacs-dot) ac-sources)))

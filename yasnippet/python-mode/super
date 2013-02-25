@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # name: super
-# contributor: John K. Luebs <jkluebs@luebsphoto.com>
-# expand-env: ((class (lambda () (save-excursion (if (and (py-beginning-of-class) (re-search-forward "\\=class[ \t]+\\([a-zA-Z0-9_]+\\)" nil t)) (match-string-no-properties 1) "class")))) (method (lambda (n def) (save-excursion (if (and (py-beginning-of-def) (re-search-forward "\\=def[ \t]+\\([a-zA-Z0-9_]+\\)[ \t]*(\\([^),=]*\\)" nil t)) (match-string-no-properties n) def)))))
+# key: super
+# contributor: Gabriele Lanaro <gabriele.lanaro@gmail.com>
 # --
-super(`(funcall class)`, `(funcall method 2 "self"))`).`(funcall method 1 "method")`($0)
+super(${1:`(py-prev-class-name)`},self).${2:`(py-prev-def-name)`}(${3:`(py-prev-def-args)`})
+    $0
