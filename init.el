@@ -331,6 +331,9 @@ try disabling Alt-Tab switching and see how that works")
 (autoload 'gtags-mode "gtags" "" t)
 
 ;;;; YASNIPPET
+(let ((snippets-dir (concat jkl/my-dir "snippets/")))
+  (jkl/cs 'yas-snippet-dirs (list (concat snippets-dir "base") (concat snippets-dir "ext"))))
+
 (add-to-list 'yas-snippet-dirs (concat jkl/my-dir "yasnippet"))
 (yas-global-mode)
 (eval-after-load "yasnippet"
