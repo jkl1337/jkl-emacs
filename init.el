@@ -377,12 +377,9 @@ try disabling Alt-Tab switching and see how that works")
      (define-key ac-completing-map "\C-n" 'ac-next)
      (define-key ac-completing-map "\C-p" 'ac-previous)
      (define-key ac-completing-map "\M-n" nil)
-     (define-key ac-completing-map "\M-p" nil)))
-
-(eval-after-load "auto-complete-config"
-  '(progn
-     (defadvice ac-yasnippet-candidates (around ac-yasnippet-reverse activate compile)
-       (nreverse ad-do-it))))
+     (define-key ac-completing-map "\M-p" nil)
+     (define-key ac-completing-map "\t" 'ac-funky-expand)
+     (define-key ac-completing-map [tab] 'ac-funky-expand)))
 
 (jkl/cs 'helm-c-yas-display-key-on-candidate t
         'helm-c-yas-space-match-any-greedy t)

@@ -1,5 +1,19 @@
 (eval-when-compile (require 'cl))
 
+(defadvice yas--expand-or-prompt-for-template (before yas-ac-abort-before-expand activate)
+  (ac-abort))
+
+(defun ac-funky-expand ()
+  "Prioritize immediate snippet expansion"
+  (interactive)
+  (cond
+   ((yas--snippets-at-point)
+    (yas-next-field-or-maybe-expand))
+   (t
+    (let ((yas-fallback-behavior 'return-nil))
+      (unless (yas-expand)
+        (ac-expand))))))
+
 (defun jkl/path-or-nil (path)
   "Return PATH if path exists, otherwise nil"
   (when (file-exists-p path) path))
