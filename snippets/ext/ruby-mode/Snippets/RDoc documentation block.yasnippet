@@ -5,6 +5,6 @@
 # name: New Block
 ## condition: "
 # --
-`(concat (if (eq 0 current-line) "\n" "") "\n")`=begin rdoc
+`(concat (if (eq 1 (line-number-at-pos) "\n" "") "\n")`=begin rdoc
 	$0
 =end
