@@ -332,14 +332,11 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; YASNIPPET
 (let ((snippets-dir (concat jkl/my-dir "snippets/")))
-  (jkl/cs 'yas-snippet-dirs (list (concat snippets-dir "base") (concat snippets-dir "ext"))))
+  (jkl/cs 'yas-snippet-dirs (list (concat snippets-dir "base") (concat snippets-dir "ext"))
+          'yas-prompt-functions '(yas-dropdown-prompt
+                                  yas-ido-prompt yas-completing-prompt yas-no-prompt)))
 
-(add-to-list 'yas-snippet-dirs (concat jkl/my-dir "yasnippet"))
 (yas-global-mode)
-(eval-after-load "yasnippet"
-  '(progn
-     (jkl/cs 'yas-prompt-functions '(yas-dropdown-prompt
-                                     yas-ido-prompt yas-completing-prompt yas-no-prompt))))
 
 ;;;; PROJECTILE (ELPA)
 ;; TODO: save file location
