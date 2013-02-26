@@ -3,7 +3,7 @@
 ;;; ipython
 ;; requires python-mode
 ;;(require 'ipython)
-;;(jkl/custom-set 'py-python-command-args '("--colors=Linux"))
+;;(jkl/cs 'py-python-command-args '("--colors=Linux"))
 
 (defmacro jkl/define-py-shell (name desc)
   "Define a custom python interpreter for shell `name'"
@@ -23,11 +23,11 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
     (let ((process-connection-type nil))
       ad-do-it)))
 
-(jkl/custom-set 'py-load-pymacs-p t)
-(jkl/custom-set 'py-install-directory (concat el-get-dir "python-mode"))
-;;(jkl/custom-set 'py-complete-function 'py-complete-completion-at-point)
+(jkl/cs 'py-load-pymacs-p t)
+(jkl/cs 'py-install-directory (concat el-get-dir "python-mode"))
+;;(jkl/cs 'py-complete-function 'py-complete-completion-at-point)
 
-(jkl/custom-set 'py-complete-function 'auto-complete) ;; FRAGILE; python-mode is a POS and will load py-load-pycomplete
+(jkl/cs 'py-complete-function 'auto-complete) ;; FRAGILE; python-mode is a POS and will load py-load-pycomplete
 (require 'python-mode)
 (when (and (fboundp 'py-load-pycomplete)
            (eq system-type 'darwin))
@@ -35,9 +35,9 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 (when (file-executable-p "/usr/bin/python2")
   (setq pymacs-python-command "python2")
-  (jkl/custom-set 'py-shell-name "python2")
-  (jkl/custom-set 'py-python-command "python2")
-  (jkl/custom-set 'py-default-interpreter "python2"))
+  (jkl/cs 'py-shell-name "python2")
+  (jkl/cs 'py-python-command "python2")
+  (jkl/cs 'py-default-interpreter "python2"))
 
 ;; Auto-complete with rope
 (defun ac-ropemacs-document (item)
@@ -62,7 +62,7 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 (defun ac-python-mode-setup ()
   (setq ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
   (unless (or (eq system-type 'darwin)
-              (bound-and-true-p jkl/prefer-rope-completion))
+              (bound-and-true-p jkl/inhibit-rope-completion))
     (setq ac-sources (cons 'ac-source-jropemacs-dot ac-sources)))
   (setq ac-sources (cons 'ac-source-yasnippet ac-sources)))
 

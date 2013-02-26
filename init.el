@@ -60,7 +60,7 @@
              (t "Monaco-8"))))
   (when font (set-face-attribute 'default nil :font font)))
 
-;; (jkl/custom-set 'default-frame-alist
+;; (jkl/cs 'default-frame-alist
 ;;                 '((width . 140)
 ;;                   (height . 50)
 ;;                   (foreground-color . "green")
@@ -89,8 +89,8 @@
 ;; END appearance / basic faces
 
 ;;;; EL-GET
-(jkl/custom-set 'el-get-dir (concat user-emacs-directory "el-get/"))
-(jkl/custom-set 'el-get-git-shallow-clone t)
+(jkl/cs 'el-get-dir (concat user-emacs-directory "el-get/"))
+(jkl/cs 'el-get-git-shallow-clone t)
 
 ;;; bootstreap CEDET early
 (let ((cedet-load-file (concat (expand-file-name "cedet" el-get-dir) "/cedet-devel-load.el")))
@@ -242,10 +242,10 @@
 (when jkl/mswinp
   (let ((msys-bash-exe (locate-file "bash.exe" exec-path)))
     (when (string-match-p "/MSYS/" (upcase msys-bash-exe))
-      (jkl/custom-set 'shell-file-name (file-name-sans-extension msys-bash-exe))
-      (jkl/custom-set 'explicit-shell-file-name shell-file-name)
-      (jkl/custom-set 'explicit-bash-args '("--login" "--noediting" "-i"))
-      (jkl/custom-set
+      (jkl/cs 'shell-file-name (file-name-sans-extension msys-bash-exe))
+      (jkl/cs 'explicit-shell-file-name shell-file-name)
+      (jkl/cs 'explicit-bash-args '("--login" "--noediting" "-i"))
+      (jkl/cs
        'shell-mode-hook '(lambda ()
                            (ansi-color-for-comint-mode-on)
                            ;;(setq comint-scroll-show-maximum-output 'this)
@@ -255,7 +255,7 @@
 
 ;; For non-Windows at least make sure we have ANSI escapes working
 (unless jkl/mswinp
-  (jkl/custom-set 'shell-mode-hook 'ansi-color-for-comint-mode-on))
+  (jkl/cs 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 
 ;; Going to try out Ctrl-Tab for a bit as a replacement for M-tab
 
@@ -301,14 +301,14 @@ try disabling Alt-Tab switching and see how that works")
 ;;; FIXME: Reconfigure EMMS
 
 ;;;; GIT-BLAME
-(jkl/custom-set 'git--timer-sec 5.0)
+(jkl/cs 'git--timer-sec 5.0)
 
 ;;;; BBDB
 
 ;;;; ORG-MODE
 ;;; FIXME: See about lazy
 
-(jkl/custom-set 'major-mode 'text-mode)
+(jkl/cs 'major-mode 'text-mode)
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 (global-set-key "\C-cl" 'org-store-link)
@@ -360,7 +360,7 @@ try disabling Alt-Tab switching and see how that works")
     (error (helm-mini))))
 
 ;;;; NXHTML
-(jkl/custom-set 'mumamo-chunk-coloring 10)
+(jkl/cs 'mumamo-chunk-coloring 10)
 
 ;;;; AUTO-COMPLETE
 
@@ -386,7 +386,7 @@ try disabling Alt-Tab switching and see how that works")
     (interactive))
 (global-set-key (kbd "C-c y") 'helm-c-yas-complete)
 
-(jkl/custom-set 'ac-quick-help-delay 1.0)
+(jkl/cs 'ac-quick-help-delay 1.0)
 
 ;;(ac-set-trigger-key "\s-\t")
 (defun ac-js2-mode-setup ()
@@ -414,7 +414,7 @@ try disabling Alt-Tab switching and see how that works")
 
 (let ((jlua-sh "~/bin/jlua"))
   (when (file-executable-p jlua-sh)
-    (jkl/custom-set 'lua-default-application (expand-file-name jlua-sh)))
+    (jkl/cs 'lua-default-application (expand-file-name jlua-sh)))
   (when (executable-find "luajit")
     (setenv "LUAI" "luajit")))
 
@@ -427,7 +427,7 @@ try disabling Alt-Tab switching and see how that works")
     (progn
       (let ((hunspell-program (executable-find "hunspell")))
         (when hunspell-program
-          (jkl/custom-set 'ispell-extra-args '("-a" "-i" "utf-8")
+          (jkl/cs 'ispell-extra-args '("-a" "-i" "utf-8")
                           'ispell-silently-savep t
                           'ispell-program-name hunspell-program))))))
 (blink-cursor-mode 0)
@@ -509,12 +509,12 @@ try disabling Alt-Tab switching and see how that works")
         'recentf-max-menu-items 15)
 (recentf-mode 1)
 
-(jkl/custom-set 'fill-column 72)
+(jkl/cs 'fill-column 72)
 ;; going to go ahead and default to no tabs globally
-(jkl/custom-set 'indent-tabs-mode nil)
+(jkl/cs 'indent-tabs-mode nil)
 
 ;;; show-trailing-whitespace
-(jkl/custom-set 'show-trailing-whitespace t)
+(jkl/cs 'show-trailing-whitespace t)
 
 (show-paren-mode 1)
 (global-hl-line-mode 1)
@@ -532,7 +532,7 @@ try disabling Alt-Tab switching and see how that works")
 
 (display-time-mode)
 
-(jkl/custom-set 'display-time-24hr-format t)
+(jkl/cs 'display-time-24hr-format t)
 
 (jkl/cs 'backup-directory-alist
         `((".*" . ,temporary-file-directory))
@@ -600,7 +600,7 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; PERFORCE
 ;; Adding this backend causes indefinite wait in all non-rev controlled directories
-(jkl/custom-set 'vc-p4-require-p4config t)
+(jkl/cs 'vc-p4-require-p4config t)
 ;; Damn, it's not working well
 ;; (jkl/add-to-list 'vc-handled-backends 'P4) 
 

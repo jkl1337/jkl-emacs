@@ -3,7 +3,7 @@
 (global-set-key [end] 'move-end-of-line)
 (global-set-key [kp-delete] 'delete-char)
 
-(jkl/custom-set 'mac-control-modifier 'meta
+(jkl/cs 'mac-control-modifier 'meta
                 'mac-option-modifier 'super
 		'mac-command-modifier 'control)
 
@@ -14,4 +14,4 @@
 (setq jkl/info-path (concat user-emacs-directory "info/"))
 
 (eval-after-load "slime"
-  '(jkl/custom-set 'inferior-lisp-program "sbcl"))
+  '(jkl/cs 'inferior-lisp-program "sbcl"))

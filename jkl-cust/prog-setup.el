@@ -18,7 +18,7 @@
 
 ;;; Documentation helpers
 (when (fboundp 'w3m-browse-url)
-  (jkl/custom-set
+  (jkl/cs
    'browse-url-browser-function
    (nconc
     (unless jkl/mswinp
@@ -40,7 +40,7 @@
 
 (autoload 'gtk-lookup-symbol "gtk-look" nil t)
 (unless jkl/mswinp
-  (jkl/custom-set
+  (jkl/cs
    'gtk-lookup-devhelp-indices
    '("/usr/share/gtk-doc/html/*/*.devhelp*"
      "/usr/local/share/gtk-doc/html/*/*.devhelp*"
@@ -132,7 +132,7 @@
 (c-add-style "vhs-cc-style" jkl/cc-style)
 
 ;;; GTAGS
-(jkl/custom-set 'gtags-suggested-key-mapping t)
+(jkl/cs 'gtags-suggested-key-mapping t)
 (let ((en-gtags #'(lambda ()
                     (gtags-mode 1))))
   (add-hook 'c++-mode-hook en-gtags)

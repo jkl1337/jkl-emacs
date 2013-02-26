@@ -55,12 +55,12 @@
      (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
      (define-key ruby-mode-map (kbd "C-M-h") 'backward-kill-word)))
 
-(jkl/custom-set 'rinari-major-modes '(dired-mode ruby-mode css-mode sass-mode
-                                                 rhtml-mode
-                                                 eruby-html-mumamo-mode eruby-nxhtml-mumamo-mode
-                                                 coffee-mode js2-mode javascript-mode
-                                                 yaml-mode
-                                                 dired-mode))
+(jkl/cs 'rinari-major-modes '(dired-mode ruby-mode css-mode sass-mode
+                                         rhtml-mode
+                                         eruby-html-mumamo-mode eruby-nxhtml-mumamo-mode
+                                         coffee-mode js2-mode javascript-mode
+                                         yaml-mode
+                                         dired-mode))
 
 (define-key 'help-command (kbd "C-r") 'yari)
 

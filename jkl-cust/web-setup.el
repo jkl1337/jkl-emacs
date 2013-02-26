@@ -9,7 +9,7 @@
        (define-key map (kbd "s-r") 'coffee-compile-buffer)
        (define-key map (kbd "s-R") 'coffee-compile-region)
        (define-key map (kbd "s-M-r") 'coffee-repl))
-     (jkl/custom-set 'coffee-tab-width 2)))
+     (jkl/cs 'coffee-tab-width 2)))
 
 (eval-after-load "js2-mode"
   '(progn

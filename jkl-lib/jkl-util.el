@@ -3,6 +3,8 @@
 (defadvice yas--expand-or-prompt-for-template (before yas-ac-abort-before-expand activate)
   (ac-abort))
 
+;; The following must be named ac- to prevent auto-complete post-command-hook from
+;; terminating. ac-compatible-packages-regexp could be modified but this way is safer.
 (defun ac-funky-expand ()
   "Prioritize immediate snippet expansion"
   (interactive)
@@ -100,7 +102,7 @@ function, which may cause problems for some variables. @jkl/set-vars
 will use custom-set when available."
   (jkl/set-internal 'set-default args))
 
-(defun jkl/custom-set (&rest args)
+(defun jkl/cs (&rest args)
   "Set symbols similar via set-default or uses custom-set property but
 with multiple assignments and notify customize."
   (jkl/set-internal
@@ -110,7 +112,7 @@ with multiple assignments and notify customize."
         sym val))
    args))
 
-(defalias 'jkl/cs 'jkl/custom-set)
+(defalias 'jkl/custom-set 'jkl/cs)
 
 (defun jkl/cust-vars (&rest args)
   "Set quoted value of variables using the same method setup for

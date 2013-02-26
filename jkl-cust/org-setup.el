@@ -11,21 +11,21 @@
        (directory-files dir t ".org$")
        (apply 'append (mapcar 'jkl/lst-org-files (directory-files dir t "[^.]+"))))))
 
-(jkl/custom-set 'org-babel-load-languages
-                '((emacs-lisp . t)
-                  (sh . t)
-                  (ditaa . t)))
+(jkl/cs 'org-babel-load-languages
+        '((emacs-lisp . t)
+          (sh . t)
+          (ditaa . t)))
 
-(jkl/custom-set 'org-agenda-files
-                (jkl/lst-org-files (concat jkl/git-repo-dir "jkl-org")))
+(jkl/cs 'org-agenda-files
+        (jkl/lst-org-files (concat jkl/git-repo-dir "jkl-org")))
 
-(jkl/custom-set 'org-directory
-                (concat jkl/git-repo-dir "jkl-org"))
+(jkl/cs 'org-directory
+        (concat jkl/git-repo-dir "jkl-org"))
 
-(jkl/custom-set 'org-default-notes-file
-                (concat org-directory "/notes.org"))
+(jkl/cs 'org-default-notes-file
+        (concat org-directory "/notes.org"))
 
-(jkl/custom-set
+(jkl/cs
  'org-fast-tag-selection-single-key t
  'org-treat-S-cursor-todo-selection-as-state-change nil
  'org-todo-keywords '((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w@/!)" "APPT(a)" "MAYBE(m!)" "|" "DONE(d!/!)" "CANCELLED(c@/!)" "DEFFERED(f@/!)"))
@@ -46,8 +46,8 @@
 ;; (setq org-clock-into-drawer "CLOCK")
 ;; (setq org-clock-out-remove-zero-time-clocks t)
 ;; (setq org-clock-out-when-done t)
- 
+
 (defun gtd ()
-   (interactive)
-   (find-file "~/org/gtd.org")
-)
+  (interactive)
+  (find-file "~/org/gtd.org")
+  )
