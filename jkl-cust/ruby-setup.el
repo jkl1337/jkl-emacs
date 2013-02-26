@@ -108,7 +108,7 @@ exec-to-string command, but it works and seems fast"
          ;; the rsense "launcher" can only run with MRI ruby, because it has to fork
          ;; the proper config is handled by .rsense anyway
          (setq ac-sources
-               (append '(ac-source-rsense) ac-sources)))
+               (append '(ac-source-yasnippet ac-source-rsense) ac-sources)))
        (when (require 'ruby-block nil t)
          (ruby-block-mode 1)))
      ;; flymake-ruby-mode
