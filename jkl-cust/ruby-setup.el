@@ -112,6 +112,26 @@ exec-to-string command, but it works and seems fast"
        (when (require 'ruby-block nil t)
          (ruby-block-mode 1)))
      ;; flymake-ruby-mode
+     (add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
      (add-hook 'ruby-mode-hook 'jkl/ruby-setup)))
 
 ;; got rid of rcodetools. It's in git history now
+
+(require 'url)
+
+(defun search-site-url (site url keyword)
+  (concat "http://www.google.com/"
+          (format "search?q=%s+site:%s+inurl:%s&btnI"
+                  (url-hexify-string keyword)
+                  (url-hexify-string site)
+                  (url-hexify-string url))))
+
+(defun ruby-help ()
+  "Open ruby documentation for word under the point"
+  (interactive)
+  ;; (let ((w3m-pop-up-windows t))
+  ;;   (when (one-window-p) (split-window))
+  ;;   (other-window 1)
+    (browse-url (search-site-url  "ruby-doc.org" "/" 
+                                      (thing-at-point 'symbol))))
+(define-key ruby-mode-map (kbd "C-h C-a") 'ruby-help)
