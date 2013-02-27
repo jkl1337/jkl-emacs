@@ -89,7 +89,7 @@
 ;; END appearance / basic faces
 
 ;;;; EL-GET
-(jkl/cs 'el-get-dir (concat user-emacs-directory "el-get/"))
+(jkl/cs 'el-get-dir (expand-file-name (concat user-emacs-directory "el-get/")))
 (jkl/cs 'el-get-git-shallow-clone t)
 
 ;;; bootstreap CEDET early
