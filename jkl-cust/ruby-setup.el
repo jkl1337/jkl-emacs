@@ -112,8 +112,17 @@ exec-to-string command, but it works and seems fast"
        (when (require 'ruby-block nil t)
          (ruby-block-mode 1)))
      ;; flymake-ruby-mode
-     (add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
+     ;;(add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
      (add-hook 'ruby-mode-hook 'jkl/ruby-setup)))
+
+;; YARI
+
+(when (fboundp 'ido-ubiquitous-disable-in)
+  (ido-ubiquitous-disable-in yari)
+  (defadvice yari (around yari-disable-ido activate)
+    "Disable IDO read for yari"
+    (let ((ido-mode))
+      ad-do-it)))
 
 ;; got rid of rcodetools. It's in git history now
 
