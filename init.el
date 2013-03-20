@@ -176,10 +176,10 @@
                :features (loc-changes load-relative test-simple))
         (:name pkgbuild-mode
                :lazy t)
-        (:name org-mode
-               :url "https://github.com/jkl1337/org-mode"
-               :shallow nil
-               :checkout "flyspell")
+        ;; (:name org-mode
+        ;;        :url "https://github.com/jkl1337/org-mode"
+        ;;        :shallow nil
+        ;;        :checkout "flyspell")
         (:name yasnippet
                :url "https://github.com/jkl1337/yasnippet"
                :checkout "textmate")
