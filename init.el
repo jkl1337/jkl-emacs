@@ -362,6 +362,12 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; NXHTML
 (jkl/cs 'mumamo-chunk-coloring 10)
 
+(when (and (= emacs-major-version 24)
+           (>= emacs-minor-version 2))
+  (eval-after-load "mumamo"
+    '(setq mumamo-per-buffer-local-vars
+           (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
+
 ;;;; AUTO-COMPLETE
 
 (eval-after-load "auto-complete"
