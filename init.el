@@ -216,7 +216,7 @@
 
 (jkl/load-script "themes")
 (condition-case nil
-    (color-theme-cool-dark)
+    (load-theme "cool-dark" t)
   (error nil))
 
 ;;;; CUSTOM KEY BINDINGS
