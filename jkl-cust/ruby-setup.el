@@ -104,7 +104,7 @@ exec-to-string command, but it works and seems fast"
      (setq ruby-program "/usr/bin/ruby")
 
      (defun jkl/ruby-setup ()
-       (when (require 'rsense nil t)
+       (when (and nil (require 'rsense nil t))
          ;; the rsense "launcher" can only run with MRI ruby, because it has to fork
          ;; the proper config is handled by .rsense anyway
          (setq ac-sources
