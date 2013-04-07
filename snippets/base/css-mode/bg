@@ -1,4 +1,4 @@
-# name: background-color: ...
-# key: bg
+# -*- mode: snippet -*-
+#name : background
 # --
-background-color: #${1:DDD};
+background: $0;
