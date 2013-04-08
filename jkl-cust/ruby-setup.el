@@ -51,6 +51,7 @@
 
 (eval-after-load 'ruby-mode
   '(progn
+     (setq ruby-deep-indent-paren nil)
      (setq ruby-use-encoding-map nil)
      (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
      (define-key ruby-mode-map (kbd "C-M-h") 'backward-kill-word)))
@@ -117,12 +118,13 @@ exec-to-string command, but it works and seems fast"
 
 ;; YARI
 
-(when (fboundp 'ido-ubiquitous-disable-in)
-  (ido-ubiquitous-disable-in yari)
-  (defadvice yari (around yari-disable-ido activate)
-    "Disable IDO read for yari"
-    (let ((ido-mode))
-      ad-do-it)))
+(eval-after-load "ido-ubiquitous"
+  '(progn
+     (ido-ubiquitous-disable-in yari)
+     (defadvice yari (around yari-disable-ido activate)
+       "Disable IDO read for yari"
+       (let ((ido-mode))
+         ad-do-it))))
 
 ;; got rid of rcodetools. It's in git history now
 
