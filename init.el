@@ -214,9 +214,9 @@
     (byte-recompile-directory (concat jkl/my-dir "contrib/") 0)
   (error (warn "Failed to byte-compile some contrib files")))
 
-(jkl/load-script "themes")
+(jkl/cs 'custom-theme-directory (concat jkl/my-dir "themes/"))
 (condition-case nil
-    (load-theme "cool-dark" t)
+    (load-theme 'cool-dark t nil)
   (error nil))
 
 ;;;; CUSTOM KEY BINDINGS
