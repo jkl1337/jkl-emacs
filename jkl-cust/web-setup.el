@@ -26,7 +26,8 @@
          ))))
 
 (when (require 'multi-web-mode nil t)
-  (setq mweb-default-major-mode 'nxml-mode)
+  (setq mweb-default-major-mode 'html-mode)
+  ;; (setq mweb-default-major-mode 'nxml-mode)
   (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
                     (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
                     (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
@@ -35,3 +36,4 @@
 
   (add-hook 'nxml-mode-hook (lambda ()
                               (add-to-list (make-local-variable 'yas-extra-modes) 'html-mode))))
+
