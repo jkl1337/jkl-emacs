@@ -133,21 +133,6 @@ CUSTOMIZED-VALUE property"
   (add-to-list list-var elt append compare-fn)
   (put list-var 'customized-value (list (custom-quote (eval list-var)))))
 
-(defun jkl/set-face (&rest args)
-  (while args
-    (let ((face (car args))
-          (spec (cadr args)))
-      ;;(put face 'customized-face spec)
-      (face-spec-set face spec))
-    (setq args (cddr args))))
-
-(defun jkl/set-face-colors (fl)
-  (dolist (faceelt fl)
-    (let ((attr-funcs '(set-face-foreground set-face-background))
-          (face (car faceelt)))
-      (dolist (color (cdr faceelt))
-        (funcall (car attr-funcs) face color)))))
-
 (defun jkl/remove-or-convert-trailing-ctl-M ()
   "Propose to remove or convert trailing ^M from a file."
   (interactive)
