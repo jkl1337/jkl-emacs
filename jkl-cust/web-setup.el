@@ -13,6 +13,7 @@
 
 (eval-after-load "js2-mode"
   '(progn
+     (jkl/cs 'js2-basic-offset 2)
      (add-hook 'js2-post-parse-callbacks 'jkl-js2-parse-global-vars-decls)
 
      (defun jkl-js2-parse-global-vars-decls ()
