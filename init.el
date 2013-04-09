@@ -67,14 +67,10 @@
 ;;                   (background-color . "black")
 ;;                   (cursor-color . "white")))
 
-(jkl/set-face-colors
- '((font-lock-type-face "yellow")
-   (font-lock-string-face "orange")
-   (font-lock-constant-face "plum1")
-   (font-lock-variable-name-face "LightGoldenrod")
-   (font-lock-function-name-face "turquoise1")
-   (font-lock-keyword-face "LightSkyBlue")
-   (font-lock-comment-face "Chocolate1")))
+(jkl/cs 'custom-theme-directory (concat jkl/my-dir "themes/"))
+(condition-case nil
+    (load-theme 'cool-dark t nil)
+  (error nil))
 
 (defun jkl/font-switch ()
   (interactive)
@@ -194,7 +190,6 @@
                  flymake ; wow, the emacs one is a POS
                  flymake-coffee flymake-haml flymake-shell
                  ido-ubiquitous
-                 color-theme color-theme-tangotango
                  bbdb org-mode ;; bbdb-vcard
                  rainbow-mode rainbow-delimiters
                  markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
@@ -213,11 +208,6 @@
 (condition-case nil
     (byte-recompile-directory (concat jkl/my-dir "contrib/") 0)
   (error (warn "Failed to byte-compile some contrib files")))
-
-(jkl/cs 'custom-theme-directory (concat jkl/my-dir "themes/"))
-(condition-case nil
-    (load-theme 'cool-dark t nil)
-  (error nil))
 
 ;;;; CUSTOM KEY BINDINGS
 (defalias 'qrr 'query-replace-regexp)
