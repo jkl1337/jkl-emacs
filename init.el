@@ -195,6 +195,7 @@
                  markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
                  flymake-easy
                  rcodetools rvm rdebug rinari rhtml-mode rspec-mode yari rsense ruby-block
+                 robe-mode
                  yaml-mode haml-mode
                  emms xcscope slime yasnippet csharp-mode jquery-doc
                  html5 js2-mode multi-web-mode coffee-mode

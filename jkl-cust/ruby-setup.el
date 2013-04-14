@@ -104,6 +104,8 @@ exec-to-string command, but it works and seems fast"
   '(progn
      (setq ruby-program "/usr/bin/ruby")
 
+
+     (add-hook 'ruby-mode-hook 'robe-mode)
      (defun jkl/ruby-setup ()
        (when (and nil (require 'rsense nil t))
          ;; the rsense "launcher" can only run with MRI ruby, because it has to fork
