@@ -38,6 +38,22 @@
 
      (add-hook 'ruby-mode-hook 'flymake-ruby-maybe-enable)))
 
+(defun jruby-dev ()
+  (interactive)
+  (let ((jruby-opts (getenv "JRUBY_OPTS"))
+        (opts "-J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1"))
+    (unless (and jruby-opts (string-match (regexp-quote opts) jruby-opts))
+      (setenv "JRUBY_OPTS" (concat jruby-opts " " opts)))))
+
+(defun jruby-toggle-os ()
+  (interactive)
+  (let* ((jruby-opts (getenv "JRUBY_OPTS"))
+        (opts "-X+O")
+        (rx-opts (regexp-quote opts)))
+    (if (and jruby-opts (string-match rx-opts jruby-opts))
+      (setenv "JRUBY_OPTS" (replace-regexp-in-string rx-opts " " jruby-opts))
+      (setenv "JRUBY_OPTS" (mapconcat 'identity (list jruby-opts opts) " ")))))
+
 
 (global-rinari-mode 1)
 
