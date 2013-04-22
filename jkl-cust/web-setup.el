@@ -1,4 +1,10 @@
-(add-hook 'css-mode-hook 'flymake-mode-on)
+;;(add-hook 'css-mode-hook 'flymake-mode-on)
+
+(eval-after-load "scss-mode"
+  ;; For now I don't use, and this prevents annoying warnings
+  '(progn
+     (setq flymake-allowed-file-name-masks
+           (remove '(".+\\.scss$" flymake-scss-init) flymake-allowed-file-name-masks))))
 
 (eval-after-load "coffee-mode"
   '(progn
@@ -11,20 +17,10 @@
        (define-key map (kbd "s-M-r") 'coffee-repl))
      (jkl/cs 'coffee-tab-width 2)))
 
-(eval-after-load "js2-mode"
+(eval-after-load "js3-mode"
   '(progn
-     (jkl/cs 'js2-basic-offset 2)
-     (add-hook 'js2-post-parse-callbacks 'jkl-js2-parse-global-vars-decls)
-
-     (defun jkl-js2-parse-global-vars-decls ()
-       (let ((btext (replace-regexp-in-string
-                     ": *true" " "
-                     (replace-regexp-in-string "[\n\t ]+" " " (buffer-substring-no-properties 1 (buffer-size)) t t))))
-         (setq js2-additional-externs
-               (split-string
-                (if (string-match "/\\* *global *\\(.*?\\) *\\*/" btext) (match-string-no-properties 1 btext) "")
-                " *, *" t))
-         ))))
+     (set-default js3-indent-on-enter-key t)
+     (set-default js3-enter-indents-newline t)))
 
 (when (require 'multi-web-mode nil t)
   (setq mweb-default-major-mode 'html-mode)
@@ -37,4 +33,11 @@
 
   (add-hook 'nxml-mode-hook (lambda ()
                               (add-to-list (make-local-variable 'yas-extra-modes) 'html-mode))))
+
+
+
+
+
+
+
 

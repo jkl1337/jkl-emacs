@@ -75,7 +75,7 @@
 (jkl/cs 'rinari-major-modes '(dired-mode ruby-mode css-mode sass-mode
                                          rhtml-mode
                                          eruby-html-mumamo-mode eruby-nxhtml-mumamo-mode
-                                         coffee-mode js2-mode javascript-mode
+                                         coffee-mode js3-mode javascript-mode
                                          yaml-mode
                                          dired-mode))
 

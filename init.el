@@ -176,9 +176,8 @@
         ;;        :url "https://github.com/jkl1337/org-mode"
         ;;        :shallow nil
         ;;        :checkout "flyspell")
-        (:name yasnippet
-               :url "https://github.com/jkl1337/yasnippet"
-               :checkout "textmate")
+        (:name zencoding-mode
+               :pkgname "smihica/zencoding")
       ))
 
 (progn
@@ -192,13 +191,14 @@
                  ido-ubiquitous
                  bbdb org-mode ;; bbdb-vcard
                  rainbow-mode rainbow-delimiters
+                 zencoding-mode
                  markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
                  flymake-easy
-                 rcodetools rvm rdebug rinari rhtml-mode rspec-mode yari rsense ruby-block
+                 rcodetools rbenv rvm rdebug rinari rhtml-mode rspec-mode yari rsense ruby-block
                  robe-mode
                  yaml-mode haml-mode
                  emms xcscope slime yasnippet csharp-mode jquery-doc
-                 html5 js2-mode multi-web-mode coffee-mode
+                 html5 js3-mode multi-web-mode coffee-mode
                  sass-mode scss-mode
                  magit
                  clojure-mode nrepl ac-nrepl paredit))
