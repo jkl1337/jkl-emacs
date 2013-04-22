@@ -178,6 +178,9 @@
         ;;        :checkout "flyspell")
         (:name zencoding-mode
                :pkgname "smihica/zencoding")
+        (:name rbenv
+               :post-init (when (file-exists-p rbenv-global-version-file)
+                            (rbenv-use-global)))
       ))
 
 (progn
