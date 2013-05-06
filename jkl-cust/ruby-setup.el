@@ -3,6 +3,28 @@
   '(progn
      (require 'flymake-easy)
 
+     (defadvice ruby-indent-line (after line-up-args activate)
+       (let (indent prev-indent arg-indent)
+         (save-excursion
+           (back-to-indentation)
+           (when (zerop (car (syntax-ppss)))
+             (setq indent (current-column))
+             (skip-chars-backward " \t\n")
+             (when (eq ?, (char-before))
+               (ruby-backward-sexp)
+               (back-to-indentation)
+               (setq prev-indent (current-column))
+               (skip-syntax-forward "w_.")
+               (skip-chars-forward " ")
+               (setq arg-indent (current-column)))))
+         (when prev-indent
+           (let ((offset (- (current-column) indent)))
+             (cond ((< indent prev-indent)
+                    (indent-line-to prev-indent))
+                   ((= indent prev-indent)
+                    (indent-line-to arg-indent)))
+             (when (> offset 0) (forward-char offset))))))
+
      (defconst flymake-ruby-err-line-patterns
        '(("^\\(?:SyntaxError in \\)?\\(.*\.rb\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)))
 
@@ -14,7 +36,6 @@
        "Construct a command that flymake can use to check ruby source."
        (append flymake-ruby-executable (list "-w" "-c" filename)))
 
-;;;###autoload
      (defun flymake-ruby-load ()
        "Configure flymake mode to check the current buffer's ruby syntax."
        (interactive)
@@ -30,7 +51,8 @@
        (when (and buffer-file-name
                   (file-writable-p (file-name-directory buffer-file-name))
                   (file-writable-p buffer-file-name))
-         (when (string-match "/jruby-" (car rvm--current-ruby-binary-path))
+         (when (and (car rvm--current-ruby-binary-path)
+                    (string-match "/jruby-" (car rvm--current-ruby-binary-path)))
            (set (make-local-variable 'flymake-ruby-executable) (list "jruby" "--ng")))
          (flymake-ruby-load)))
 

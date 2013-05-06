@@ -21,6 +21,7 @@
 (eval-after-load "js3-mode"
   '(progn
      (set-default 'js3-indent-on-enter-key t)
+     (set-default 'js3-mirror-mode t)
      (set-default 'js3-enter-indents-newline t)))
 
 (when (require 'multi-web-mode nil t)

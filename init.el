@@ -524,7 +524,7 @@ try disabling Alt-Tab switching and see how that works")
         'ido-max-prospects 10
         'ido-default-file-method 'selected-window)
 
-(electric-pair-mode 1)
+;;(electric-pair-mode 1)
 
 ;; unique buffer names
 (require 'uniquify)
