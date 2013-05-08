@@ -24,6 +24,10 @@
      (set-default 'js3-mirror-mode t)
      (set-default 'js3-enter-indents-newline t)))
 
+(eval-after-load "js2-mode"
+  '(progn
+     (set-default 'js2-basic-offset 4)))
+
 (when (require 'multi-web-mode nil t)
   (setq mweb-default-major-mode 'html-mode)
   ;; (setq mweb-default-major-mode 'nxml-mode)

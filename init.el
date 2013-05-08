@@ -201,7 +201,7 @@
                  robe-mode
                  yaml-mode haml-mode
                  emms xcscope slime yasnippet csharp-mode jquery-doc
-                 html5 js3-mode multi-web-mode coffee-mode
+                 html5 js2-mode multi-web-mode coffee-mode
                  sass-mode scss-mode
                  magit
                  clojure-mode nrepl ac-nrepl paredit))
