@@ -401,6 +401,7 @@ try disabling Alt-Tab switching and see how that works")
 ;; javascript mode - inhibit nxhtml
 (setq auto-mode-alist
       (remove '("\\.js\\'" . javascript-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 ;;;; JDEE
 

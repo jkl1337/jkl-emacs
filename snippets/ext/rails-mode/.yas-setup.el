@@ -198,6 +198,8 @@
 
 (defun yas-rails-activate-maybe ()
   (when (and yas-minor-mode
+             (let ((ext (file-name-extension (or (buffer-file-name) ""))))
+               (member ext '("rb" "erb")))
              (yas-rails-root))
     (add-to-list (make-local-variable 'yas-extra-modes) 'rails-mode)))
 
