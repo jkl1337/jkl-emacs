@@ -66,7 +66,7 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
     (setq ac-sources (cons 'ac-source-jropemacs-dot ac-sources)))
   (setq ac-sources (cons 'ac-source-yasnippet ac-sources)))
 
-(add-hook 'python-mode-hook 'ac-python-mode-setup)
+;;(add-hook 'python-mode-hook 'ac-python-mode-setup)
 
 ;; Automatically open rope project if it exists
 (defun jkl-setup-rope ()
@@ -75,7 +75,7 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
         ((file-exists-p "../.ropeproject")
          (rope-open-project (concat default-directory "..")))))
 
-(add-hook 'python-mode-hook 'jkl-setup-rope)
+;; (add-hook 'python-mode-hook 'jkl-setup-rope)
 
 ;; CEDET causes this to load, and it really fouls shit up for me with python-mode
 ;; Leave out for now
