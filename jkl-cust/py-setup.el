@@ -23,7 +23,7 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
     (let ((process-connection-type nil))
       ad-do-it)))
 
-(jkl/cs 'py-load-pymacs-p t)
+;;(jkl/cs 'py-load-pymacs-p t)
 (jkl/cs 'py-install-directory (concat el-get-dir "python-mode"))
 ;;(jkl/cs 'py-complete-function 'py-complete-completion-at-point)
 
@@ -84,7 +84,7 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 (define-key python-mode-map "\C-ci" 'rope-auto-import)
 (define-key python-mode-map "\C-c\C-d" 'rope-show-calltip)
 
-(pymacs-load "ropemacs" "rope-")
+;;(pymacs-load "ropemacs" "rope-")
 (jkl/cs 'ropemacs-guess-project t
         'ropemacs-codeassist-maxfixes 3
         'ropemacs-enable-autoimport t

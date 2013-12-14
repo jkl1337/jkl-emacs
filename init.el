@@ -181,21 +181,28 @@
         (:name rbenv
                :post-init (when (file-exists-p rbenv-global-version-file)
                             (rbenv-use-global)))
+        (:name sass-mode
+               :post-init (progn))
+        (:name jedi
+               :build (`(,(append '("make" "requirements")
+                                  (when (file-executable-p "/usr/bin/python2")
+                                      '("PYTHON=python2" "VIRTUALENV=VIRTUALENV_SYSTEM_SITE_PACKAGES=true virtualenv2 --python=python2"))))))
       ))
 
 (progn
   (setq jkl/el-get-packages
         '(el-get fuzzy popup cedet escreen auto-complete
-                 smex
+                 smex jedi
+                 php-mode
                  helm projectile undo-tree
                  pkgbuild-mode
                  flymake ; wow, the emacs one is a POS
-                 flymake-coffee flymake-haml flymake-shell
-                 ido-ubiquitous
+                 flymake-coffee flymake-haml flymake-shell flymake-sass
+                 flx ido-ubiquitous
                  bbdb org-mode ;; bbdb-vcard
                  rainbow-mode rainbow-delimiters
                  zencoding-mode
-                 markdown-mode nxhtml org-mode pylookup python-mode pymacs lua-mode
+                 markdown-mode org-mode pylookup python-mode pymacs lua-mode
                  flymake-easy
                  rcodetools rbenv rvm rdebug rinari rhtml-mode rspec-mode yari rsense ruby-block
                  robe-mode
@@ -204,7 +211,7 @@
                  html5 js2-mode multi-web-mode coffee-mode
                  sass-mode scss-mode
                  magit
-                 clojure-mode nrepl ac-nrepl paredit))
+                 cider paredit))
 
   (el-get 'sync jkl/el-get-packages))
 
@@ -274,6 +281,9 @@ try disabling Alt-Tab switching and see how that works")
   (auto-complete-mode 1))
 (add-hook 'ielm-mode-hook 'ielm-auto-complete)
 
+;;; GOLANG stuff
+(require 'go-autocomplete)
+
 ;;;; MARKDOWN-MODE
 (autoload 'markdown-mode "markdown-mode")
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
@@ -336,6 +346,7 @@ try disabling Alt-Tab switching and see how that works")
 ;; TODO: save file location
 (projectile-global-mode)
 
+(helm-match-plugin-mode 1)
 (require 'helm-projectile)
 
 (defun jkl/helm ()
@@ -433,12 +444,13 @@ try disabling Alt-Tab switching and see how that works")
                           'ispell-program-name hunspell-program))))))
 (blink-cursor-mode 0)
 
-;;; TRAMP administer root files on remote hosts
-(jkl/add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:luebsj@%h:"))
-(jkl/add-to-list 'tramp-default-proxies-alist '((regexp-quote (system-name)) nil nil))
-
 (eval-after-load "tramp"
   '(progn
+     ;;; TRAMP administer root files on remote hosts
+     (jkl/add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:luebsj@%h:"))
+     (jkl/add-to-list 'tramp-default-proxies-alist '("\\`y26.*" "\\`root\\'" "/ssh:luebsjk@%h:"))
+     (jkl/add-to-list 'tramp-default-proxies-alist '((regexp-quote (system-name)) nil nil))
+
      (defvar sudo-tramp-prefix
        "/sudo:"
        (concat "Prefix to be used by sudo commands when building tramp path "))
@@ -518,12 +530,14 @@ try disabling Alt-Tab switching and see how that works")
 (ido-mode 1)
 (ido-ubiquitous-mode 1)
 (ido-ubiquitous-disable-in execute-extended-command)
+(flx-ido-mode 1)
 (jkl/cs 'ido-enable-prefix nil
         'ido-enable-flex-matching t
         'ido-create-new-buffer 'always
-        'ido-use-filename-at-point 'guess
+        'ido-use-filename-at-point nil
         'ido-max-prospects 10
-        'ido-default-file-method 'selected-window)
+        'ido-default-file-method 'selected-window
+        'ido-use-faces nil)
 
 ;;(electric-pair-mode 1)
 
