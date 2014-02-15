@@ -92,7 +92,7 @@
 ;;                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (require 'cask "~/.cask/cask.el")
-(cask-initialize (concat jkl/git-repo-dir "/.cask"))
+(cask-initialize jkl/my-dir)
 (require 'pallet)
 
 ;; TODO: change the eval-after-load for modes to <mode>-autoloads
