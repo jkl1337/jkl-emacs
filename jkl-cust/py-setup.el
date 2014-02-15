@@ -27,17 +27,12 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 (jkl/cs 'py-install-directory (concat el-get-dir "python-mode"))
 ;;(jkl/cs 'py-complete-function 'py-complete-completion-at-point)
 
-(jkl/cs 'py-complete-function 'auto-complete) ;; FRAGILE; python-mode is a POS and will load py-load-pycomplete
+;;(jkl/cs 'py-complete-function 'auto-complete) ;; FRAGILE; python-mode is a POS and will load py-load-pycomplete
 (require 'python-mode)
 (when (and (fboundp 'py-load-pycomplete)
            (eq system-type 'darwin))
   (py-load-pycomplete))
 
-(when (file-executable-p "/usr/bin/python2")
-  (setq pymacs-python-command "python2")
-  (jkl/cs 'py-shell-name "python2")
-  (jkl/cs 'py-python-command "python2")
-  (jkl/cs 'py-default-interpreter "python2"))
 
 ;; Auto-complete with rope
 (defun ac-ropemacs-document (item)

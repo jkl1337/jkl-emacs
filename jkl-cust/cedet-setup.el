@@ -1,5 +1,5 @@
 
-(semantic-mode 1)
+(semantic-mode 0)
 (jkl/cs 'semantic-new-buffer-setup-functions
         '((emacs-lisp-mode . semantic-default-elisp-setup)
           (html-mode . semantic-default-html-setup)

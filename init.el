@@ -84,6 +84,19 @@
 
 ;; END appearance / basic faces
 
+;;;; PACKAGE
+
+(defvar org-list-allow-alphabetical nil)
+;; (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+;;                          ("marmalade" . "http://marmalade-repo.org/packages/")
+;;                          ("melpa" . "http://melpa.milkbox.net/packages/")))
+
+(require 'cask "~/.cask/cask.el")
+(cask-initialize)
+(require 'pallet)
+
+;; TODO: change the eval-after-load for modes to <mode>-autoloads
+
 ;;;; EL-GET
 (jkl/cs 'el-get-dir (expand-file-name (concat user-emacs-directory "el-get/")))
 (jkl/cs 'el-get-git-shallow-clone t)
@@ -95,13 +108,14 @@
 
 ;;; Bootstrap el-get
 (add-to-list 'load-path (concat el-get-dir "el-get"))
-(unless (require 'el-get nil t)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
+(when nil
+  (unless (require 'el-get nil t)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+      (let (el-get-master-branch)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))))
 
 ;;; el-get recipes
 (setq el-get-sources
@@ -187,19 +201,27 @@
                :build (`(,(append '("make" "requirements")
                                   (when (file-executable-p "/usr/bin/python2")
                                       '("PYTHON=python2" "VIRTUALENV=VIRTUALENV_SYSTEM_SITE_PACKAGES=true virtualenv2 --python=python2"))))))
+
+        (:name rinari
+               :load-path (".")
+               :submodule nil
+               :depends (inf-ruby))
       ))
 
 (progn
   (setq jkl/el-get-packages
         '(el-get fuzzy popup cedet escreen auto-complete
                  smex jedi
+                 scala-mode2 ensime
                  php-mode
                  helm projectile undo-tree
                  pkgbuild-mode
+                 web-mode
                  flymake ; wow, the emacs one is a POS
                  flymake-coffee flymake-haml flymake-shell flymake-sass
                  flx ido-ubiquitous
-                 bbdb org-mode ;; bbdb-vcard
+                 go-eldoc
+                 bbdb
                  rainbow-mode rainbow-delimiters
                  zencoding-mode
                  markdown-mode org-mode pylookup python-mode pymacs lua-mode
@@ -213,9 +235,10 @@
                  magit
                  cider paredit))
 
-  (el-get 'sync jkl/el-get-packages))
+  ;(el-get 'sync jkl/el-get-packages)
+)
 
-(byte-recompile-directory (jkl/script-dir) 0)
+;;(byte-recompile-directory (jkl/script-dir) 0)
 (condition-case nil
     (byte-recompile-directory (concat jkl/my-dir "contrib/") 0)
   (error (warn "Failed to byte-compile some contrib files")))
@@ -281,8 +304,24 @@ try disabling Alt-Tab switching and see how that works")
   (auto-complete-mode 1))
 (add-hook 'ielm-mode-hook 'ielm-auto-complete)
 
+;;; PYTHON and elpy
+;; (when (file-executable-p "/usr/bin/python2")
+;;   (setq pymacs-python-command "python2")
+;;   (jkl/cs 'python-shell-interpreter "python2")
+;;   (jkl/cs 'py-shell-name "python2")
+;;   (jkl/cs 'py-python-command "python2")
+;;   (jkl/cs 'py-default-interpreter "python2"))
+
+(pyvenv-mode 1)
+(let ((penv (concat (getenv "HOME") "/python2/play")))
+  (when (file-directory-p penv)
+    (pyvenv-activate penv)))
+(elpy-enable)
+(elpy-use-ipython)
+
 ;;; GOLANG stuff
 (require 'go-autocomplete)
+(require 'go-flymake)
 
 ;;;; MARKDOWN-MODE
 (autoload 'markdown-mode "markdown-mode")
@@ -331,6 +370,9 @@ try disabling Alt-Tab switching and see how that works")
 
 (global-set-key (kbd "C-M-r") 'org-capture)
 
+;;;; WEB-MODE
+(add-to-list 'auto-mode-alist '("\\.j2\\'" . web-mode))
+
 ;;;; GTAGS
 (autoload 'gtags-mode "gtags" "" t)
 
@@ -339,7 +381,6 @@ try disabling Alt-Tab switching and see how that works")
   (jkl/cs 'yas-snippet-dirs (list (concat snippets-dir "base") (concat snippets-dir "ext"))
           'yas-prompt-functions '(yas-dropdown-prompt
                                   yas-ido-prompt yas-completing-prompt yas-no-prompt)))
-
 (yas-global-mode)
 
 ;;;; PROJECTILE (ELPA)
@@ -364,24 +405,13 @@ try disabling Alt-Tab switching and see how that works")
         (helm-mini))
     (error (helm-mini))))
 
-;;;; NXHTML
-(jkl/cs 'mumamo-chunk-coloring 10)
-
-(when (and (= emacs-major-version 24)
-           (>= emacs-minor-version 2))
-  (eval-after-load "mumamo"
-    '(setq mumamo-per-buffer-local-vars
-           (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
-
 ;;;; AUTO-COMPLETE
+
+(add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
+(global-auto-complete-mode 1)
 
 (eval-after-load "auto-complete"
   '(progn
-     ;; HACK! This is for ropemacs when the project is not already created
-     ;; without this the keymap will not allow one to do anything
-     (defadvice read-directory-name (before read-directory-cancel-ac-timer activate)
-       (ac-cancel-timer))
-
      (define-key ac-completing-map "\C-n" 'ac-next)
      (define-key ac-completing-map "\C-p" 'ac-previous)
      (define-key ac-completing-map "\M-n" nil)
@@ -529,11 +559,13 @@ try disabling Alt-Tab switching and see how that works")
 
 (ido-mode 1)
 (ido-ubiquitous-mode 1)
-(ido-ubiquitous-disable-in execute-extended-command)
+(add-to-list 'ido-ubiquitous-command-overrides
+             '(disable exact "yari"))
+
 (flx-ido-mode 1)
 (jkl/cs 'ido-enable-prefix nil
-        'ido-enable-flex-matching t
         'ido-create-new-buffer 'always
+        'ido-enable-flex-matching t
         'ido-use-filename-at-point nil
         'ido-max-prospects 10
         'ido-default-file-method 'selected-window
@@ -635,6 +667,10 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; EDIFF
 (jkl/cs 'ediff-window-setup-function 'ediff-setup-windows-plain)
 
+;;; SQL customization
+(add-hook 'sql-mode-hook '(lambda ()
+                            (abbrev-mode 1)))
+
 ;;; ELISP customization
 
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
@@ -658,7 +694,6 @@ try disabling Alt-Tab switching and see how that works")
  "cedet-setup"
  "ruby-setup"
  "doc-setup"
- "py-setup"
  "prog-setup"
  "clisp-setup"
  "clojure-setup"

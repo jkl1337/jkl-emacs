@@ -1,4 +1,5 @@
 
+(global-rbenv-mode 1)
 (eval-after-load 'ruby-mode
   '(progn
      (require 'flymake-easy)
@@ -51,9 +52,10 @@
        (when (and buffer-file-name
                   (file-writable-p (file-name-directory buffer-file-name))
                   (file-writable-p buffer-file-name))
-         (when (and (car rvm--current-ruby-binary-path)
-                    (string-match "/jruby-" (car rvm--current-ruby-binary-path)))
-           (set (make-local-variable 'flymake-ruby-executable) (list "jruby" "--ng")))
+         (let (rbenv-version (getenv rbenv-version-environment-variable))
+           (when (and rbenv-version
+                      (string-match "/jruby-" (getenv rbenv-version-environment-variable)))
+             (set (make-local-variable 'flymake-ruby-executable) (list "jruby" "--ng"))))
          (flymake-ruby-load)))
 
      (provide 'flymake-ruby)
@@ -145,28 +147,11 @@ exec-to-string command, but it works and seems fast"
 
      (add-hook 'ruby-mode-hook 'robe-mode)
      (defun jkl/ruby-setup ()
-       (when (and nil (require 'rsense nil t))
-         ;; the rsense "launcher" can only run with MRI ruby, because it has to fork
-         ;; the proper config is handled by .rsense anyway
-         (setq ac-sources
-               (append '(ac-source-yasnippet ac-source-rsense) ac-sources)))
+       (setq ac-sources
+             (append '(ac-source-yasnippet ac-source-robe) ac-sources))
        (when (require 'ruby-block nil t)
          (ruby-block-mode 1)))
-     ;; flymake-ruby-mode
-     ;;(add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
      (add-hook 'ruby-mode-hook 'jkl/ruby-setup)))
-
-;; YARI
-
-(eval-after-load "ido-ubiquitous"
-  '(progn
-     (ido-ubiquitous-disable-in yari)
-     (defadvice yari (around yari-disable-ido activate)
-       "Disable IDO read for yari"
-       (let ((ido-mode))
-         ad-do-it))))
-
-;; got rid of rcodetools. It's in git history now
 
 (require 'url)
 
