@@ -1,5 +1,7 @@
 
-(global-rbenv-mode 1)
+(when (executable-find "rbenv")
+  (global-rbenv-mode 1))
+
 (eval-after-load 'ruby-mode
   '(progn
      (require 'flymake-easy)
@@ -54,7 +56,7 @@
                   (file-writable-p buffer-file-name))
          (let (rbenv-version (getenv rbenv-version-environment-variable))
            (when (and rbenv-version
-                      (string-match "/jruby-" (getenv rbenv-version-environment-variable)))
+                      (string-match "/jruby-" rbenv-version))
              (set (make-local-variable 'flymake-ruby-executable) (list "jruby" "--ng"))))
          (flymake-ruby-load)))
 

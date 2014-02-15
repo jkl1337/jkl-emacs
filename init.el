@@ -56,7 +56,7 @@
 
 (let ((font (cond
              (jkl/mswinp "Lucida Console-9")
-             ((eq 'darwin system-type) "Monaco-9")
+             ((eq 'darwin system-type) "Monaco-12")
              (t "Monaco-8"))))
   (when font (set-face-attribute 'default nil :font font)))
 
@@ -92,7 +92,7 @@
 ;;                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (require 'cask "~/.cask/cask.el")
-(cask-initialize)
+(cask-initialize (concat jkl/git-repo-dir "/.cask"))
 (require 'pallet)
 
 ;; TODO: change the eval-after-load for modes to <mode>-autoloads
@@ -313,14 +313,16 @@ try disabling Alt-Tab switching and see how that works")
 ;;   (jkl/cs 'py-default-interpreter "python2"))
 
 (pyvenv-mode 1)
-(let ((penv (concat (getenv "HOME") "/python2/play")))
+(let ((penv (concat (getenv "HOME") "/python/play")))
   (when (file-directory-p penv)
     (pyvenv-activate penv)))
 (elpy-enable)
 (elpy-use-ipython)
 
 ;;; GOLANG stuff
-(require 'go-autocomplete)
+
+(when (executable-find "gocode")
+      (require 'go-autocomplete))
 (require 'go-flymake)
 
 ;;;; MARKDOWN-MODE
