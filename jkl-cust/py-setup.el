@@ -28,39 +28,6 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 ;;(jkl/cs 'py-complete-function 'py-complete-completion-at-point)
 
 ;;(jkl/cs 'py-complete-function 'auto-complete) ;; FRAGILE; python-mode is a POS and will load py-load-pycomplete
-(require 'python-mode)
-(when (and (fboundp 'py-load-pycomplete)
-           (eq system-type 'darwin))
-  (py-load-pycomplete))
-
-
-;; Auto-complete with rope
-(defun ac-ropemacs-document (item)
-  (car item))
-
-(defun ac-ropemacs-candidates ()
-  (save-match-data
-    (loop for (name doc type) in (ignore-errors (rope-extended-completions))
-          unless (string-match ":" name)
-          collect (list (concat ac-prefix name) doc))))
-
-(ac-define-source jropemacs-dot
-  '((candidates . ac-ropemacs-candidates)
-    (document . ac-ropemacs-document)
-    (symbol . "p")
-    (prefix . c-dot)
-    (requires . 0)
-    (cache)))
-
-;; (set 'ac-sources (cons 'ac-source-jropemacs-dot (remq 'ac-source-pycomplete ac-sources))))
-
-(defun ac-python-mode-setup ()
-  (setq ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
-  (unless (or (eq system-type 'darwin)
-              (bound-and-true-p jkl/inhibit-rope-completion))
-    (setq ac-sources (cons 'ac-source-jropemacs-dot ac-sources)))
-  (setq ac-sources (cons 'ac-source-yasnippet ac-sources)))
-
 ;;(add-hook 'python-mode-hook 'ac-python-mode-setup)
 
 ;; Automatically open rope project if it exists

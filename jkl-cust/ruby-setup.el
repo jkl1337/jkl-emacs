@@ -149,8 +149,6 @@ exec-to-string command, but it works and seems fast"
 
      (add-hook 'ruby-mode-hook 'robe-mode)
      (defun jkl/ruby-setup ()
-       (setq ac-sources
-             (append '(ac-source-yasnippet ac-source-robe) ac-sources))
        (when (require 'ruby-block nil t)
          (ruby-block-mode 1)))
      (add-hook 'ruby-mode-hook 'jkl/ruby-setup)))

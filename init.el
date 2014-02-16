@@ -92,7 +92,7 @@
 ;;                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (require 'cask "~/.cask/cask.el")
-(cask-initialize jkl/my-dir)
+(cask-initialize)
 (require 'pallet)
 
 ;; TODO: change the eval-after-load for modes to <mode>-autoloads
@@ -322,8 +322,9 @@ try disabling Alt-Tab switching and see how that works")
 ;;; GOLANG stuff
 
 (when (executable-find "gocode")
-      (require 'go-autocomplete))
-(require 'go-flymake)
+  (require 'company-go))
+(when (executable-find "goflymake")
+  (require 'go-flymake))
 
 ;;;; MARKDOWN-MODE
 (autoload 'markdown-mode "markdown-mode")
@@ -408,9 +409,12 @@ try disabling Alt-Tab switching and see how that works")
     (error (helm-mini))))
 
 ;;;; AUTO-COMPLETE
-
-(add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
-(global-auto-complete-mode 1)
+(jkl/cs 'company-tooltip-limit 20
+	'company-minimum-prefix-length 0
+	'company-idle-delay .3
+	'company-echo-delay 0
+	'company-global-modes '(not python-mode))
+(global-company-mode 1)
 
 (eval-after-load "auto-complete"
   '(progn
