@@ -155,7 +155,12 @@
 
 ;;;; CUSTOM KEY BINDINGS
 (defalias 'qrr 'query-replace-regexp)
+(require 'transpose-frame)
+
 (define-key jkl/func-map "c" 'recompile)
+(define-key jkl/func-map "f" 'flop-frame)
+(define-key jkl/func-map "F" 'flip-frame)
+(define-key jkl/func-map "r" 'rotate-frame)
 
 ;; Flymake error nav
 (defun jkl/flymake-show-next ()
