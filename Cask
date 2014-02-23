@@ -2,6 +2,9 @@
 (source marmalade)
 (source gnu)
 
+(depends-on "ag")
+(depends-on "ample-theme")
+(depends-on "apache-mode")
 (depends-on "auto-complete")
 (depends-on "bbdb")
 (depends-on "cask")
@@ -37,6 +40,7 @@
 (depends-on "gtags")
 (depends-on "haml-mode")
 (depends-on "helm")
+(depends-on "helm-ag")
 (depends-on "helm-projectile")
 (depends-on "highlight-indentation")
 (depends-on "ido-ubiquitous")

@@ -411,7 +411,7 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; AUTO-COMPLETE
 (jkl/cs 'company-tooltip-limit 20
 	'company-minimum-prefix-length 0
-	'company-idle-delay .3
+	'company-idle-delay .5
 	'company-echo-delay 0
 	'company-global-modes '(not python-mode))
 (global-company-mode 1)
@@ -578,6 +578,7 @@ try disabling Alt-Tab switching and see how that works")
         'ido-use-faces nil)
 
 ;;(electric-pair-mode 1)
+(electric-indent-mode 1)
 
 ;; unique buffer names
 (require 'uniquify)
