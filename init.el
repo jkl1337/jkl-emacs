@@ -68,9 +68,9 @@
 ;;                   (cursor-color . "white")))
 
 (jkl/cs 'custom-theme-directory (concat jkl/my-dir "themes/"))
-(condition-case nil
-    (load-theme 'cool-dark t nil)
-  (error nil))
+;; (condition-case nil
+;;     (load-theme 'cool-dark t nil)
+;;   (error nil))
 
 (defun jkl/font-switch ()
   (interactive)
@@ -94,6 +94,8 @@
 (require 'cask "~/.cask/cask.el")
 (cask-initialize)
 (require 'pallet)
+
+(load-theme 'monokai t)
 
 ;; TODO: change the eval-after-load for modes to <mode>-autoloads
 
@@ -210,7 +212,7 @@ try disabling Alt-Tab switching and see how that works")
                      ac-source-words-in-same-mode-buffers))
   (add-to-list 'ac-modes 'inferior-emacs-lisp-mode)
   (auto-complete-mode 1))
-(add-hook 'ielm-mode-hook 'ielm-auto-complete)
+;;(add-hook 'ielm-mode-hook 'ielm-auto-complete)
 
 ;;; PYTHON and elpy
 ;; (when (file-executable-p "/usr/bin/python2")
@@ -318,8 +320,8 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; AUTO-COMPLETE
 (jkl/cs 'company-tooltip-limit 20
-	'company-minimum-prefix-length 0
-	'company-idle-delay .5
+	'company-minimum-prefix-length 2
+	'company-idle-delay .4
 	'company-echo-delay 0
 	'company-global-modes '(not python-mode))
 (global-company-mode 1)
