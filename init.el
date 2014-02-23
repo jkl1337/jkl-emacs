@@ -120,60 +120,14 @@
 ;;; el-get recipes
 (setq el-get-sources
       '(
-	(:name auto-complete
-	       :post-init (progn
-			    (require 'auto-complete)
-			    (add-to-list 'ac-dictionary-directories
-					 (expand-file-name "dict"))
-			    (require 'auto-complete-config)
-			    (ac-config-default)))
 	(:name cedet
 	       :build/darwin `("touch `find . -name Makefile`"
 			       ,(concat "make EMACS=" el-get-emacs))
                :load-path nil)
-        (:name pymacs
-               :build `(,(concat "make"
-                                 (if (file-executable-p "/usr/bin/python2")
-                                     " PYTHON=python2" " "))))
         (:name ecb
                :depends cedet
                :build `(("make" "CEDET=" ,(concat el-get-dir "cedet/lisp/common/")
                          ,(concat "EMACS=" (shell-quote-argument el-get-emacs)))))
-        (:name python-mode
-               ;; :url "https://github.com/jkl1337/python-mode.git"
-               :depends highlight-indentation
-               :compile ("python-mode.el" "python-extended-executes.el" "test/doctest-mode.el"
-                         "completion" "extensions")
-               )
-
-        (:name lua-mode
-               :branch "jkl_indent"
-               :url "https://github.com/jkl1337/lua-mode")
-        (:name markdown-mode
-               :url "https://github.com/milkypostman/markdown-mode")
-
-	(:name csharp-mode
-	       :website "https://code.google.com/p/csharpmode/"
-	       :description "This is a mode for editing C# in emacs. It's based on cc-mode, v5.30.3 and above."
-	       :type git
-               :url "luebsj@luebsphoto.com:/srv/git/csharp-mode.git"
-	       :features csharp-mode)
-	(:name html5
-               :after (eval-after-load
-                          "rng-loc"
-                        '(add-to-list 'rng-schema-locating-files (concat el-get-dir "html5/schemas.xml"))))
-        (:name "multi-web-mode"
-               :pkgname "fgallina/multi-web-mode")
-        (:name flymake-easy
-               :type github
-               :description "Helpers for easily building Emacs flymake checkers"
-               :pkgname "purcell/flymake-easy"
-               :website "http://github.com/purcell/flymake-easy")
-        (:name rsense
-               :build ("ant")
-               :compile "etc"
-               :post-init (progn
-                            (setq rsense-home (concat el-get-dir "rsense"))))
 
         (:name test-simple
                :description "Unit Test Framework for Emacs Lisp"
@@ -184,57 +138,11 @@
         (:name dbgr
                :depends (test-simple load-relative loc-changes)
                :features (loc-changes load-relative test-simple))
-        (:name pkgbuild-mode
-               :lazy t)
-        ;; (:name org-mode
-        ;;        :url "https://github.com/jkl1337/org-mode"
-        ;;        :shallow nil
-        ;;        :checkout "flyspell")
-        (:name zencoding-mode
-               :pkgname "smihica/zencoding")
-        (:name rbenv
-               :post-init (when (file-exists-p rbenv-global-version-file)
-                            (rbenv-use-global)))
-        (:name sass-mode
-               :post-init (progn))
-        (:name jedi
-               :build (`(,(append '("make" "requirements")
-                                  (when (file-executable-p "/usr/bin/python2")
-                                      '("PYTHON=python2" "VIRTUALENV=VIRTUALENV_SYSTEM_SITE_PACKAGES=true virtualenv2 --python=python2"))))))
-
-        (:name rinari
-               :load-path (".")
-               :submodule nil
-               :depends (inf-ruby))
-      ))
+               :depends (inf-ruby)))
 
 (progn
   (setq jkl/el-get-packages
-        '(el-get fuzzy popup cedet escreen auto-complete
-                 smex jedi
-                 scala-mode2 ensime
-                 php-mode
-                 helm projectile undo-tree
-                 pkgbuild-mode
-                 web-mode
-                 flymake ; wow, the emacs one is a POS
-                 flymake-coffee flymake-haml flymake-shell flymake-sass
-                 flx ido-ubiquitous
-                 go-eldoc
-                 bbdb
-                 rainbow-mode rainbow-delimiters
-                 zencoding-mode
-                 markdown-mode org-mode pylookup python-mode pymacs lua-mode
-                 flymake-easy
-                 rcodetools rbenv rvm rdebug rinari rhtml-mode rspec-mode yari rsense ruby-block
-                 robe-mode
-                 yaml-mode haml-mode
-                 emms xcscope slime yasnippet csharp-mode jquery-doc
-                 html5 js2-mode multi-web-mode coffee-mode
-                 sass-mode scss-mode
-                 magit
-                 cider paredit))
-
+        '(el-get cedet))
   ;(el-get 'sync jkl/el-get-packages)
 )
 
