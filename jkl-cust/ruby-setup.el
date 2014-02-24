@@ -150,7 +150,8 @@ exec-to-string command, but it works and seems fast"
      (add-hook 'ruby-mode-hook 'robe-mode)
      (defun jkl/ruby-setup ()
        (when (require 'ruby-block nil t)
-         (ruby-block-mode 1)))
+         (ruby-block-mode 1))
+       (add-to-list (make-local-variable 'company-backends) 'company-robe))
      (add-hook 'ruby-mode-hook 'jkl/ruby-setup)))
 
 (require 'url)
