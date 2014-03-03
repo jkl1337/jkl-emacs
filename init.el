@@ -241,6 +241,8 @@ try disabling Alt-Tab switching and see how that works")
 (when (executable-find "goflymake")
   (require 'go-flymake))
 
+(add-hook 'go-mode-hook 'go-eldoc-setup)
+
 ;;;; MARKDOWN-MODE
 (autoload 'markdown-mode "markdown-mode")
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
