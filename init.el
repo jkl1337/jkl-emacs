@@ -242,6 +242,8 @@ try disabling Alt-Tab switching and see how that works")
   (require 'go-flymake))
 
 (add-hook 'go-mode-hook 'go-eldoc-setup)
+(add-hook 'go-mode-hook '(lambda ()
+                           (set (make-local-variable 'company-backends) (cons 'company-go company-backends))))
 
 ;;;; MARKDOWN-MODE
 (autoload 'markdown-mode "markdown-mode")
