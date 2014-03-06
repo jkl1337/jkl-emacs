@@ -1,11 +1,7 @@
-;;(add-hook 'css-mode-hook 'flymake-mode-on)
-
 (eval-after-load "scss-mode"
   ;; For now I don't use, and this prevents annoying warnings
   '(progn
-     (setq scss-compile-at-save nil)
-     (setq flymake-allowed-file-name-masks
-           (remove '(".+\\.scss$" flymake-scss-init) flymake-allowed-file-name-masks))))
+     (setq scss-compile-at-save nil)))
 
 (eval-after-load "coffee-mode"
   '(progn

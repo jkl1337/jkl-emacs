@@ -162,19 +162,9 @@
 (define-key jkl/func-map "F" 'flip-frame)
 (define-key jkl/func-map "r" 'rotate-frame)
 
-;; Flymake error nav
-(defun jkl/flymake-show-next ()
-  (interactive)
-  (flymake-goto-next-error)
-  (flymake-display-err-menu-for-current-line))
-
-(defun jkl/flymake-show-prev ()
-  (interactive)
-  (flymake-goto-next-error)
-  (flymake-display-err-menu-for-current-line))
-
-(define-key jkl/func-map "5" 'jkl/flymake-show-next)
-(define-key jkl/func-map "6" 'jkl/flymake-show-prev)
+(global-flycheck-mode)
+(define-key jkl/func-map "5" 'flycheck-previous-error)
+(define-key jkl/func-map "6" 'flycheck-next-error)
 
 ;;;; Command/environment customizations
 ;; Windows msys shell
@@ -240,8 +230,6 @@ try disabling Alt-Tab switching and see how that works")
 
 (when (executable-find "gocode")
   (require 'company-go))
-;; (when (executable-find "goflymake")
-;;   (require 'go-flymake))
 
 (add-hook 'go-mode-hook 'go-eldoc-setup)
 (add-hook 'go-mode-hook '(lambda ()

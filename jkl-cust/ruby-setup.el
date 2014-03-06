@@ -4,7 +4,6 @@
 
 (eval-after-load 'ruby-mode
   '(progn
-     (require 'flymake-easy)
 
      (defadvice ruby-indent-line (after line-up-args activate)
        (let (indent prev-indent arg-indent)
@@ -26,43 +25,7 @@
                     (indent-line-to prev-indent))
                    ((= indent prev-indent)
                     (indent-line-to arg-indent)))
-             (when (> offset 0) (forward-char offset))))))
-
-     (defconst flymake-ruby-err-line-patterns
-       '(("^\\(?:SyntaxError in \\)?\\(.*\.rb\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)))
-
-     (defvar flymake-ruby-executable (list "ruby")
-       "The ruby executable to use for syntax checking.")
-
-     ;; Invoke ruby with '-c' to get syntax checking
-     (defun flymake-ruby-command (filename)
-       "Construct a command that flymake can use to check ruby source."
-       (append flymake-ruby-executable (list "-w" "-c" filename)))
-
-     (defun flymake-ruby-load ()
-       "Configure flymake mode to check the current buffer's ruby syntax."
-       (interactive)
-       (flymake-easy-load 'flymake-ruby-command
-                          flymake-ruby-err-line-patterns
-                          'tempdir
-                          "rb"))
-
-     (add-to-list 'flymake-allowed-file-name-masks  '(".+\\.rb$" nil))
-     (add-to-list 'flymake-allowed-file-name-masks '("Rakefile$" nil))
-
-     (defun flymake-ruby-maybe-enable ()
-       (when (and buffer-file-name
-                  (file-writable-p (file-name-directory buffer-file-name))
-                  (file-writable-p buffer-file-name))
-         (let (rbenv-version (getenv rbenv-version-environment-variable))
-           (when (and rbenv-version
-                      (string-match "/jruby-" rbenv-version))
-             (set (make-local-variable 'flymake-ruby-executable) (list "jruby" "--ng"))))
-         (flymake-ruby-load)))
-
-     (provide 'flymake-ruby)
-
-     (add-hook 'ruby-mode-hook 'flymake-ruby-maybe-enable)))
+             (when (> offset 0) (forward-char offset))))))))
 
 (defun jruby-dev ()
   (interactive)
