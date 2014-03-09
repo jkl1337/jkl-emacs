@@ -1,3 +1,4 @@
+# -*- mode: snippet -*-
 # name: puts "DEBUG: var=value"
 # key: dbg
 # --

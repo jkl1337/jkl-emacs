@@ -1,3 +1,4 @@
+# -*- mode: snippet -*-
 # name: def_delegator :@target, :method_name
 # key: deleg
 # --
