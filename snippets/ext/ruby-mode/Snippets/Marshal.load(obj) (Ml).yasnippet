@@ -5,4 +5,4 @@
 # name: Marshal.load(obj)
 ## condition: "
 # --
-File.open(${1:"${2:path/to/file}.dump"}) { |${3:file}| Marshal.load(${3:file}) }
+File.open(${1:"${2:path/to/file}.dump"}, "rb") { |${3:file}| Marshal.load(${3:file}) }

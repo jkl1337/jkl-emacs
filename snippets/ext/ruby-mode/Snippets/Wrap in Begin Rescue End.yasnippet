@@ -8,6 +8,6 @@
 # --
 begin
 	${3:`yas-selected-text`}
-rescue ${1:Exception} => ${2:e}
+rescue ${1:Exception}${2:$(and (yas-text) " => ")}${2:e}
 	$0
 end
