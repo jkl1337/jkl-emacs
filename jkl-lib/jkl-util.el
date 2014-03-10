@@ -16,6 +16,15 @@
       (unless (yas-expand)
         (ac-expand))))))
 
+(defun jkl/ei--no-indent (c)
+  "Electric indent function that always suppresses."
+  'no-indent)
+
+(defun jkl/supress-electric-indent ()
+  "Add local hook that suppresses electric-indent-mode in the buffer.
+This should be unnecessary come emacs 24.4"
+  (add-hook 'electric-indent-functions 'jkl/ei-no-indent nil 'local))
+
 (defun jkl/path-or-nil (path)
   "Return PATH if path exists, otherwise nil"
   (when (file-exists-p path) path))

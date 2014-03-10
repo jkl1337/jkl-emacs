@@ -217,10 +217,15 @@ try disabling Alt-Tab switching and see how that works")
 ;;   (jkl/cs 'py-python-command "python2")
 ;;   (jkl/cs 'py-default-interpreter "python2"))
 
+(add-hook 'yaml-mode-hook 'jkl/supress-electric-indent)
+
 (pyvenv-mode 1)
 (let ((penv (concat (getenv "HOME") "/python/play")))
   (when (file-directory-p penv)
     (pyvenv-activate penv)))
+(remove-hook 'python-mode-hook 'wisent-python-default-setup)
+(add-hook 'python-mode-hook 'jkl/supress-electric-indent)
+
 (jkl/cs 'elpy-default-minor-modes '(eldoc-mode highlight-indentation-mode yas-minor-mode auto-complete-mode)
         'elpy-rpc-backend "jedi")
 (elpy-enable)
@@ -264,6 +269,7 @@ try disabling Alt-Tab switching and see how that works")
 ;;; FIXME: See about lazy
 
 (jkl/cs 'major-mode 'text-mode)
+
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 (global-set-key "\C-cl" 'org-store-link)
