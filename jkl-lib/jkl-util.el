@@ -20,10 +20,10 @@
   "Electric indent function that always suppresses."
   'no-indent)
 
-(defun jkl/supress-electric-indent ()
+(defun jkl/suppress-electric-indent ()
   "Add local hook that suppresses electric-indent-mode in the buffer.
 This should be unnecessary come emacs 24.4"
-  (add-hook 'electric-indent-functions 'jkl/ei-no-indent nil 'local))
+  (add-hook 'electric-indent-functions 'jkl/ei--no-indent nil 'local))
 
 (defun jkl/path-or-nil (path)
   "Return PATH if path exists, otherwise nil"
@@ -169,5 +169,12 @@ CUSTOMIZED-VALUE property"
   "Define a list of keys for keymap"
   (dolist (key-def key-defs)
     (define-key keymap (car key-def) (cdr key-def))))
+
+(defun jkl/copy-line (arg)
+     "Copy lines (as many as prefix argument) in the kill ring"
+      (interactive "p")
+      (kill-ring-save (line-beginning-position)
+                      (line-beginning-position (+ 1 arg)))
+      (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
 
 (provide 'jkl-util)

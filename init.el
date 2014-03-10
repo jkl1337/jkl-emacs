@@ -217,14 +217,14 @@ try disabling Alt-Tab switching and see how that works")
 ;;   (jkl/cs 'py-python-command "python2")
 ;;   (jkl/cs 'py-default-interpreter "python2"))
 
-(add-hook 'yaml-mode-hook 'jkl/supress-electric-indent)
+(add-hook 'yaml-mode-hook 'jkl/suppress-electric-indent)
 
 (pyvenv-mode 1)
 (let ((penv (concat (getenv "HOME") "/python/play")))
   (when (file-directory-p penv)
     (pyvenv-activate penv)))
 (remove-hook 'python-mode-hook 'wisent-python-default-setup)
-(add-hook 'python-mode-hook 'jkl/supress-electric-indent)
+(add-hook 'python-mode-hook 'jkl/suppress-electric-indent)
 
 (jkl/cs 'elpy-default-minor-modes '(eldoc-mode highlight-indentation-mode yas-minor-mode auto-complete-mode)
         'elpy-rpc-backend "jedi")
@@ -439,6 +439,7 @@ try disabling Alt-Tab switching and see how that works")
 (define-key 'help-command "\C-f" 'find-function)
 (define-key 'help-command "\C-v" 'find-variable)
 
+(global-set-key "\C-c\C-k" 'jkl/copy-line)
 ;; SMEX!
 
 (global-set-key (kbd "M-x") 'smex)

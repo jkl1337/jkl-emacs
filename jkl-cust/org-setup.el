@@ -5,7 +5,7 @@
             (auto-fill-mode 1)
             (flyspell-mode 1)))
 
-(add-hook 'org-mode-hook 'jkl/supress-electric-indent)
+(add-hook 'org-mode-hook 'jkl/suppress-electric-indent)
 
 (defun jkl/lst-org-files (dir)
   (if (file-directory-p dir)

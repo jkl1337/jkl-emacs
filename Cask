@@ -1,6 +1,7 @@
 (source melpa)
 (source marmalade)
 (source gnu)
+(source org)
 
 (depends-on "ag")
 (depends-on "ample-zen-theme")
@@ -90,3 +91,4 @@
 (depends-on "yaml-mode")
 (depends-on "yari")
 (depends-on "yasnippet")
+(depends-on "org-plus-contrib")
