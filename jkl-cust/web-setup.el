@@ -24,7 +24,7 @@
   '(progn
      (set-default 'js2-basic-offset 4)))
 
-(when (require 'multi-web-mode nil t)
+(when (and nil (require 'multi-web-mode nil t))
   (setq mweb-default-major-mode 'html-mode)
   ;; (setq mweb-default-major-mode 'nxml-mode)
   (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
