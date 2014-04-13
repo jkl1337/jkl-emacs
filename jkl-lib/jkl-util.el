@@ -1,5 +1,18 @@
 (eval-when-compile (require 'cl))
 
+(defun jkl/isearch-goto-match-beginning ()
+  (when (and isearch-forward (not isearch-mode-end-hook-quit)) (goto-char isearch-other-end)))
+
+(defun jkl/find-function-or-variable-at-point ()
+  "Find the function/variable at point in the other window."
+  (interactive)
+  (let ((var (variable-at-point))
+        (func (function-called-at-point)))
+    (cond
+     ((not (eq var 0)) (find-variable-other-window var))
+     (func (find-function-other-window func))
+     (t (message "Neither function nor variable found!")))))
+
 (defadvice yas--expand-or-prompt-for-template (before yas-ac-abort-before-expand activate)
   (ac-abort))
 

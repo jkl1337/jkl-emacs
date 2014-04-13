@@ -57,7 +57,7 @@
 (let ((font (cond
              (jkl/mswinp "Lucida Console-9")
              ((eq 'darwin system-type) "Monaco-12")
-             (t "Monaco-8"))))
+             (t "Source Code Pro-8"))))
   (when font (set-face-attribute 'default nil :font font)))
 
 ;; (jkl/cs 'default-frame-alist
@@ -291,6 +291,9 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; WEB-MODE
 (add-to-list 'auto-mode-alist '("\\.j2\\'" . web-mode))
 
+;;;; SKEWER-MODE
+(skewer-setup)
+
 ;;;; GTAGS
 (autoload 'gtags-mode "gtags" "" t)
 
@@ -300,6 +303,11 @@ try disabling Alt-Tab switching and see how that works")
           'yas-prompt-functions '(yas-dropdown-prompt
                                   yas-ido-prompt yas-completing-prompt yas-no-prompt)))
 (yas-global-mode)
+
+;;;; ISEARCH
+
+(add-hook 'isearch-mode-end-hook 'jkl/isearch-goto-match-beginning)
+(define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
 
 ;;;; PROJECTILE (ELPA)
 ;; TODO: save file location
@@ -435,6 +443,7 @@ try disabling Alt-Tab switching and see how that works")
      (global-set-key "\C-x!" 'sudo-reopen-file)))
 
 ;;; GLOBAL settings
+
 (find-function-setup-keys)
 (define-key 'help-command "\C-f" 'find-function)
 (define-key 'help-command "\C-v" 'find-variable)
@@ -489,12 +498,15 @@ try disabling Alt-Tab switching and see how that works")
         'ido-create-new-buffer 'always
         'ido-enable-flex-matching t
         'ido-use-filename-at-point nil
-        'ido-max-prospects 10
+        'ido-max-prospects 32
         'ido-default-file-method 'selected-window
         'ido-use-faces nil)
 
 ;;(electric-pair-mode 1)
 (electric-indent-mode 1)
+
+(require 'iedit)
+(setq iedit-unmatched-lines-invisible-default t)
 
 ;; unique buffer names
 (require 'uniquify)
@@ -595,6 +607,9 @@ try disabling Alt-Tab switching and see how that works")
                             (abbrev-mode 1)))
 
 ;;; ELISP customization
+
+(define-key emacs-lisp-mode-map (kbd "M-.") 'jkl/find-function-or-variable-at-point)
+(define-key lisp-interaction-mode-map (kbd "M-.") 'jkl/find-function-or-variable-at-point)
 
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
