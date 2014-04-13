@@ -1,7 +1,7 @@
-(source org)
-(source melpa)
-(source marmalade)
 (source gnu)
+(source marmalade)
+(source melpa)
+(source org)
 
 (depends-on "ag")
 (depends-on "ample-zen-theme")
@@ -62,7 +62,6 @@
 (depends-on "markdown-mode")
 (depends-on "markdown-mode+")
 (depends-on "monokai-theme")
-(depends-on "multi-web-mode")
 (depends-on "nginx-mode")
 (depends-on "nose")
 (depends-on "org-plus-contrib")

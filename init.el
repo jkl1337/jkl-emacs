@@ -253,10 +253,6 @@ try disabling Alt-Tab switching and see how that works")
       nil
     ad-do-it))
 
-;;;; nxml
-(eval-after-load "rng-loc"
-  '(add-to-list 'rng-schema-locating-files (concat jkl/my-dir "schemas/schemas.xml")))
-
 ;;;; EMMS
 ;;; FIXME: Reconfigure EMMS
 
@@ -331,7 +327,7 @@ try disabling Alt-Tab switching and see how that works")
         (helm-mini))
     (error (helm-mini))))
 
-;;;; AUTO-COMPLETE
+;;;; COMPANY-MODE
 (jkl/cs 'company-tooltip-limit 20
 	'company-minimum-prefix-length 2
 	'company-idle-delay .4
@@ -358,21 +354,78 @@ try disabling Alt-Tab switching and see how that works")
 
 (jkl/cs 'ac-quick-help-delay 1.0)
 
-;;(ac-set-trigger-key "\s-\t")
-(defun ac-js2-mode-setup ()
-  (setq ac-sources (append '(ac-source-yasnippet) ac-sources)))
-(add-hook 'js2-mode-hook 'ac-js2-mode-setup)
+;;;; SCSS-MODE
+(eval-after-load "scss-mode"
+  ;; For now I don't use, and this prevents annoying warnings
+  '(progn
+     (setq scss-compile-at-save nil)))
 
-(defun jkl/ac-objc-mode-setup ()
-  (when (require 'auto-complete-clang nil t)
-    (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources))))
-;;(add-hook 'objc-mode-hook 'jkl/ac-objc-mode-setup)
+;;;; JS2-MODE
 
 ;; javascript mode - inhibit nxhtml
 (setq auto-mode-alist
       (remove '("\\.js\\'" . javascript-mode) auto-mode-alist))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
+(eval-after-load "js2-mode"
+  '(progn
+     (set-default 'js2-basic-offset 4)))
+
+;;;; NXML-MODE
+(eval-after-load "rng-loc"
+  '(add-to-list 'rng-schema-locating-files (concat jkl/my-dir "schemas/schemas.xml")))
+
+(add-hook 'nxml-mode-hook (lambda ()
+                            (add-to-list (make-local-variable 'yas-extra-modes) 'html-mode))))
+
+;;;; COFFEE-MODE
+(eval-after-load "coffee-mode"
+  '(progn
+     (let ((map coffee-mode-map))
+       (mapcan (lambda (ks)
+                 (define-key map (read-kbd-macro ks) nil))
+               '("A-r" "A-R" "A-M-r"))
+       (define-key map (kbd "s-r") 'coffee-compile-buffer)
+       (define-key map (kbd "s-R") 'coffee-compile-region)
+       (define-key map (kbd "s-M-r") 'coffee-repl))
+     (jkl/cs 'coffee-tab-width 2)))
+
+;;;; W3M
+(jkl/cs
+ 'w3m-use-favicon nil
+ 'w3m-default-display-inline-images t
+ 'w3m-search-word-at-point nil
+ 'w3m-use-cookies t
+ 'w3m-home-page "http://www.google.com/"
+ 'w3m-cookie-accept-bad-cookies t
+ 'w3m-session-crash-recovery nil)
+
+(eval-after-load "w3m"
+  (add-hook 'w3m-mode-hook
+            (function (lambda ()
+                        (set-face-foreground 'w3m-anchor-face "LightSalmon")
+                        (set-face-foreground 'w3m-arrived-anchor-face "LightGoldenrod")
+                        (load "w3m-lnum")
+                        (defun w3m-go-to-linknum ()
+                          "Turn on link numbers and ask for one to go to."
+                          (interactive)
+                          (let ((active w3m-lnum-mode))
+                            (when (not active) (w3m-lnum-mode))
+                            (unwind-protect
+                                (w3m-move-numbered-anchor (read-number "Anchor number: "))
+                              (when (not active) (w3m-lnum-mode))))
+                          (w3m-view-this-url)
+                          )
+                        (define-key w3m-mode-map "f" 'w3m-go-to-linknum)
+                        (define-key w3m-mode-map "L" 'w3m-lnum-mode)
+                        (define-key w3m-mode-map "o" 'w3m-previous-anchor)
+                        (define-key w3m-mode-map "i" 'w3m-next-anchor)
+                        (define-key w3m-mode-map "w" 'w3m-search-new-session)
+                        (define-key w3m-mode-map "p" 'w3m-previous-buffer)
+                        (define-key w3m-mode-map "n" 'w3m-next-buffer)
+                        (define-key w3m-mode-map "z" 'w3m-delete-buffer)
+                        (define-key w3m-mode-map "O" 'w3m-goto-new-session-url)
+                        ))))
 ;;;; JDEE
 
 ;;;; CUSTOM MAJOR MODES
@@ -635,7 +688,6 @@ try disabling Alt-Tab switching and see how that works")
  "prog-setup"
  "clisp-setup"
  "clojure-setup"
- "web-setup"
  )
 
 (setq custom-file (concat jkl/my-dir "custom.el"))
