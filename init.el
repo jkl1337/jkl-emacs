@@ -60,12 +60,8 @@
              (t "Source Code Pro-8"))))
   (when font (set-face-attribute 'default nil :font font)))
 
-;; (jkl/cs 'default-frame-alist
-;;                 '((width . 140)
-;;                   (height . 50)
-;;                   (foreground-color . "green")
-;;                   (background-color . "black")
-;;                   (cursor-color . "white")))
+;; maximize current frames and all future frames
+(modify-all-frames-parameters '((fullscreen . maximized)))
 
 (jkl/cs 'custom-theme-directory (concat jkl/my-dir "themes/"))
 ;; (condition-case nil
@@ -95,7 +91,7 @@
 (cask-initialize)
 (require 'pallet)
 
-(load-theme 'monokai t)
+(load-theme 'grandshell t)
 
 ;; TODO: change the eval-after-load for modes to <mode>-autoloads
 
@@ -286,6 +282,13 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; WEB-MODE
 (add-to-list 'auto-mode-alist '("\\.j2\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+(add-hook 'html-mode-hook 'emmet-mode)
+(add-hook 'css-mode-hook 'emmet-mode)
+(eval-after-load "web-mode"
+  '(progn
+     (add-hook 'web-mode-hook 'emmet-mode)))
 
 ;;;; SKEWER-MODE
 (skewer-setup)
@@ -376,7 +379,7 @@ try disabling Alt-Tab switching and see how that works")
   '(add-to-list 'rng-schema-locating-files (concat jkl/my-dir "schemas/schemas.xml")))
 
 (add-hook 'nxml-mode-hook (lambda ()
-                            (add-to-list (make-local-variable 'yas-extra-modes) 'html-mode))))
+                            (add-to-list (make-local-variable 'yas-extra-modes) 'html-mode)))
 
 ;;;; COFFEE-MODE
 (eval-after-load "coffee-mode"
