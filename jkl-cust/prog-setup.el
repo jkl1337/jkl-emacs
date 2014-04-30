@@ -48,63 +48,123 @@
   (define-key global-map [?\C-h ?\C-j] 'gtk-lookup-symbol))
 
 ;;;; C styles
-(defconst harris-c-style
-  '((c-tab-always-indent        . t)
-    (c-basic-offset             . 3)
+(jkl/cs 'c-default-style
+        '((java-mode . "java")
+          (awk-mode . "awk")
+          (other . "stroustrup")))
+
+;; Wrapper function needed for Emacs 21 and XEmacs (Emacs 22 offers the more
+;; elegant solution of composing a list of lineup functions or quantities with
+;; operators such as "add")
+(defun google-c-lineup-expression-plus-4 (langelem)
+  "Indents to the beginning of the current C expression plus 4 spaces.
+
+This implements title \"Function Declarations and Definitions\"
+of the Google C++ Style Guide for the case where the previous
+line ends with an open parenthese.
+
+\"Current C expression\", as per the Google Style Guide and as
+clarified by subsequent discussions, means the whole expression
+regardless of the number of nested parentheses, but excluding
+non-expression material such as \"if(\" and \"for(\" control
+structures.
+
+Suitable for inclusion in `c-offsets-alist'."
+  (save-excursion
+    (back-to-indentation)
+    ;; Go to beginning of *previous* line:
+    (c-backward-syntactic-ws)
+    (back-to-indentation)
+    (cond
+     ;; We are making a reasonable assumption that if there is a control
+     ;; structure to indent past, it has to be at the beginning of the line.
+     ((looking-at "\\(\\(if\\|for\\|while\\)\\s *(\\)")
+      (goto-char (match-end 1)))
+     ;; For constructor initializer lists, the reference point for line-up is
+     ;; the token after the initial colon.
+     ((looking-at ":\\s *")
+      (goto-char (match-end 0))))
+    (vector (+ 4 (current-column)))))
+
+(defconst google-c-style
+  `((c-recognize-knr-p . nil)
+    (c-enable-xemacs-performance-kludge-p . t) ; speed up indentation in XEmacs
+    (c-basic-offset . 2)
+    (indent-tabs-mode . nil)
     (c-comment-only-line-offset . 0)
-    (c-hanging-braces-alist     . (
-                                   (defun-open before after)
-                                   (defun-close before after)
-                                   (class-open before after)
-                                   (class-close before after)
-                                   (inline-open)
-                                   (inline-close)
-                                   (block-open before after)
-                                   (block-close . c-snug-do-while)
-                                   (brace-list-open before after)
-                                   (brace-list-close before)
-                                   (statement-case-open before after)
-                                   (substatement-open before after)
-                                   (extern-lang-open before after)
-                                   (namespace-open before after)
-                                   (module-open before after)
-                                   (composition-open before after)))
-
-    (c-hanging-colons-alist . ((member-init-intro after)
-                               (inher-intro)
-                               (case-label after)
+    (c-hanging-braces-alist . ((defun-open after)
+                               (defun-close before after)
+                               (class-open after)
+                               (class-close before after)
+                               (inexpr-class-open after)
+                               (inexpr-class-close before)
+                               (namespace-open after)
+                               (inline-open after)
+                               (inline-close before after)
+                               (block-open after)
+                               (block-close . c-snug-do-while)
+                               (extern-lang-open after)
+                               (extern-lang-close after)
+                               (statement-case-open after)
+                               (substatement-open after)))
+    (c-hanging-colons-alist . ((case-label)
                                (label after)
-                               (access-label after)))
-
-    (c-cleanup-list . (scope-operator
+                               (access-label after)
+                               (member-init-intro before)
+                               (inher-intro)))
+    (c-hanging-semi&comma-criteria
+     . (c-semi&comma-no-newlines-for-oneline-inliners
+        c-semi&comma-inside-parenlist
+        c-semi&comma-no-newlines-before-nonblanks))
+    (c-indent-comments-syntactically-p . t)
+    (comment-column . 40)
+    (c-indent-comment-alist . ((other . (space . 2))))
+    (c-cleanup-list . (brace-else-brace
+                       brace-elseif-brace
+                       brace-catch-brace
                        empty-defun-braces
-                       defun-close-semi))
-
-    (c-offsets-alist . ((arglist-close . c-lineup-arglist)
-                        (arglist-cont . c-lineup-argcont)
-                        (arglist-cont-nonempty . (c-lineup-arglist-operators c-lineup-argcont))
-                        (substatement-open . 0)
-                        (case-label . 0)
+                       defun-close-semi
+                       list-close-comma
+                       scope-operator))
+    (c-offsets-alist . ((arglist-intro google-c-lineup-expression-plus-4)
+                        (func-decl-cont . ++)
+                        (member-init-intro . ++)
+                        (inher-intro . ++)
+                        (comment-intro . 0)
+                        (arglist-close . c-lineup-arglist)
+                        (topmost-intro . 0)
                         (block-open . 0)
-                        (knr-argdecl-intro . -)))
-    (c-echo-syntactic-information-p . t)
-    (c-hanging-semi&comma-criteria . (c-semi&comma-no-newlines-before-nonblanks
-                                      c-semi&comma-inside-parenlist))
-    )
-  "Harris C(++)/IDL style")
+                        (inline-open . 0)
+                        (substatement-open . 0)
+                        (statement-cont
+                         .
+                         (,(when (fboundp 'c-no-indent-after-java-annotations)
+                             'c-no-indent-after-java-annotations)
+                          ,(when (fboundp 'c-lineup-assignments)
+                             'c-lineup-assignments)
+                          ++))
+                        (label . /)
+                        (case-label . +)
+                        (statement-case-open . +)
+                        (statement-case-intro . +) ; case w/o {
+                        (access-label . /)
+                        (innamespace . 0))))
+  "Google C/C++ Programming Style.")
 
-(c-add-style "harris" harris-c-style)
+(c-add-style "Google" google-c-style)
+
+(defun google-set-c-style ()
+  "Set the curernt buffer's c-style to C/C++ Programming
+Style. Meant to be added to `c-mode-hook'."
+  (interactive)
+  (make-local-variable 'c-tab-always-indent)
+  (setq c-tab-always-indent t)
+  (c-set-style "Google"))
+
 (c-add-style "windows"
              '("ellemtel"
                (indent-tabs-mode . nil)
                (c-basic-offset . 4)))
-
-(defun harris-c-mode ()
-  (interactive)
-  (c-set-style "harris")
-  (setq tab-width 4
-        indent-tabs-mode nil)
-  (c-toggle-auto-newline 1))
 
 (defun linux-c-mode ()
   "C mode with adjusted defaults for use with the Linux kernel."
