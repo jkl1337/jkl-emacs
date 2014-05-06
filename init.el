@@ -219,11 +219,12 @@ try disabling Alt-Tab switching and see how that works")
 (let ((penv (concat (getenv "HOME") "/python/play")))
   (when (file-directory-p penv)
     (pyvenv-activate penv)))
-(remove-hook 'python-mode-hook 'wisent-python-default-setup)
+
 (add-hook 'python-mode-hook 'jkl/suppress-electric-indent)
 
 (jkl/cs 'elpy-default-minor-modes '(eldoc-mode highlight-indentation-mode yas-minor-mode auto-complete-mode)
         'elpy-rpc-backend "jedi")
+(jkl/cs 'projectile-require-project-root nil)
 (elpy-enable)
 (elpy-use-ipython)
 
@@ -697,5 +698,8 @@ try disabling Alt-Tab switching and see how that works")
 (unless (file-exists-p custom-file)
   (with-temp-file custom-file))
 (load custom-file)
+
+;; FIXME: God damn CEDET. What a useless piece of shit.
+;; (remove-hook 'python-mode-hook 'wisent-python-default-setup)
 
 (server-start)
