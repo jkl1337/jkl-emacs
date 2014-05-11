@@ -230,6 +230,9 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;; GOLANG stuff
 
+(when (executable-find "goimports")
+  (jkl/cs 'gofmt-command "goimports"))
+
 (when (executable-find "gocode")
   (require 'company-go))
 
@@ -289,7 +292,11 @@ try disabling Alt-Tab switching and see how that works")
 (add-hook 'css-mode-hook 'emmet-mode)
 (eval-after-load "web-mode"
   '(progn
-     (add-hook 'web-mode-hook 'emmet-mode)))
+     (add-hook 'web-mode-hook 'emmet-mode)
+     (add-hook 'web-mode-hook
+               '(lambda ()
+                  (add-to-list (make-local-variable 'yas--extra-modes) 'html-mode)))
+))
 
 ;;;; SKEWER-MODE
 (skewer-setup)
@@ -379,7 +386,7 @@ try disabling Alt-Tab switching and see how that works")
 (eval-after-load "rng-loc"
   '(add-to-list 'rng-schema-locating-files (concat jkl/my-dir "schemas/schemas.xml")))
 
-(add-hook 'nxml-mode-hook (lambda ()
+(add-hook 'nxml-mode-hook '(lambda ()
                             (add-to-list (make-local-variable 'yas-extra-modes) 'html-mode)))
 
 ;;;; COFFEE-MODE
