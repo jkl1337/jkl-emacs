@@ -18,6 +18,7 @@
 (depends-on "csharp-mode")
 (depends-on "dash")
 (depends-on "dockerfile-mode")
+(depends-on "editorconfig")
 (depends-on "elpy")
 (depends-on "emmet-mode")
 (depends-on "epl")
