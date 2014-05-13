@@ -284,6 +284,11 @@ try disabling Alt-Tab switching and see how that works")
 
 (global-set-key (kbd "C-M-r") 'org-capture)
 
+;;;; EMMET-MODE
+;; TODO clean this up
+(eval-after-load "emmet-mode"
+  '(puthash "block" t (gethash "div" (gethash "tags" (gethash "html" emmet-preferences)))))
+
 ;;;; WEB-MODE
 (add-to-list 'auto-mode-alist '("\\.j2\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
