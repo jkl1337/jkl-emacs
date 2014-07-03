@@ -205,6 +205,9 @@ try disabling Alt-Tab switching and see how that works")
   (auto-complete-mode 1))
 ;;(add-hook 'ielm-mode-hook 'ielm-auto-complete)
 
+;;; AG - The silver searcher
+(jkl/cs 'ag-reuse-buffers t)
+
 ;;; PYTHON and elpy
 ;; (when (file-executable-p "/usr/bin/python2")
 ;;   (setq pymacs-python-command "python2")
@@ -221,6 +224,7 @@ try disabling Alt-Tab switching and see how that works")
     (pyvenv-activate penv)))
 
 (add-hook 'python-mode-hook 'jkl/suppress-electric-indent)
+(add-hook 'python-mode-hook 'jkl/set-ret-indent)
 
 (jkl/cs 'elpy-default-minor-modes '(eldoc-mode highlight-indentation-mode yas-minor-mode auto-complete-mode)
         'elpy-rpc-backend "jedi")
