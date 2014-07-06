@@ -208,7 +208,7 @@ try disabling Alt-Tab switching and see how that works")
 ;;; AG - The silver searcher
 (jkl/cs 'ag-reuse-buffers t)
 
-;;; PYTHON and elpy
+;;; PYTHON
 ;; (when (file-executable-p "/usr/bin/python2")
 ;;   (setq pymacs-python-command "python2")
 ;;   (jkl/cs 'python-shell-interpreter "python2")
@@ -218,19 +218,25 @@ try disabling Alt-Tab switching and see how that works")
 
 (add-hook 'yaml-mode-hook 'jkl/suppress-electric-indent)
 
-(pyvenv-mode 1)
+(require 'virtualenvwrapper)
+(venv-initialize-interactive-shells)
+(venv-initialize-eshell)
+(setq venv-location (concat (getenv "HOME") "/python/"))
+
 (let ((penv (concat (getenv "HOME") "/python/play")))
   (when (file-directory-p penv)
-    (pyvenv-activate penv)))
+    (venv-workon "play")))
 
 (add-hook 'python-mode-hook 'jkl/suppress-electric-indent)
+(add-hook 'python-mode-hook 'anaconda-mode)
 (add-hook 'python-mode-hook 'jkl/set-ret-indent)
 
-(jkl/cs 'elpy-default-minor-modes '(eldoc-mode highlight-indentation-mode yas-minor-mode auto-complete-mode)
-        'elpy-rpc-backend "jedi")
 (jkl/cs 'projectile-require-project-root nil)
-(elpy-enable)
-(elpy-use-ipython)
+
+(eval-after-load "company"
+  '(progn
+     (setq company-backends (delq 'company-ropemacs company-backends))
+     (add-to-list 'company-backends 'company-anaconda)))
 
 ;;; GOLANG stuff
 
@@ -350,9 +356,8 @@ try disabling Alt-Tab switching and see how that works")
 ;;;; COMPANY-MODE
 (jkl/cs 'company-tooltip-limit 20
 	'company-minimum-prefix-length 2
-	'company-idle-delay .4
-	'company-echo-delay 0
-	'company-global-modes '(not python-mode))
+	'company-idle-delay .2
+	'company-echo-delay 0)
 (global-company-mode 1)
 
 (eval-after-load "auto-complete"
