@@ -1,6 +1,7 @@
 (eval-when-compile (require 'cl))
 
 (defun jkl/set-ret-indent ()
+  (interactive)
   (local-set-key (kbd "RET") 'newline-and-indent))
 
 (defun jkl/isearch-goto-match-beginning ()
