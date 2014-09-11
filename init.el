@@ -57,7 +57,7 @@
 (let ((font (cond
              (jkl/mswinp "Lucida Console-9")
              ((eq 'darwin system-type) "Monaco-12")
-             (t "Source Code Pro-8"))))
+             (t "Source Code Pro-9.5"))))
   (when font (set-face-attribute 'default nil :font font)))
 
 ;; maximize current frames and all future frames
@@ -610,6 +610,17 @@ try disabling Alt-Tab switching and see how that works")
 ;;; show-trailing-whitespace
 (jkl/cs 'show-trailing-whitespace t)
 
+(defadvice show-paren-function
+      (after show-matching-paren-offscreen activate)
+      "If the matching paren is offscreen, show the matching line in the
+        echo area. Has no effect if the character before point is not of
+        the syntax class ')'."
+      (interactive)
+      (let* ((cb (char-before (point)))
+             (matching-text (and cb
+                                 (char-equal (char-syntax cb) ?\) )
+                                 (blink-matching-open))))
+        (when matching-text (message matching-text))))
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
