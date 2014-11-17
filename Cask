@@ -53,6 +53,7 @@
 (depends-on "impatient-mode")
 (depends-on "inf-ruby")
 (depends-on "inflections")
+(depends-on "jade-mode")
 (depends-on "jquery-doc")
 (depends-on "js2-mode")
 (depends-on "json")

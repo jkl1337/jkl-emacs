@@ -250,6 +250,11 @@ try disabling Alt-Tab switching and see how that works")
 (add-hook 'go-mode-hook '(lambda ()
                            (set (make-local-variable 'company-backends) (cons 'company-go company-backends))))
 
+;;; EDITORCONFIG
+(eval-after-load "editorconfig"
+  '(progn
+     (jkl/add-to-list 'edconf-indentation-alist '(jade-mode sws-tab-width))))
+
 ;;;; MARKDOWN-MODE
 (autoload 'markdown-mode "markdown-mode")
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
