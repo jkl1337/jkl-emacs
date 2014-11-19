@@ -232,6 +232,14 @@ try disabling Alt-Tab switching and see how that works")
 (add-hook 'python-mode-hook 'jkl/set-ret-indent)
 
 (jkl/cs 'projectile-require-project-root nil)
+;; disable projectile on tramp buffers
+(defadvice projectile-on (around exlude-tramp activate)
+    (unless  (--any? (and it (file-remote-p it))
+        (list
+            (buffer-file-name)
+            list-buffers-directory
+            default-directory))
+    ad-do-it))
 
 (eval-after-load "company"
   '(progn

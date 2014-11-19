@@ -17,8 +17,8 @@
      (func (find-function-other-window func))
      (t (message "Neither function nor variable found!")))))
 
-(defadvice yas--expand-or-prompt-for-template (before yas-ac-abort-before-expand activate)
-  (ac-abort))
+;; (defadvice yas--expand-or-prompt-for-template (before yas-ac-abort-before-expand activate)
+;;   (ac-abort))
 
 ;; The following must be named ac- to prevent auto-complete post-command-hook from
 ;; terminating. ac-compatible-packages-regexp could be modified but this way is safer.
