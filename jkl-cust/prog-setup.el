@@ -191,12 +191,13 @@ Style. Meant to be added to `c-mode-hook'."
 
 (c-add-style "vhs-cc-style" jkl/cc-style)
 
-;;; GTAGS
-(jkl/cs 'gtags-suggested-key-mapping t)
-(let ((en-gtags #'(lambda ()
-                    (gtags-mode 1))))
-  (add-hook 'c++-mode-hook en-gtags)
-  (add-hook 'c-mode-hook en-gtags))
+;;; GGTAGS
+(let ((en-ggtags #'(lambda ()
+                    (ggtags-mode 1))))
+  (add-hook 'c++-mode-hook en-ggtags)
+  (add-hook 'c-mode-hook en-ggtags)
+  (add-hook 'java-mode-hook en-ggtags)
+  (add-hook 'rust-mode-hook en-ggtags))
 
 (add-hook 'c-mode-common-hook
           '(lambda ()
