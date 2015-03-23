@@ -349,7 +349,6 @@ try disabling Alt-Tab switching and see how that works")
 ;; TODO: save file location
 (projectile-global-mode)
 
-(helm-match-plugin-mode 1)
 (require 'helm-projectile)
 
 (defun jkl/helm ()
