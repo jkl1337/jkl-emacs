@@ -108,6 +108,7 @@
 (depends-on "shut-up")
 (depends-on "simple-httpd")
 (depends-on "skewer-mode")
+(depends-on "slim-mode")
 (depends-on "smartparens")
 (depends-on "smex")
 (depends-on "sws-mode")
