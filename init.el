@@ -702,7 +702,7 @@ try disabling Alt-Tab switching and see how that works")
 (put 'dired-find-alternate-file 'disabled nil)
 
 ;;;; EDIFF
-(jkl/cs 'ediff-window-setup-function 'ediff-setup-windows-plain)
+(jkl/cs 'ediff-split-window-function 'split-window-horizontally)
 
 ;;; SQL customization
 (add-hook 'sql-mode-hook '(lambda ()
