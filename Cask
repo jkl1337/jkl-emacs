@@ -1,5 +1,5 @@
 (source gnu)
-(source marmalade)
+(source "marmalade" "http://arch.johnluebs.com/marmalade/packages/")
 (source melpa)
 (source org)
 
