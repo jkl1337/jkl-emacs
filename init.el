@@ -482,7 +482,10 @@ try disabling Alt-Tab switching and see how that works")
 
 ;;;; BEGIN CUSTOMIZATION
 
+(prefer-coding-system 'utf-8)
 (defalias 'yes-or-no-p 'y-or-n-p)
+(setq confirm-kill-emacs 'yes-or-no-p)
+(setq ns-use-srgb-colorspace t)
 
 (when (bound-and-true-p jkl/use-hunspell)
   (eval-after-load "pspell"
@@ -650,17 +653,17 @@ try disabling Alt-Tab switching and see how that works")
 
 (display-time-mode)
 
-(jkl/cs 'display-time-24hr-format t)
+(setq display-time-24hr-format t)
 
-(jkl/cs 'backup-directory-alist
-        `((".*" . ,temporary-file-directory))
-	'auto-save-file-name-transforms
-        `((".*" ,temporary-file-directory t)))
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
-(jkl/cs 'inhibit-startup-screen t
-        'initial-scratch-message nil
-        'auto-save-interval 3000
-        'auto-save-timeout 300)
+(setq inhibit-startup-screen t
+      initial-scratch-message nil
+      auto-save-interval 3000
+      auto-save-timeout 300)
 
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
@@ -671,14 +674,14 @@ try disabling Alt-Tab switching and see how that works")
 (column-number-mode 1)
 (size-indication-mode 1)
 
-(jkl/cs 'scroll-margin 0
-        'scroll-conservatively 100000
-        'scroll-preserve-screen-position 1)
+(setq scroll-margin 0
+      scroll-conservatively 100000
+      scroll-preserve-screen-position 1)
 
-(jkl/cs 'frame-title-format
-        '(" Emacs - " (:eval (if (buffer-file-name)
-                                 (abbreviate-file-name (buffer-file-name))
-                               "%b"))))
+(setq frame-title-format
+      '(" Emacs - " (:eval (if (buffer-file-name)
+                               (abbreviate-file-name (buffer-file-name))
+                             "%b"))))
 
 (add-to-list 'interpreter-mode-alist '("dash" . sh-mode))
 
@@ -702,11 +705,15 @@ try disabling Alt-Tab switching and see how that works")
 (put 'dired-find-alternate-file 'disabled nil)
 
 ;;;; EDIFF
-(jkl/cs 'ediff-split-window-function 'split-window-horizontally)
+(setq ediff-split-window-function 'split-window-horizontally
+      ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;;; SQL customization
 (add-hook 'sql-mode-hook '(lambda ()
                             (abbrev-mode 1)))
+
+;;; MAGIT
+(setq magit-last-seen-setup-instructions "1.4.0")
 
 ;;; ELISP customization
 
