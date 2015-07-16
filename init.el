@@ -153,6 +153,7 @@
 ;;;; CUSTOM KEY BINDINGS
 (defalias 'qrr 'query-replace-regexp)
 (require 'transpose-frame)
+(global-set-key "\C-x4t" 'flop-frame)
 
 (define-key jkl/func-map "c" 'recompile)
 (define-key jkl/func-map "f" 'flop-frame)
@@ -596,7 +597,7 @@ try disabling Alt-Tab switching and see how that works")
         'ido-default-file-method 'selected-window
         'ido-use-faces nil)
 
-;;(electric-pair-mode 1)
+(electric-pair-mode 1)
 (electric-indent-mode 1)
 
 (require 'iedit)

@@ -2,31 +2,6 @@
 (when (executable-find "rbenv")
   (global-rbenv-mode 1))
 
-(eval-after-load 'ruby-mode
-  '(progn
-
-     (defadvice ruby-indent-line (after line-up-args activate)
-       (let (indent prev-indent arg-indent)
-         (save-excursion
-           (back-to-indentation)
-           (when (zerop (car (syntax-ppss)))
-             (setq indent (current-column))
-             (skip-chars-backward " \t\n")
-             (when (eq ?, (char-before))
-               (ruby-backward-sexp)
-               (back-to-indentation)
-               (setq prev-indent (current-column))
-               (skip-syntax-forward "w_.")
-               (skip-chars-forward " ")
-               (setq arg-indent (current-column)))))
-         (when prev-indent
-           (let ((offset (- (current-column) indent)))
-             (cond ((< indent prev-indent)
-                    (indent-line-to prev-indent))
-                   ((= indent prev-indent)
-                    (indent-line-to arg-indent)))
-             (when (> offset 0) (forward-char offset))))))))
-
 (defun jruby-dev ()
   (interactive)
   (let ((jruby-opts (getenv "JRUBY_OPTS"))
@@ -109,7 +84,7 @@ exec-to-string command, but it works and seems fast"
   '(progn
      (setq ruby-program "/usr/bin/ruby")
 
-
+     (add-hook 'ruby-mode-hook 'ruby-tools-mode)
      (add-hook 'ruby-mode-hook 'robe-mode)
      (defun jkl/ruby-setup ()
        (when (require 'ruby-block nil t)
@@ -135,3 +110,5 @@ exec-to-string command, but it works and seems fast"
     (browse-url (search-site-url  "ruby-doc.org" "/" 
                                       (thing-at-point 'symbol))))
 (define-key ruby-mode-map (kbd "C-h C-a") 'ruby-help)
+
+(require 'ruby-additional)
