@@ -35,8 +35,6 @@
 (depends-on "flycheck-rust")
 (depends-on "fuzzy")
 (depends-on "ggtags")
-(depends-on "git-commit-mode")
-(depends-on "git-rebase-mode")
 (depends-on "go-eldoc")
 (depends-on "go-mode")
 (depends-on "go-play")
