@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: require 'pp'; pp …
-# key: pp
-# --
-require 'pp'
-pp $0

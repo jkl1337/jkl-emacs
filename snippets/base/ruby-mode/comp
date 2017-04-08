@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: include Comparable; def each … end
-# key: comp
-# --
-include Comparable
-
-def <=>
-  $0
-end

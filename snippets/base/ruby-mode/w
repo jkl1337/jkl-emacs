@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: attr_writer …
-# key: w
-# --
-attr_writer :$0

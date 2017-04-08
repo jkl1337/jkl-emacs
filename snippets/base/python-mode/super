@@ -1,7 +1,0 @@
-# -*- coding: utf-8 -*-
-# name: super
-# key: super
-# contributor: Gabriele Lanaro <gabriele.lanaro@gmail.com>
-# --
-super(${1:`(py-prev-class-name)`},self).${2:`(py-prev-def-name)`}(${3:`(py-prev-def-args)`})
-    $0

@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: module function
-# key: defm
-# --
-def ${1:method_name}${2:(${3:args})}
-  $0
-end
-module_function :$1

@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: require_relative '...'
-# key: rr
-# --
-require_relative '$1'
-$0

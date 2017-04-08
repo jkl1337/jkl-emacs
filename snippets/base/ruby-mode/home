@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: File.expand_path '~/…'
-# key: ~
-# --
-File.expand_path '~/$0'

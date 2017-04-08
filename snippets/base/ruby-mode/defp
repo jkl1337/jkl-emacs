@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: private method
-# key: defp
-# --
-def ${1:method_name}${2:(${3:args})}
-  $0
-end
-private :$1
