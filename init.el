@@ -3,6 +3,13 @@
 ;; TODO: Change the require predicates to use fboundp and support lazy loading
 ;; FIXME: have a separate savefile directory
 
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (defconst jkl/mswinp
   (eq system-type 'windows-nt))
 
@@ -57,7 +64,7 @@
 (let ((font (cond
              (jkl/mswinp "Lucida Console-9")
              ((eq 'darwin system-type) "Monaco-12")
-             (t "Source Code Pro-9.5"))))
+             (t "Source Code Pro-8"))))
   (when font (set-face-attribute 'default nil :font font)))
 
 ;; maximize current frames and all future frames
@@ -95,55 +102,6 @@
 (load-theme 'grandshell t)
 
 ;; TODO: change the eval-after-load for modes to <mode>-autoloads
-
-;;;; EL-GET
-(jkl/cs 'el-get-dir (expand-file-name (concat user-emacs-directory "el-get/")))
-(jkl/cs 'el-get-git-shallow-clone t)
-
-;;; bootstreap CEDET early
-(let ((cedet-load-file (concat (expand-file-name "cedet" el-get-dir) "/cedet-devel-load.el")))
-  (when (file-exists-p cedet-load-file)
-    (load-file cedet-load-file)))
-
-;;; Bootstrap el-get
-(add-to-list 'load-path (concat el-get-dir "el-get"))
-(when nil
-  (unless (require 'el-get nil t)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-      (let (el-get-master-branch)
-        (goto-char (point-max))
-        (eval-print-last-sexp)))))
-
-;;; el-get recipes
-(setq el-get-sources
-      '(
-	(:name cedet
-	       :build/darwin `("touch `find . -name Makefile`"
-			       ,(concat "make EMACS=" el-get-emacs))
-               :load-path nil)
-        (:name ecb
-               :depends cedet
-               :build `(("make" "CEDET=" ,(concat el-get-dir "cedet/lisp/common/")
-                         ,(concat "EMACS=" (shell-quote-argument el-get-emacs)))))
-
-        (:name test-simple
-               :description "Unit Test Framework for Emacs Lisp"
-               :type github
-               :pkgname "rocky/emacs-test-simple"
-               :build ("./autogen.sh" "./configure" "make"))
-
-        (:name dbgr
-               :depends (test-simple load-relative loc-changes)
-               :features (loc-changes load-relative test-simple))
-               :depends (inf-ruby)))
-
-(progn
-  (setq jkl/el-get-packages
-        '(el-get cedet))
-  ;(el-get 'sync jkl/el-get-packages)
-)
 
 ;;(byte-recompile-directory (jkl/script-dir) 0)
 (condition-case nil
@@ -259,6 +217,9 @@ try disabling Alt-Tab switching and see how that works")
 (add-hook 'go-mode-hook 'go-eldoc-setup)
 (add-hook 'go-mode-hook '(lambda ()
                            (set (make-local-variable 'company-backends) (cons 'company-go company-backends))))
+
+;;; RUST
+(add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
 
 ;;; EDITORCONFIG
 (eval-after-load "editorconfig"
