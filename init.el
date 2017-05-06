@@ -36,6 +36,7 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
+     rust
      helm
      auto-completion
      better-defaults
@@ -59,7 +60,10 @@ values."
      c-c++
      common-lisp
      csv
-     go
+     d
+     (go :variables
+         go-use-gometalinter t
+         gofmt-command "goimports")
      html
      lua
      java
@@ -92,7 +96,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(pkgbuild-mode)
+   dotspacemacs-additional-packages '(pkgbuild-mode toml-mode)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -338,7 +342,45 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-  )
+
+  (eval-after-load "tramp"
+    '(progn
+     ;;; TRAMP administer root files on remote hosts
+       (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:luebsj@%h:"))
+       (add-to-list 'tramp-default-proxies-alist '("\\`y26.*" "\\`root\\'" "/ssh:luebsjk@%h:"))
+       (add-to-list 'tramp-default-proxies-alist '((regexp-quote (system-name)) nil nil))
+
+       (defvar sudo-tramp-prefix
+         "/sudo:"
+         (concat "Prefix to be used by sudo commands when building tramp path "))
+
+       (defun sudo-file-name (filename)
+         (let* ((splitname (split-string filename ":"))
+                (components (or (cdr splitname)
+                                (cons (concat "root@" (system-name)) splitname))))
+           (concat sudo-tramp-prefix (mapconcat 'identity components ":"))))
+
+       (defun sudo-find-file (filename &optional wildcards)
+         "Calls find-file with filename with sudo-tramp-prefix prepended"
+         (interactive "fFind file with sudo ")
+         (let ((sudo-name (sudo-file-name filename)))
+           (apply 'find-file
+                  (cons sudo-name (if (boundp 'wildcards) '(wildcards))))))
+
+       (defun sudo-reopen-file ()
+         "Reopen file as root by prefixing its name with sudo-tramp-prefix and by clearing buffer-read-only"
+         (interactive)
+         (let*
+             ((file-name (expand-file-name buffer-file-name))
+              (sudo-name (sudo-file-name file-name)))
+           (progn
+             (setq buffer-file-name sudo-name)
+             (rename-buffer sudo-name)
+             (setq buffer-read-only nil)
+             (message (concat "File name set to " sudo-name)))))
+
+       (global-set-key "\C-x+" 'sudo-find-file)
+       (global-set-key "\C-x!" 'sudo-reopen-file))))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -349,7 +391,7 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (winum unfill restclient-helm ob-restclient fuzzy flymd company-restclient know-your-http-well company-ansible helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag flyspell-correct-helm ace-jump-helm-line pkgbuild-mode zeal-at-point yaml-mode xterm-color tide typescript-mode systemd swift-mode sql-indent shell-pop rvm ruby-tools ruby-test-mode rubocop rspec-mode robe restclient rebox2 rbenv rake powershell phpunit phpcbf php-extras php-auto-yasnippets pdf-tools pandoc-mode ox-pandoc ht ob-http nginx-mode multi-term minitest lua-mode jinja2-mode insert-shebang gmail-message-mode ham-mode html-to-markdown ggtags fish-mode eshell-z eshell-prompt-extras esh-help ein websocket edit-server drupal-mode php-mode dockerfile-mode docker tablist docker-tramp counsel-dash helm-dash company-shell company-emacs-eclim eclim company-auctex chruby bundler inf-ruby auctex-latexmk auctex ansible-doc ansible x86-lookup slime-company slime nasm-mode go-guru go-eldoc disaster d-mode csv-mode company-go go-mode flycheck-dmd-dub company-c-headers common-lisp-snippets cmake-mode clang-format adoc-mode markup-faces web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode pug-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc haml-mode emmet-mode company-web web-completion-data company-tern dash-functional tern coffee-mode mwim ibuffer-projectile floobits yapfify smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc markdown-mode magit-gitflow live-py-mode hy-mode htmlize gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flyspell-correct flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl cython-mode company-statistics company-anaconda company auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete ws-butler window-numbering which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy quelpa package-build spacemacs-theme))))
+    (racer helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag flyspell-correct-helm flycheck-rust seq cargo rust-mode ace-jump-helm-line toml-mode flycheck-gometalinter pkgbuild-mode zeal-at-point yaml-mode xterm-color tide typescript-mode systemd swift-mode sql-indent shell-pop rvm ruby-tools ruby-test-mode rubocop rspec-mode robe restclient rebox2 rbenv rake powershell phpunit phpcbf php-extras php-auto-yasnippets pdf-tools pandoc-mode ox-pandoc ht ob-http nginx-mode multi-term minitest lua-mode jinja2-mode insert-shebang gmail-message-mode ham-mode html-to-markdown ggtags fish-mode eshell-z eshell-prompt-extras esh-help ein websocket edit-server drupal-mode php-mode dockerfile-mode docker tablist docker-tramp counsel-dash helm-dash company-shell company-emacs-eclim eclim company-auctex chruby bundler inf-ruby auctex-latexmk auctex ansible-doc ansible x86-lookup slime-company slime nasm-mode go-guru go-eldoc disaster d-mode csv-mode company-go go-mode company-dcd flycheck-dmd-dub company-c-headers common-lisp-snippets cmake-mode clang-format adoc-mode markup-faces web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode pug-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc haml-mode emmet-mode company-web web-completion-data company-tern dash-functional tern coffee-mode mwim ibuffer-projectile floobits yapfify smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc markdown-mode magit-gitflow live-py-mode hy-mode htmlize gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flyspell-correct-ivy flyspell-correct flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl cython-mode company-statistics company-anaconda company auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete ws-butler window-numbering which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy quelpa package-build spacemacs-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
