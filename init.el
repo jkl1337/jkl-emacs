@@ -43,6 +43,7 @@ values."
      emacs-lisp
      git
      markdown
+     pandoc
      python
      org
      floobits
